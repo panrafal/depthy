@@ -33,23 +33,23 @@ angular.module('depthyApp')
     }
 
     this.parseCompoundImage = function(data) {
+        var extendedXmp = (data.match(/xmpNote:HasExtendedXMP="(.+?)"/i) || [])[1];
+        if (extendedXmp) {
+            // we need to clear out JPEG's block headers. Let's be juvenile and don't care about checking this for now, shall we?
+            // 2b + 2b + http://ns.adobe.com/xmp/extension/ + 1b + extendedXmp + 4b + 4b
+            data = data.replace(new RegExp('[\\s\\S]{4}http:\\/\\/ns\\.adobe\\.com\\/xmp\\/extension\\/[\\s\\S]' + extendedXmp + '[\\s\\S]{8}', 'g'), '')
+        }
+
         var xmp = data.match(/<x:xmpmeta [\s\S]+?<\/x:xmpmeta>/g),
             result = {}
         if (!xmp) throw "No XMP metadata found";
         xmp = xmp.join("\n", xmp);
 
-        var extendedXmp = (xmp.match(/xmpNote:HasExtendedXMP="(.+?)"/i) || [])[1];
-        if (extendedXmp) {
-            // we need to clear out JPEG's block headers. Let's be juvenile and don't care about checking this for now, shall we?
-            // 2b + 2b + http://ns.adobe.com/xmp/extension/ + 1b + extendedXmp + 4b + 4b
-            xmp = xmp.replace(new RegExp('.{4}http:\/\/ns\.adobe\.com\/xmp\/extension\/.' + extendedXmp + '.{8}', 'g'), '')
-        }
 
         result.imageMime = (xmp.match(/GImage:Mime="(.+?)"/i) || [])[1];
         result.imageData = (xmp.match(/GImage:Data="(.+?)"/i) || [])[1];
         result.depthMime = (xmp.match(/GDepth:Mime="(.+?)"/i) || [])[1];
         result.depthData = (xmp.match(/GDepth:Data="(.+?)"/i) || [])[1];
-        
 
         if (result.imageMime && result.imageData) {
             result.imageUri = 'data:' + result.imageMime + ';base64,' + result.imageData
