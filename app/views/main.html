@@ -1,13 +1,19 @@
 
+<div id="file">
+    <a class="btn btn-lg btn-success" ng-href="#" ng-click="selectFile($event)">Select file</a>
 
-<a class="btn btn-lg btn-success" ng-href="#" ng-click="selectFile($event)">Select file</a>
+    Compound
+    <img id="compound" ng-src="{{compoundSource}}">
+    Depth
+    <img id="depth" ng-src="{{depthSource}}">
+    Image
+    <img id="image" ng-src="{{imageSource}}">
 
-Compound
-<img ng-src="{{compoundSource}}">
-Depth
-<img ng-src="{{depthSource}}">
-Image
-<img ng-src="{{imageSource}}">
+    {{compoundError}}
 
+    {{metaData}}
 
-{{metaData}}
+</div>
+<pixiview id="pixi">
+    
+</pixiview>

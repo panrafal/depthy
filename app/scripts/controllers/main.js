@@ -5,20 +5,33 @@ angular.module('depthyApp')
 
     var self = this
 
+    $scope.compoundSource = 'samples/1.jpg'
+    $scope.depthSource = 'samples/1-depth.png'
+    $scope.imageSource = 'samples/1-image.jpg'
+
     this.handleCompoundFile = function(file) {
         var imageReader = new FileReader();
         imageReader.onload = function(e) {
-            var image = self.parseCompoundImage(e.target.result)
+            $scope.compoundError = ""
 
-            $scope.imageSource = image.imageUri
-            $scope.depthSource = image.depthUri
+            try {
+                var image = self.parseCompoundImage(e.target.result)
 
-            delete image.imageData
-            delete image.depthData
-            delete image.imageUri
-            delete image.depthUri
+                $scope.imageSource = image.imageUri
+                $scope.depthSource = image.depthUri
 
-            $scope.metaData = image
+                delete image.imageData
+                delete image.depthData
+                delete image.imageUri
+                delete image.depthUri
+
+                $scope.metaData = image
+            } catch (e) {
+                $scope.imageSource = false
+                $scope.depthSource = false
+                $scope.metadata = {}
+                $scope.compoundError = e
+            }
             $scope.$apply();
         }
         imageReader.readAsBinaryString(file)
