@@ -88,8 +88,11 @@ header {
     min-height: 80vh;
 
     .alert {
-        @extend .container;
+        max-width: 700px;
         margin: 0 auto 2em auto;
+        background: transparent;
+        font-weight: bold;
+        border: none;        
     }
 
     .images {
@@ -132,4 +135,19 @@ header {
 
 #viewer {
     background: #092933;
+}
+
+footer {
+    background: darken($color-back, 5%);
+    color: fade-out(#fff, 0.5);
+    text-align: center;
+    padding: 0.5em;
+    font-size: 0.9em;
+    a {
+        color: inherit;
+        text-decoration: underline;
+        &:hover {
+            color: #fff;
+        }    
+    }
 }
