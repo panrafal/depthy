@@ -1,0 +1,6 @@
+<header><div class="container text-center"><h1>Depthy</h1><p class="lead">Extract depth map and original image from photos<br>made with <a href="https://play.google.com/store/apps/details?id=com.google.android.GoogleCamera" target="_blank">Google Camera</a>'s Lens Blur.</p><p>Make a photo using Lens Blur mode, select it below, save both extracted images and play around with them. Photos are processed on your device, nothing is uploaded to our servers!</p><a class="btn btn-lg btn-success" ng-href="#" ng-click="selectFile($event)">Select the Lens Blur image</a><div class="notice">or drag&amp;drop it anywhere</div></div></header><div id="file"><div class="alert alert-danger" ng-if="compoundError">{{compoundError}}</div><!-- <img id="compound" ng-src="{{compoundSource}}"> --><div class="images"><div id="image" class="image" ng-class="{empty: !imageSource}"><img ng-if="imageSource" ng-src="{{imageSource}}"></div><div id="depth" class="image" ng-class="{empty: !depthSource}"><img ng-if="depthSource" ng-src="{{depthSource}}"></div></div><!-- {{metaData}} --></div><!--
+<div id="viewer" ng-controller="ViewerCtrl">
+    <canvas pixi="stage" pixi-animate="pixiAnimate">
+    </canvas>
+</div>
+-->
