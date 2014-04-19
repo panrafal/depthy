@@ -37,6 +37,15 @@ body {
     font-style: italic;    
 }
 
+.alert {
+    max-width: 700px;
+    margin: 0 auto 2em auto;
+    background: transparent;
+    font-weight: bold;
+    border: none;        
+    text-align: center;
+}
+
 .container {
     // max-width: 600px;
 }
@@ -87,13 +96,7 @@ header {
     position: relative;
     min-height: 80vh;
 
-    .alert {
-        max-width: 700px;
-        margin: 0 auto 2em auto;
-        background: transparent;
-        font-weight: bold;
-        border: none;        
-    }
+
 
     .images {
         // line-height: 80vh;
@@ -134,7 +137,20 @@ header {
 }
 
 #viewer {
-    background: #092933;
+    background: linear-gradient(to bottom, darken($color-back, 12%) 0%,darken($color-back, 8%) 7%);
+    border-top: 1px solid lighten($color-back, 0%);
+    padding: 2em 0;
+
+    canvas {
+        margin:0px auto;
+        // width: 1024px;
+        // height: 1024px;
+        display: block;
+    }
+
+    html.no-webgl canvas {
+        display: none;
+    }
 }
 
 footer {

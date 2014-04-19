@@ -5,10 +5,14 @@ angular.module('depthyApp')
 
     var self = this
 
-    // $scope.compoundSource = 'samples/1.jpg'
-    // $scope.depthSource = 'samples/1-depth.png'
-    // $scope.imageSource = 'samples/1-image.jpg'
+    $scope.compoundSource = 'samples/1.jpg'
+    $scope.depthSource = 'samples/1-depth.png'
+    $scope.imageSource = 'samples/1-image.jpg'
     $scope.Modernizr = window.Modernizr
+
+    $scope.imageSize = {
+
+    }
 
     this.handleCompoundFile = function(file) {
 
@@ -50,8 +54,8 @@ angular.module('depthyApp')
 
         var dataReader = new FileReader();
         dataReader.onload = function(e) {
-            console.log(e)
             $scope.compoundSource = e.target.result;
+
             $scope.$apply();
         }
         dataReader.readAsDataURL(file)
@@ -99,6 +103,25 @@ angular.module('depthyApp')
         }
     })
 
+    function watchImageSize(type) {
+        $scope.$watch(type + 'Source', function(source) {
+            $scope[type + 'Size'] = null;
+            if (!source) return;
+            var img = new Image();
+            img.onload = function() {
+                $scope[type + 'Size'] = {
+                    width: img.width,
+                    height: img.height,
+                }
+                img.onload = null;
+                img.src = '';
+                $scope.$apply();
+            }
+            img.src = source;
+        })
+    }
 
-
+    watchImageSize('compound');
+    watchImageSize('image');
+    watchImageSize('depth');
 });

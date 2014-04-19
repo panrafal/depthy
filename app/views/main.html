@@ -24,12 +24,19 @@
     <!-- {{metaData}} -->
 
 </div>
-<!--
+
 <div id="viewer" ng-controller="ViewerCtrl">
-    <canvas pixi="stage" pixi-animate="pixiAnimate">
+    <div class="alert alert-danger" ng-if="!Modernizr.webgl">
+        Your browser does not support WebGL :(
+    </div>
+    <canvas pixi="stage" pixi-animate="pixiAnimate" pixi-transparent="true" pixi-renderer="'webgl'">
     </canvas>
+    <div class="well text-center">
+        <button class="btn btn-primary" ng-click="viewCompound = !viewCompound" ng-class="{active: viewCompound}">View as blured</button>
+    </div>
+
 </div>
--->
+
 <footer>
     Depthy 0.1 made by <a href="http://www.stamina.pl/">Rafał Lindemann</a>.
     Open sourced on <a href="https://github.com/panrafal/depthy">GitHub</a>
