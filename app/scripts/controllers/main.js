@@ -5,11 +5,25 @@ angular.module('depthyApp')
 
     var self = this
 
-    $scope.compoundSource = 'samples/1.jpg'
-    $scope.depthSource = 'samples/1-depth.png'
-    $scope.imageSource = 'samples/1-image.jpg'
+    // $scope.compoundSource = 'samples/1.jpg'
+    // $scope.depthSource = 'samples/1-depth.png'
+    // $scope.imageSource = 'samples/1-image.jpg'
+    $scope.Modernizr = window.Modernizr
 
     this.handleCompoundFile = function(file) {
+
+        var onError = function(e) {
+            $scope.imageSource = false
+            $scope.depthSource = false
+            $scope.metadata = {}
+            $scope.compoundError = e
+        }
+
+        if (file.type !== 'image/jpeg') {
+            onError('Only JPEGs are supported!');
+            return;
+        }
+
         var imageReader = new FileReader();
         imageReader.onload = function(e) {
             $scope.compoundError = ""
@@ -27,10 +41,7 @@ angular.module('depthyApp')
 
                 $scope.metaData = image
             } catch (e) {
-                $scope.imageSource = false
-                $scope.depthSource = false
-                $scope.metadata = {}
-                $scope.compoundError = e
+                onError(e);
             }
             $scope.$apply();
         }
@@ -55,7 +66,7 @@ angular.module('depthyApp')
 
         var xmp = data.match(/<x:xmpmeta [\s\S]+?<\/x:xmpmeta>/g),
             result = {}
-        if (!xmp) throw "No XMP metadata found";
+        if (!xmp) throw "No XMP metadata found! Did you make this photo using Google Camera?";
         xmp = xmp.join("\n", xmp);
 
 
@@ -70,6 +81,9 @@ angular.module('depthyApp')
         if (result.depthMime && result.depthData) {
             result.depthUri = 'data:' + result.depthMime + ';base64,' + result.depthData
         }
+
+        if (!result.depthUri) throw "No depth map found! Did you make this photo using Lens Blur mode?";
+
         
         result.focalDistance = (xmp.match(/GFocus:FocalDistance="(.+?)"/i) || [])[1];
 
