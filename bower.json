@@ -9,7 +9,8 @@
     "bootstrap-sass-official": "~3.1.0",
     "angular-sanitize": "1.2.15",
     "lodash": "~2.4.1",
-    "pixi.js": "~1.5.2"
+    "pixi.js": "~1.5.2",
+    "angular-ga": "~0.1.0"
   },
   "devDependencies": {
     "angular-mocks": "1.2.15",

@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('depthyApp')
-.controller('MainCtrl', function ($scope) {
+.controller('MainCtrl', function ($scope, ga) {
 
     var self = this
 
@@ -13,10 +13,11 @@ angular.module('depthyApp')
     this.handleCompoundFile = function(file) {
 
         var onError = function(e) {
-            $scope.imageSource = false
-            $scope.depthSource = false
-            $scope.metadata = {}
-            $scope.compoundError = e
+            $scope.imageSource = false;
+            $scope.depthSource = false;
+            $scope.metadata = {};
+            $scope.compoundError = e;
+            ga('send', 'event', 'image', 'error', e)
         }
 
         if (file.type !== 'image/jpeg') {
@@ -84,8 +85,9 @@ angular.module('depthyApp')
 
         if (!result.depthUri) throw "No depth map found! Did you make this photo using Lens Blur mode?";
 
-        
         result.focalDistance = (xmp.match(/GFocus:FocalDistance="(.+?)"/i) || [])[1];
+
+        ga('send', 'event', 'image', 'parsed')
 
         return result;
     }

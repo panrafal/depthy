@@ -139,7 +139,7 @@ header {
 
 footer {
     background: darken($color-back, 5%);
-    color: fade-out(#fff, 0.5);
+    color: fade-out(#fff, 0.6);
     text-align: center;
     padding: 0.5em;
     font-size: 0.9em;
@@ -147,7 +147,7 @@ footer {
         color: inherit;
         text-decoration: underline;
         &:hover {
-            color: #fff;
+            color: fade-out(#fff, 0.4);
         }    
     }
 }

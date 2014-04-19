@@ -2,5 +2,6 @@
 
 angular
   .module('depthyApp', [
-    'ngSanitize'
+    'ngSanitize',
+    'ga'
   ]);
