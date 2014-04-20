@@ -5,9 +5,9 @@ angular.module('depthyApp')
 
     var self = this
 
-    // $scope.compoundSource = 'samples/1.jpg'
-    // $scope.depthSource = 'samples/1-depth.png'
-    // $scope.imageSource = 'samples/1-image.jpg'
+    $scope.compoundSource = 'samples/1.jpg'
+    $scope.depthSource = 'samples/1-depth.png'
+    $scope.imageSource = 'samples/1-image.jpg'
     $scope.Modernizr = window.Modernizr
 
     this.handleCompoundFile = function(file) {
