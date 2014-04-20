@@ -86,12 +86,13 @@ angular.module('depthyApp')
             var elOffset = $element.offset(),
                 elWidth = $element.width(),
                 elHeight = $element.height(),
+                stageSize = $scope.stageSize.height * 0.8,
                 pointerEvent = e.originalEvent.touches ? e.originalEvent.touches[0] : e,
                 x = (pointerEvent.pageX - elOffset.left) / elWidth,
                 y = (pointerEvent.pageY - elOffset.top) / elHeight
 
-            x = (x * 2 - 1);
-            y = (y * 2 - 1);
+            x = Math.max(-1, Math.min(1, (x * 2 - 1) * elWidth / stageSize));
+            y = Math.max(-1, Math.min(1, (y * 2 - 1) * elHeight / stageSize));
 
             if (depthFilter) {
                 depthFilter.offset = {x : -x, y : -y};
