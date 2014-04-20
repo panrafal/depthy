@@ -1,12 +1,12 @@
 'use strict';
 
 angular.module('depthyApp')
-.controller('ViewerCtrl', function ($scope, $element, $window) {
+.controller('ViewerCtrl', function ($scope, $element, $window, $timeout) {
 
     $scope.stage = null;
     $scope.viewCompound = true;
     $scope.sizeDirty = 0;
-    $scope.update = true;
+    $scope.update = 1;
 
     function setupStage(stage, renderer) {
         var imageTexture, depthTexture, sprite, depthFilter
@@ -26,6 +26,16 @@ angular.module('depthyApp')
             if (stageSize.width > $($window).width() * 0.8) {
                 stageSize.width = Math.round($($window).width() * 0.8);
                 stageSize.height = stageSize.width / imageRatio;
+            }
+
+            if (window.devicePixelRatio >= 2) {
+                stageSize.width *= 2;
+                stageSize.height *= 2;
+                $element.find('canvas')
+                    // .css('transform', 'scale(0.5, 0.5)')
+                    .css('width', stageSize.width / 2 + 'px')
+                    .css('height', stageSize.height / 2 + 'px')
+
             }
 
             $scope.stageSize = stageSize;
@@ -55,7 +65,12 @@ angular.module('depthyApp')
             sprite.filters = [depthFilter];
             sprite.scale = new PIXI.Point(stageScale, stageScale);
             stage.addChild(sprite)
-            $scope.update = true;
+            //render on load events
+            $scope.update = 1;
+            // allow load events to fire
+            $timeout(function() {
+                $scope.update = 1;
+            }, 100)
         }, true)
 
         $element.on('mousemove', function(e) {
@@ -71,7 +86,7 @@ angular.module('depthyApp')
 
             if (depthFilter) {
                 depthFilter.offset = {x : x, y : y};
-                $scope.update = true;
+                $scope.update = 1;
             }
 
         })
@@ -95,7 +110,7 @@ angular.module('depthyApp')
         if (!$scope.update) {
             return false;
         }
-        $scope.update = false;
+        $scope.update--;
     }
 
 

@@ -162,6 +162,7 @@ header {
         // width: 1024px;
         // height: 1024px;
         display: block;
+        pointer-events: none;
     }
 
     html.no-webgl canvas {
