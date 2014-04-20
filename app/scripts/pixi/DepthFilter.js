@@ -17,7 +17,7 @@ PIXI.DepthmapFilter = function(texture)
     // set the uniforms
     this.uniforms = {
         displacementMap: {type: 'sampler2D', value:texture},
-        scale:           {type: '2f', value:{x:0.15, y:0.15}},
+        scale:           {type: '2f', value:{x:0.015, y:0.015}},
         offset:          {type: '2f', value:{x:0, y:0}},
         mapDimensions:   {type: '2f', value:{x:1, y:5112}},
         dimensions:   {type: '4fv', value:[0,0,0,0]}

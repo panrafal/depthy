@@ -73,16 +73,16 @@ angular.module('depthyApp')
             }, 100)
         }, true)
 
-        $element.on('mousemove', function(e) {
+        $element.on('mousemove touchmove', function(e) {
             var elOffset = $element.offset(),
                 elWidth = $element.width(),
                 elHeight = $element.height(),
-                x = (e.pageX - elOffset.left) / elWidth,
-                y = (e.pageY - elOffset.top) / elHeight
+                pointerEvent = e.originalEvent.touches ? e.originalEvent.touches[0] : e,
+                x = (pointerEvent.pageX - elOffset.left) / elWidth,
+                y = (pointerEvent.pageY - elOffset.top) / elHeight
 
-            x = (x * 2 - 1) * 0.1;
-            y = (y * 2 - 1) * 0.1;
-            // console.log(x, y)
+            x = (x * 2 - 1);
+            y = (y * 2 - 1);
 
             if (depthFilter) {
                 depthFilter.offset = {x : x, y : y};
@@ -91,7 +91,43 @@ angular.module('depthyApp')
 
         })
 
-        $($window).on('resize', function() {
+        var orientation = {}
+        $window.addEventListener('deviceorientation', function(event) {
+            if (event.beta === null || event.gamma === null) return;
+
+            if (orientation) {
+                var portrait = window.innerHeight > window.innerWidth,
+                    beta = (event.beta - orientation.beta) * 0.2,
+                    gamma = (event.gamma - orientation.gamma) * 0.2,
+                    x = portrait ? -gamma : -beta,
+                    y = portrait ? -beta : gamma
+
+
+
+                if (depthFilter) {
+                    depthFilter.offset = {
+                        x : Math.max(-1, Math.min(1, depthFilter.offset.x + x)), 
+                        y : Math.max(-1, Math.min(1, depthFilter.offset.y + y))
+                    };
+                    // console.log("offset %d %d ABG %d %d %d", depthFilter.offset.x * 10, depthFilter.offset.y * 10, event.alpha, event.beta, event.gamma)
+                    depthFilter.scale = {x: 0.02, y: 0.02}
+                    $scope.update = 1;
+
+                }
+
+            }
+            orientation = {
+                alpha: event.alpha,
+                beta: event.beta,
+                gamma: event.gamma
+            }
+        })
+
+        // $window.addEventListener('devicemotion', function(event) {
+        //     console.log(event.acceleration, event.rotationRate)
+        // })
+
+        $window.addEventListener('resize', function() {
             $scope.sizeDirty ++;
             $scope.$apply();
         })
