@@ -8,6 +8,11 @@ $well-bg: rgba(0,0,0,0.2);
 $headings-font-weight: 700;
 $headings-color: $color-accent;
 
+$brand-primary: $color-accent;
+$brand-danger: #F83A2D;
+$brand-success: #47A447;
+$brand-warning: #F8D920;
+
 // $border-radius-base: 0px;
 @import 'bootstrap-sass-official/vendor/assets/stylesheets/bootstrap';
 
@@ -98,15 +103,67 @@ header {
     .notice {
         opacity: 0.5;
     }
-    .btn-success {
+    .file-select {
+        margin-top: 1em;
+        position: relative;
+        .btn-success {
+            position: relative;
+            z-index: 2;
+            transition: all 0.5s ease;
+        }
+        .progress {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin: 0;
+            width: 14em;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+            opacity: 0;
+            transition: all 0.5s ease;
+        }
+        &.processing {
+            .btn-success {
+                opacity: 0;
+                visibility: hidden;
+            }
+            .progress {
+                opacity: 1;
+            }
+        }
+    }
+}
+
+#error {
+    $error-bg: darken($brand-danger, 35%);
+    background: linear-gradient(to bottom, darken($error-bg, 4%) 0%,$error-bg 2em);
+    border-top: 1px solid lighten($error-bg, 2%);
+    text-align: center;
+    padding: 2em;
+    overflow: hidden;
+    transition: all 0.5s ease;
+    max-height: 200px;
+
+    h2 {
+        color: $brand-danger;
+    }
+    a {
         margin-top: 1em;
     }
+
+    &.ng-hide {
+        max-height: 0px;
+        display: block!important;
+        padding: 0;
+        border-top-width: 0;
+    }
+
 }
 
 #file {
     // background: #125267;
-    background: linear-gradient(to bottom, darken($body-bg, 8%) 0%,darken($body-bg, 5%) 7%);
-    border-top: 1px solid lighten($body-bg, 4%);
+    background: linear-gradient(to bottom, darken($body-bg, 12%) 0%,darken($body-bg, 8%) 2em);
+    border-top: 1px solid lighten($body-bg, 0%);
     text-align: center;
     padding: 2em 0em;
     position: relative;
@@ -153,8 +210,8 @@ header {
 }
 
 #viewer {
-    background: linear-gradient(to bottom, darken($body-bg, 12%) 0%,darken($body-bg, 8%) 7%);
-    border-top: 1px solid lighten($body-bg, 0%);
+    background: linear-gradient(to bottom, darken($body-bg, 8%) 0%,darken($body-bg, 5%) 2em);
+    border-top: 1px solid lighten($body-bg, 6%);
     padding: 2em 0;
 
     canvas {
@@ -172,11 +229,11 @@ header {
 }
 
 footer {
-    background: linear-gradient(to bottom, darken($body-bg, 14%) 0%,darken($body-bg, 10%) 7%);
+    background: linear-gradient(to bottom, darken($body-bg, 14%) 0%,darken($body-bg, 10%) 2em);
     border-top: 1px solid lighten($body-bg, 0%);
     color: fade-out(#fff, 0.6);
     text-align: center;
-    padding: 0.5em;
+    padding: 1em;
     font-size: 0.9em;
     a {
         color: inherit;

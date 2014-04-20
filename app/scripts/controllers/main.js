@@ -1,14 +1,16 @@
 'use strict';
 
 angular.module('depthyApp')
-.controller('MainCtrl', function ($scope, ga) {
+.controller('MainCtrl', function ($scope, $timeout, ga) {
 
     var self = this
 
-    $scope.compoundSource = 'samples/1.jpg'
-    $scope.depthSource = 'samples/1-depth.png'
-    $scope.imageSource = 'samples/1-image.jpg'
+    // $scope.compoundSource = 'samples/1.jpg'
+    // $scope.depthSource = 'samples/1-depth.png'
+    // $scope.imageSource = 'samples/1-image.jpg'
     $scope.Modernizr = window.Modernizr
+    $scope.processing = false
+
 
     this.handleCompoundFile = function(file) {
 
@@ -25,36 +27,42 @@ angular.module('depthyApp')
             return;
         }
 
-        var imageReader = new FileReader();
-        imageReader.onload = function(e) {
-            $scope.compoundError = ""
+        $scope.processing = true
 
-            try {
-                var image = self.parseCompoundImage(e.target.result)
+        $timeout(function() {
+            var imageReader = new FileReader();
+            imageReader.onload = function(e) {
+                $scope.compoundError = ""
 
-                $scope.imageSource = image.imageUri
-                $scope.depthSource = image.depthUri
+                try {
+                    var image = self.parseCompoundImage(e.target.result)
 
-                delete image.imageData
-                delete image.depthData
-                delete image.imageUri
-                delete image.depthUri
+                    $scope.imageSource = image.imageUri
+                    $scope.depthSource = image.depthUri
 
-                $scope.metaData = image
-            } catch (e) {
-                onError(e);
+                    delete image.imageData
+                    delete image.depthData
+                    delete image.imageUri
+                    delete image.depthUri
+
+                    $scope.metaData = image
+                } catch (e) {
+                    onError(e);
+                }
+
+                $scope.processing = false;
+                $scope.$apply();
             }
-            $scope.$apply();
-        }
-        imageReader.readAsBinaryString(file)
+            imageReader.readAsBinaryString(file)
 
-        var dataReader = new FileReader();
-        dataReader.onload = function(e) {
-            $scope.compoundSource = e.target.result;
+            var dataReader = new FileReader();
+            dataReader.onload = function(e) {
+                $scope.compoundSource = e.target.result;
 
-            $scope.$apply();
-        }
-        dataReader.readAsDataURL(file)
+                $scope.$apply();
+            }
+            dataReader.readAsDataURL(file)
+        }, 100)
     }
 
     this.parseCompoundImage = function(data) {
@@ -67,7 +75,7 @@ angular.module('depthyApp')
 
         var xmp = data.match(/<x:xmpmeta [\s\S]+?<\/x:xmpmeta>/g),
             result = {}
-        if (!xmp) throw "No XMP metadata found! Did you make this photo using Google Camera?";
+        if (!xmp) throw "No XMP metadata found!";
         xmp = xmp.join("\n", xmp);
 
 
@@ -83,7 +91,8 @@ angular.module('depthyApp')
             result.depthUri = 'data:' + result.depthMime + ';base64,' + result.depthData
         }
 
-        if (!result.depthUri) throw "No depth map found! Did you make this photo using Lens Blur mode?";
+        if (!result.depthUri) throw "No depth map found!";
+        if (!result.imageUri) throw "No original image found!";
 
         result.focalDistance = (xmp.match(/GFocus:FocalDistance="(.+?)"/i) || [])[1];
 

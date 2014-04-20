@@ -7,6 +7,7 @@ angular.module('depthyApp')
     $scope.viewCompound = true;
     $scope.sizeDirty = 0;
     $scope.update = 1;
+    $scope.viewerVisible = true;
 
     function setupStage(stage, renderer) {
         var imageTexture, depthTexture, sprite, depthFilter
@@ -64,7 +65,7 @@ angular.module('depthyApp')
             depthTexture = PIXI.Texture.fromImage($scope.depthSource);
             sprite = new PIXI.Sprite(imageTexture);
 
-            var depthScale = Modernizr.mobile ? 0.02 : 0.015;
+            var depthScale = Modernizr.mobile ? 0.01 : 0.01;
             depthFilter = new PIXI.DepthmapFilter(depthTexture);
             depthFilter.scale = {
                 x: (stageSize.width > stageSize.height ? 1 : stageSize.height / stageSize.width) * depthScale, 
