@@ -7,9 +7,13 @@ angular.module('depthyApp')
         scope: true,
         link: function postLink(scope, element, attrs) {
 
-            var fileInput = document.createElement('input')
+            var fileInput = document.createElement('input');
+            fileInput.type = 'file';
+            fileInput.style.visibility = 'hidden';
+            fileInput.style.position = 'absolute';
+            fileInput.style.left = '-9000px';
 
-            fileInput.type = 'file'
+            element.append(fileInput)
 
             var onDrag = function(e) {
                 e.stopPropagation();

@@ -41,11 +41,15 @@ angular.module('depthyApp')
             $scope.stageSize = stageSize;
         }, true)
 
-        $scope.$watch('[viewerVisible, compoundSource, imageSource, depthSource, viewCompound, stageSize]', function() {
+        $scope.$watch('[viewerVisible, compoundSource, imageSource, depthSource, viewCompound, stageSize, compoundSize, imageSize, depthSize]', function() {
             $scope.imageReady = $scope.viewerVisible && $scope.imageSource && $scope.depthSource
                              && $scope.imageSize && $scope.depthSize && $scope.compoundSize
             
-            if (sprite) stage.removeChild(sprite)
+            if (sprite) {
+                stage.removeChild(sprite);
+                sprite = null;
+                $scope.update = 1;
+            }
 
             if (!$scope.imageReady) return;
 
@@ -60,7 +64,9 @@ angular.module('depthyApp')
             depthTexture = PIXI.Texture.fromImage($scope.depthSource);
             sprite = new PIXI.Sprite(imageTexture);
 
+            var depthScale = Modernizr.mobile ? 0.02 : 0.015;
             depthFilter = new PIXI.DepthmapFilter(depthTexture);
+            depthFilter.scale = {x: depthScale, y: depthScale}
 
             sprite.filters = [depthFilter];
             sprite.scale = new PIXI.Point(stageScale, stageScale);
@@ -85,7 +91,7 @@ angular.module('depthyApp')
             y = (y * 2 - 1);
 
             if (depthFilter) {
-                depthFilter.offset = {x : x, y : y};
+                depthFilter.offset = {x : -x, y : -y};
                 $scope.update = 1;
             }
 
@@ -100,9 +106,7 @@ angular.module('depthyApp')
                     beta = (event.beta - orientation.beta) * 0.2,
                     gamma = (event.gamma - orientation.gamma) * 0.2,
                     x = portrait ? -gamma : -beta,
-                    y = portrait ? -beta : gamma
-
-
+                    y = portrait ? -beta : -gamma
 
                 if (depthFilter) {
                     depthFilter.offset = {
@@ -110,9 +114,7 @@ angular.module('depthyApp')
                         y : Math.max(-1, Math.min(1, depthFilter.offset.y + y))
                     };
                     // console.log("offset %d %d ABG %d %d %d", depthFilter.offset.x * 10, depthFilter.offset.y * 10, event.alpha, event.beta, event.gamma)
-                    depthFilter.scale = {x: 0.02, y: 0.02}
                     $scope.update = 1;
-
                 }
 
             }
