@@ -5,6 +5,8 @@ $color-accent: #2BBFF0;
 $body-bg: #092933;
 $text-color: #fff;
 $well-bg: rgba(0,0,0,0.2);
+$headings-font-weight: 700;
+$headings-color: $color-accent;
 
 $border-radius-base: 0px;
 @import 'bootstrap-sass-official/vendor/assets/stylesheets/bootstrap';
@@ -31,7 +33,7 @@ body {
     padding-bottom: 0px;
 
     height: 100%;
-    background: $body-bg;
+    background: darken($body-bg, 10%);
     // color: #fff;
 }
 
@@ -51,6 +53,17 @@ body {
 
 .container {
     // max-width: 600px;
+}
+
+h2 {
+    margin: 0;
+    text-transform: uppercase;
+    color: darken($headings-color, 10%);
+    $shadow-color: #000;
+    text-shadow: 3px 3px 0px fade-out($shadow-color, 0.9)
+               , 2px 2px 0px fade-out($shadow-color, 0.9)
+               , 1px 1px 0px fade-out($shadow-color, 0.9)
+               ;
 }
 
 header {
@@ -97,7 +110,7 @@ header {
     text-align: center;
     padding: 2em 0em;
     position: relative;
-    min-height: 80vh;
+    // min-height: 80vh;
 
 
 
@@ -142,10 +155,10 @@ header {
 #viewer {
     background: linear-gradient(to bottom, darken($body-bg, 12%) 0%,darken($body-bg, 8%) 7%);
     border-top: 1px solid lighten($body-bg, 0%);
-    padding: 3em 0;
+    padding: 2em 0;
 
     canvas {
-        margin:0px auto;
+        margin:0 auto 2em auto;
         // width: 1024px;
         // height: 1024px;
         display: block;
@@ -155,13 +168,11 @@ header {
         display: none;
     }
 
-    .well {
-        margin-top: 2em;
-    }
 }
 
 footer {
-    background: darken($body-bg, 8%);
+    background: linear-gradient(to bottom, darken($body-bg, 14%) 0%,darken($body-bg, 10%) 7%);
+    border-top: 1px solid lighten($body-bg, 0%);
     color: fade-out(#fff, 0.6);
     text-align: center;
     padding: 0.5em;
