@@ -17,7 +17,7 @@ PIXI.DepthmapFilter = function(texture)
     // set the uniforms
     this.uniforms = {
         displacementMap: {type: 'sampler2D', value:texture},
-        scale:           {type: '2f', value:{x:30, y:30}},
+        scale:           {type: '2f', value:{x:0.15, y:0.15}},
         offset:          {type: '2f', value:{x:0, y:0}},
         mapDimensions:   {type: '2f', value:{x:1, y:5112}},
         dimensions:   {type: '4fv', value:[0,0,0,0]}
@@ -56,15 +56,15 @@ PIXI.DepthmapFilter = function(texture)
         // '   mapCords *= 2.0;',
         '   float map = texture2D(displacementMap, mapCords).r;',
         '   map = map * -1.0 + 0.5;',
-        '   map *= 0.1;',
+        // '   map *= 0.3;',
         // '   matSample -= 0.5;',
         // '   matSample *= scale;',
         // '   matSample /= mapDimensions;',
         '   vec2 disCords = vTextureCoord;',
-        '   disCords += offset * vec2(1.0, -1.0) * map;',
+        '   disCords += offset * vec2(1.0, -1.0) * map * scale;',
         // '   gl_FragColor = texture2D(uSampler, vec2(vTextureCoord.x + matSample.x, vTextureCoord.y + matSample.y));',
         '   gl_FragColor = texture2D(uSampler, disCords) * vColor;',
-        '   gl_FragColor *= texture2D(displacementMap, mapCords);',
+        // '   gl_FragColor *= texture2D(displacementMap, mapCords);',
         // '   gl_FragColor.rgb = mix( gl_FragColor.rgb, gl_FragColor.rgb, 1.0);',
         // '   vec2 cord = vTextureCoord;',
  

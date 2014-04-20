@@ -37,12 +37,13 @@ angular.module('depthyApp')
             
             function animate() {
          
-                if (animateFunc) animateFunc(stage, renderer);
+                var render
+                if (animateFunc) render = animateFunc(stage, renderer);
 
                 requestAnimFrame( animate );
          
                 // render the stage   
-                renderer.render(stage);
+                if (render !== false) renderer.render(stage);
             }
 
             requestAnimFrame( animate );

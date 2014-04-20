@@ -7,7 +7,7 @@
             Photos are processed on your device, nothing is uploaded to our servers!
         </p>
         <a class="btn btn-lg btn-success" ng-href="#" ng-click="selectFile($event)">Select the Lens Blur image</a>
-        <div class="notice">or drag&amp;drop it anywhere</div>
+        <div class="notice" ng-if="!Modernizr.mobile">or drag&amp;drop it anywhere</div>
     </div>
 </header>
 <div id="file">
@@ -29,7 +29,10 @@
     <div class="alert alert-danger" ng-if="!Modernizr.webgl">
         Your browser does not support WebGL :(
     </div>
-    <canvas pixi="stage" pixi-animate="pixiAnimate" pixi-transparent="true" pixi-renderer="'webgl'">
+    <div class="text-center text-muted" ng-if="Modernizr.webgl && compoundSize">
+        <p>Move your {{Modernizr.devicemotion && Modernizr.mobile ? 'device' : 'cursor'}} around to see the effect</p>
+    </div>
+    <canvas pixi="stage" pixi-animate="pixiAnimate" pixi-transparent="true" pixi-renderer="'webgl'"  shown-eval="$parent.viewerVisible = true">
     </canvas>
     <div class="well text-center">
         <button class="btn btn-primary" ng-click="viewCompound = !viewCompound" ng-class="{active: viewCompound}">View as blured</button>

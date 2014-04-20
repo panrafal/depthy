@@ -1,22 +1,38 @@
 'use strict';
 
 angular.module('depthyApp')
-.controller('ViewerCtrl', function ($scope, $element) {
+.controller('ViewerCtrl', function ($scope, $element, $window) {
 
     $scope.stage = null;
-    $scope.viewCompound = false;
+    $scope.viewCompound = true;
+    $scope.dirty = 0;
+    $scope.update = true;
 
     function setupStage(stage, renderer) {
-        console.log('Stage setup')
         var imageTexture, depthTexture, sprite, depthFilter
 
-        $scope.$watch('[compoundSource, imageSource, depthSource, viewCompound, compoundSize, imageSize, depthSize]', function() {
+        $scope.$watch('[viewerVisible, compoundSource, imageSource, depthSource, viewCompound, compoundSize, imageSize, depthSize, dirty]', function() {
             console.log('Image change', $scope.imageSize, $scope.depthSize, $scope.compoundSize)
-            if (!$scope.imageSource || !$scope.depthSource
+            if (!$scope.viewerVisible || !$scope.imageSource || !$scope.depthSource
                 || !$scope.imageSize || !$scope.depthSize || !$scope.compoundSize
                 ) return;
 
-            renderer.resize($scope.compoundSize.width, $scope.compoundSize.height);
+            var imageSize = $scope.compoundSize,
+                imageRatio = imageSize.width / imageSize.height,
+                stageSize = {width: imageSize.width, height: imageSize.height}
+
+            if (stageSize.height > $($window).height() * 0.8) {
+                stageSize.height = Math.round($($window).height() * 0.8);
+                stageSize.width = stageSize.height * imageRatio;
+            }
+            if (stageSize.width > $($window).width() * 0.8) {
+                stageSize.width = Math.round($($window).width() * 0.8);
+                stageSize.height = stageSize.width / imageRatio;
+            }
+
+            var stageScale = stageSize.width / imageSize.width;
+
+            renderer.resize(stageSize.width, stageSize.height);
 
             if (sprite) stage.removeChild(sprite)
 
@@ -36,8 +52,9 @@ angular.module('depthyApp')
             // }
 
             sprite.filters = [depthFilter];
-            sprite.scale = new PIXI.Point(1, 1);
+            sprite.scale = new PIXI.Point(stageScale, stageScale);
             stage.addChild(sprite)
+            $scope.update = true;
         }, true)
 
         $element.on('mousemove', function(e) {
@@ -53,8 +70,14 @@ angular.module('depthyApp')
 
             if (depthFilter) {
                 depthFilter.offset = {x : x, y : y};
+                $scope.update = true;
             }
 
+        })
+
+        $($window).on('resize', function() {
+            $scope.dirty ++;
+            $scope.$apply();
         })
 
     }   
@@ -68,6 +91,10 @@ angular.module('depthyApp')
             $scope.$apply();
             return;
         }
+        if (!$scope.update) {
+            return false;
+        }
+        $scope.update = false;
     }
 
 

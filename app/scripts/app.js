@@ -3,5 +3,6 @@
 angular
   .module('depthyApp', [
     'ngSanitize',
-    'ga'
+    'ga',
+    'visibleClass'
   ]);
