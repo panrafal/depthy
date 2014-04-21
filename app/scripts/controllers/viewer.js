@@ -65,7 +65,7 @@ angular.module('depthyApp')
             depthTexture = PIXI.Texture.fromImage($scope.depthSource);
             sprite = new PIXI.Sprite(imageTexture);
 
-            var depthScale = Modernizr.mobile ? 0.01 : 0.01;
+            var depthScale = Modernizr.mobile ? 0.015 : 0.015;
             depthFilter = new PIXI.DepthmapFilter(depthTexture);
             depthFilter.scale = {
                 x: (stageSize.width > stageSize.height ? 1 : stageSize.height / stageSize.width) * depthScale, 
