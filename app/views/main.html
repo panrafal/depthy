@@ -1,24 +1,30 @@
 <header>
     <div class="container text-center">
         <h1>Depthy</h1>
-        <p class="lead">Extract depth map and original from<br/>photos made with <a href="https://play.google.com/store/apps/details?id=com.google.android.GoogleCamera" target="_blank">Google Camera</a>'s Lens Blur.</p>
+        <p class="lead">Poke around with awesome photos<br/>made with <a href="https://play.google.com/store/apps/details?id=com.google.android.GoogleCamera" target="_blank">Google Camera</a>'s Lens Blur.</p>
         <p>
-            Make a photo using Lens Blur mode, select it below, save both extracted images and play around with them.
-            Photos are processed on your device, nothing is uploaded to our servers!
+            Make a photo using Lens Blur mode and load it using the button below.<br/>
+            Photos are processed on your device - no uploading!
         </p>
         <p ng-if="!Modernizr.webgl">
             Please note, that your browser does not support WebGL.
-            You'll not see the parallax effect...
+            You'll not see the parallax effect...<br/>
+            Try using Chrome on your desktop or Android device
         </p>
 
         <div class="file-select" ng-class="{processing: processing}">
-            <a class="btn btn-lg btn-success" ng-href="#" ng-click="selectFile($event)">Select the Lens Blur photo</a>
+            <a class="btn btn-lg btn-success" ng-href="#" ng-click="selectFile($event)">Load the Lens Blur photo</a>
             <div class="progress progress-striped active">
                 <div class="progress-bar"  role="progressbar" style="width: 100%">
                 </div>
             </div>
         </div>
         <div class="notice" ng-if="!Modernizr.mobile">or drag&amp;drop it anywhere</div>
+        <div class="gallery">
+            <img src="samples/flowers-thumb.jpg" ng-click="loadSample('flowers')">
+            <img src="samples/hut-thumb.jpg"  ng-click="loadSample('hut')">
+            <img src="samples/shelf-thumb.jpg"  ng-click="loadSample('shelf')">
+        </div>
     </div>
 </header>
 <div id="error" ng-hide="!compoundError">
@@ -27,6 +33,7 @@
     <a class="btn btn-md btn-danger" ng-click="$parent.compoundError = ''">Got it!</a>
 </div>
 <div id="viewer" ng-controller="ViewerCtrl" ng-hide="!compoundSize || !depthSource" ng-if="Modernizr.webgl">
+
     <div class="text-center" ng-if="Modernizr.webgl && compoundSize">
         <h2>Parallax view</h2>
         <p class="text-muted">Move your {{Modernizr.devicemotion && Modernizr.mobile ? 'device' : 'cursor'}} around to see the effect</p>

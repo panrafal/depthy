@@ -71,6 +71,15 @@ h2 {
                ;
 }
 
+.btn {
+    &:focus {
+        outline: 0;
+    }
+    &.active {
+        box-shadow: inset 0px 0px 8px rgba(0,0,0,0.5);
+    }
+}
+
 header {
     padding: 2em 0 2em 0;
     background: $body-bg;
@@ -104,7 +113,7 @@ header {
         opacity: 0.5;
     }
     .file-select {
-        margin-top: 1em;
+        margin-top: 2em;
         position: relative;
         .btn-success {
             position: relative;
@@ -131,6 +140,16 @@ header {
                 opacity: 1;
             }
         }
+    }
+
+    .gallery {
+        margin-top: 2em;
+         img {
+            cursor:pointer;
+            width: 80px;
+            height: 80px;
+            box-shadow: 1px 1px 1px rgba(0,0,0,0.5);
+         }
     }
 }
 
@@ -220,6 +239,7 @@ header {
         // height: 1024px;
         display: block;
         pointer-events: none;
+        box-shadow: 1px 1px 1px rgba(0,0,0,0.5);
     }
 
     html.no-webgl canvas {

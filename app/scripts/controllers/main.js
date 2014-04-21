@@ -5,12 +5,20 @@ angular.module('depthyApp')
 
     var self = this
 
-    $scope.compoundSource = 'samples/compound.jpg'
-    $scope.depthSource = 'samples/depth.jpg'
-    $scope.imageSource = 'samples/image.jpg'
+    $scope.compoundSource = 'samples/flowers-compound.jpg'
+    $scope.depthSource = 'samples/flowers-depth.jpg'
+    $scope.imageSource = 'samples/flowers-image.jpg'
     $scope.Modernizr = window.Modernizr
     $scope.processing = false
 
+    $scope.loadSample = function(name) {
+        $scope.compoundSource = 'samples/'+name+'-compound.jpg'
+        $scope.depthSource = 'samples/'+name+'-depth.jpg'
+        $scope.imageSource = 'samples/'+name+'-image.jpg'
+        $scope.metadata = {};
+        $scope.compoundError = null;
+        ga('send', 'event', 'sample', name)
+    }
 
     this.handleCompoundFile = function(file) {
 

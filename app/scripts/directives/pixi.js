@@ -29,12 +29,17 @@ angular.module('depthyApp')
                     renderer = new PIXI.CanvasRenderer(element.width(), element.height(), element[0], transparent);
                     break;
                 case 'webgl':
-                    renderer = new PIXI.WebGLRenderer(element.width(), element.height(), element[0], transparent, antialias);
+                    try {
+                        renderer = new PIXI.WebGLRenderer(element.width(), element.height(), element[0], transparent, antialias);
+                    } catch (e) {
+                        Modernizr.webgl = false;
+                        return;
+                    }
                     break;
                 default:
                     renderer = PIXI.autoDetectRenderer(element.width(), element.height(), element[0], antialias, transparent);
             }
-            
+
             function animate() {
          
                 var render
