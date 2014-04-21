@@ -5,6 +5,7 @@
         <p>
             Make a photo using Lens Blur mode and load it using the button below.<br/>
             Photos are processed on your device - no uploading!
+            <span ng-if="!Modernizr.mobile"><br/>It works on your Android device too!</span>
         </p>
         <p ng-if="!Modernizr.webgl">
             Please note, that your browser does not support WebGL.
