@@ -12,6 +12,7 @@ $brand-primary: $color-accent;
 $brand-danger: #F83A2D;
 $brand-success: #47A447;
 $brand-warning: #F8D920;
+$state-warning-text: #F8D920;
 
 // $border-radius-base: 0px;
 @import 'bootstrap-sass-official/vendor/assets/stylesheets/bootstrap';
@@ -20,12 +21,6 @@ $brand-warning: #F8D920;
 @import "../bower_components/bootstrap-sass-official/vendor/assets/stylesheets/bootstrap.scss";
 // endbower
 
-.browsehappy {
-    margin: 0.2em 0;
-    background: #ccc;
-    color: #000;
-    padding: 0.2em 0;
-}
 
 html {
     width: 100%;
@@ -60,6 +55,23 @@ body {
     // max-width: 600px;
 }
 
+h1 {
+    color: $color-accent;
+    text-transform: uppercase;
+    margin: 0 0 2rem 0;
+    font-size: 5em;
+    letter-spacing: -1px;
+    font-weight: bold;
+    $shadow-color: #000;
+    text-shadow: 6px 6px 0px fade-out($shadow-color, 0.9)
+               , 5px 5px 0px fade-out($shadow-color, 0.9)
+               , 4px 4px 0px fade-out($shadow-color, 0.9)
+               , 3px 3px 0px fade-out($shadow-color, 0.9)
+               , 2px 2px 0px fade-out($shadow-color, 0.9)
+               , 1px 1px 0px fade-out($shadow-color, 0.9)
+               ;
+}
+
 h2 {
     margin: 0;
     text-transform: uppercase;
@@ -80,6 +92,13 @@ h2 {
     }
 }
 
+a, a:hover {
+    color: inherit;
+}
+p a {
+    text-decoration: underline;
+}
+
 header {
     padding: 2em 0 2em 0;
     background: $body-bg;
@@ -87,28 +106,7 @@ header {
     .container {
         max-width: 650px;
     }
-    h1 {
-        color: $color-accent;
-        text-transform: uppercase;
-        margin: 0 0 2rem 0;
-        font-size: 5em;
-        letter-spacing: -1px;
-        font-weight: bold;
-        $shadow-color: #000;
-        text-shadow: 6px 6px 0px fade-out($shadow-color, 0.9)
-                   , 5px 5px 0px fade-out($shadow-color, 0.9)
-                   , 4px 4px 0px fade-out($shadow-color, 0.9)
-                   , 3px 3px 0px fade-out($shadow-color, 0.9)
-                   , 2px 2px 0px fade-out($shadow-color, 0.9)
-                   , 1px 1px 0px fade-out($shadow-color, 0.9)
-                   ;
-    }
-    a, a:hover {
-        color: inherit;
-    }
-    p a {
-        text-decoration: underline;
-    }
+
     .notice {
         opacity: 0.5;
     }
@@ -263,3 +261,9 @@ footer {
         }    
     }
 }
+
+
+
+
+
+@import "_poor.scss";

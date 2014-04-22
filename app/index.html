@@ -34,7 +34,16 @@
   </head>
   <body fileselect="compoundFiles" >
 
-    <div ng-include="'views/main.html'" ng-controller="MainCtrl"></div>
+    <div id="oldbrowser">
+        <div class="container text-center">
+          <h1>Depthy</h1>
+          <p class="lead">Depthy allows you to view Google Camera Lens Blur photos with 3D-like parallax effect. Plus you can extract the depth map and make something cool on your own.</p>
+          <img src="preview.gif" class="img-thumbnail"/>
+          <p class="alert alert-warning">Unfortunately your browser is <b>out of date</b>.<br/><a href="http://browsehappy.com/" target="_top">Use something newer</a>, like Chrome for example.</p>
+        </div>
+    </div>
+
+    <div id="main" ng-include="'views/main.html'" ng-controller="MainCtrl"></div>
 
     <!-- build:js scripts/vendor.js -->
     <!-- bower:js -->
