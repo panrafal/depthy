@@ -32,6 +32,12 @@ html.no-canvas {
 
 
         }
+
+        .preview {
+            width: 200px;
+            height: 200px;
+            background: url('../preview.gif') 50% 50% no-repeat;
+        }
     }   
     #main {
         display:none;
