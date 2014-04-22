@@ -142,11 +142,13 @@ header {
 
     .gallery {
         margin-top: 2em;
+        
          img {
             cursor:pointer;
             width: 80px;
             height: 80px;
             box-shadow: 1px 1px 1px rgba(0,0,0,0.5);
+            margin-bottom: 0.3em;
          }
     }
 }
