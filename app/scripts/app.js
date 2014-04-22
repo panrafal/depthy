@@ -2,7 +2,7 @@
 
 angular
   .module('depthyApp', [
-    'ngSanitize',
+    // 'ngSanitize',
     'ga',
-    'visibleClass'
+    // 'visibleClass'
   ]);
