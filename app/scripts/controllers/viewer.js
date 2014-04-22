@@ -5,9 +5,12 @@ angular.module('depthyApp')
 
     $scope.stage = null;
     $scope.viewCompound = true;
+    $scope.animate = false;
+    $scope.scaleUp = false;
     $scope.sizeDirty = 0;
     $scope.update = 1;
     $scope.viewerVisible = true;
+    $scope.depthFilter = null;
 
     function setupStage(stage, renderer) {
         var imageTexture, depthTexture, sprite, depthFilter
@@ -42,7 +45,7 @@ angular.module('depthyApp')
             $scope.stageSize = stageSize;
         }, true)
 
-        $scope.$watch('[viewerVisible, compoundSource, imageSource, depthSource, viewCompound, stageSize, compoundSize, imageSize, depthSize]', function() {
+        $scope.$watch('[viewerVisible, compoundSource, imageSource, depthSource, viewCompound, stageSize, compoundSize, imageSize, depthSize, scaleUp]', function() {
             $scope.imageReady = $scope.viewerVisible && $scope.imageSource && $scope.depthSource
                              && $scope.imageSize && $scope.depthSize && $scope.compoundSize
             
@@ -65,8 +68,8 @@ angular.module('depthyApp')
             depthTexture = PIXI.Texture.fromImage($scope.depthSource);
             sprite = new PIXI.Sprite(imageTexture);
 
-            var depthScale = Modernizr.mobile ? 0.015 : 0.015;
-            depthFilter = new PIXI.DepthmapFilter(depthTexture);
+            var depthScale = (Modernizr.mobile ? 0.015 : 0.015) * ($scope.scaleUp ? 2 : 1);
+            $scope.depthFilter = depthFilter = new PIXI.DepthmapFilter(depthTexture);
             depthFilter.scale = {
                 x: (stageSize.width > stageSize.height ? 1 : stageSize.height / stageSize.width) * depthScale, 
                 y: (stageSize.width < stageSize.height ? 1 : stageSize.width / stageSize.height) * depthScale
@@ -84,6 +87,9 @@ angular.module('depthyApp')
         }, true)
 
         $element.on('mousemove touchmove', function(e) {
+            
+            if ($scope.animate) return;
+
             var elOffset = $element.offset(),
                 elWidth = $element.width(),
                 elHeight = $element.height(),
@@ -99,14 +105,14 @@ angular.module('depthyApp')
                 depthFilter.offset = {x : -x, y : -y};
                 $scope.update = 1;
             }
-
+          
         })
 
         var orientation = {}
         $window.addEventListener('deviceorientation', function(event) {
             if (event.beta === null || event.gamma === null) return;
 
-            if (orientation) {
+            if (orientation && !$scope.animate) {
                 var portrait = window.innerHeight > window.innerWidth,
                     beta = (event.beta - orientation.beta) * 0.2,
                     gamma = (event.gamma - orientation.gamma) * 0.2,
@@ -150,6 +156,15 @@ angular.module('depthyApp')
             $scope.$apply();
             return;
         }
+        if ($scope.animate) {
+            var now = Modernizr.performance ? window.performance.now() : new Date();
+            $scope.depthFilter.offset = {
+                x : Math.sin(now * Math.PI / 1000), 
+                y : Math.cos(now * Math.PI / 1000)
+            }            
+            $scope.update = 1;
+        }
+
         if (!$scope.update) {
             return false;
         }

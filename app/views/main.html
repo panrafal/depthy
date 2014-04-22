@@ -25,6 +25,8 @@
             <img src="samples/flowers-thumb.jpg" ng-click="loadSample('flowers')">
             <img src="samples/hut-thumb.jpg"  ng-click="loadSample('hut')">
             <img src="samples/shelf-thumb.jpg"  ng-click="loadSample('shelf')">
+            <img src="samples/mango-thumb.jpg"  ng-click="loadSample('mango')">
+            <img src="samples/tunnel-thumb.jpg"  ng-click="loadSample('tunnel')">
         </div>
     </div>
 </header>
@@ -42,7 +44,11 @@
     <canvas pixi="stage" pixi-animate="pixiAnimate" pixi-transparent="true" pixi-renderer="'webgl'"  shown-eval="$parent.viewerVisible = true">
     </canvas>
     <div class="text-center">
-        <button class="btn btn-primary" ng-click="viewCompound = !viewCompound" ng-class="{active: viewCompound}">View as shot</button>
+        <div class="btn-group">
+            <button class="btn btn-primary" ng-click="viewCompound = !viewCompound" ng-class="{active: viewCompound}">Blurred</button>
+            <button class="btn btn-primary" ng-click="animate = !animate" ng-class="{active: animate}">Hypnotize</button>
+            <button class="btn btn-primary" ng-click="scaleUp = !scaleUp" ng-class="{active: scaleUp}">Dramatize</button>
+        </div>
     </div>
 
 </div>
