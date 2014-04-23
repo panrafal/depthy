@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('depthyApp')
-.controller('ViewerCtrl', function ($scope, $element, $window, $timeout) {
+.controller('ViewerCtrl', function ($scope, $element, $window, $timeout, $popover) {
 
     $scope.stage = null;
     $scope.viewCompound = true;
@@ -171,5 +171,19 @@ angular.module('depthyApp')
         $scope.update--;
     }
 
+
+    $scope.$on('popover.show', function() {
+        console.log('gif popover');
+    })
+
+    $scope.gifExportSetup = function(event) {
+        var popover = $popover($(event.currentTarget), {
+            placement: 'top',
+            trigger: 'manual',
+            title: 'How do you want your GIF?',
+            contentTemplate: "views/gif-popover.html",
+        })
+        popover.$promise.then(function() {popover.show()})
+    }
 
 });

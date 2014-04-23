@@ -44,11 +44,15 @@
     <canvas pixi="stage" pixi-animate="pixiAnimate" pixi-transparent="true" pixi-renderer="'webgl'"  shown-eval="$parent.viewerVisible = true">
     </canvas>
     <div class="text-center">
-        <div class="btn-group">
+        <div class="btn-group options">
             <button class="btn btn-primary" ng-click="viewCompound = !viewCompound" ng-class="{active: viewCompound}">Blurred</button>
             <button class="btn btn-primary" ng-click="animate = !animate" ng-class="{active: animate}">Hypnotize</button>
             <button class="btn btn-primary" ng-click="scaleUp = !scaleUp" ng-class="{active: scaleUp}">Dramatize</button>
         </div>
+        <div class="exports">
+            <div class="panel" ng-include="'views/gif-popover.html'"></div>
+            <button class="btn btn-success" ng-click="gifExportToggle()"><i class="icon icon-movie"></i> Generate GIF</button>
+        </div>  
     </div>
 
 </div>
@@ -70,6 +74,6 @@
 
 
 <footer>
-    Depthy 0.1 created by <a href="http://www.stamina.pl/">Rafał Lindemann</a>.<br/>
+    Depthy 0.1.1 created by <a href="http://www.stamina.pl/">Rafał Lindemann</a>.<br/>
     Ideas? Issues? Code? It's open sourced on <a href="https://github.com/panrafal/depthy">GitHub</a>!
 </footer>
