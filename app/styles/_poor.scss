@@ -1,5 +1,5 @@
 #oldbrowser {
-    display:none;
+  display:none;
 
 
 }
@@ -12,34 +12,34 @@ html.no-webgl,
 html.no-js,
 html.no-canvas {
 
-    body {
+  body {
+  }
+
+  #oldbrowser {
+    display:block;
+    position:fixed;
+    width:100%;
+    height:100%;
+    z-index:3000;
+    left:0px;
+    top:0px;
+    background: $body-bg;
+    text-align: center;
+
+    .container {
+      margin-top: 4em;
+      max-width: 600px;
+
+
     }
 
-    #oldbrowser {
-        display:block;
-        position:fixed;
-        width:100%;
-        height:100%;
-        z-index:3000;
-        left:0px;
-        top:0px;
-        background: $body-bg;
-        text-align: center;
-
-        .container {
-            margin-top: 4em;
-            max-width: 600px;
-
-
-        }
-
-        .preview {
-            width: 200px;
-            height: 200px;
-            background: url('../preview.gif') 50% 50% no-repeat;
-        }
-    }   
-    #main {
-        display:none;
+    .preview {
+      width: 200px;
+      height: 200px;
+      background: url('../preview.gif') 50% 50% no-repeat;
     }
+  }   
+  #main {
+    display:none;
+  }
 }

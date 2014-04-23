@@ -9,55 +9,55 @@
  */
 PIXI.DepthmapFilter = function(texture)
 {
-    PIXI.AbstractFilter.call( this );
+  PIXI.AbstractFilter.call( this );
  
-    this.passes = [this];
-    // texture.baseTexture._powerOf2 = true;
+  this.passes = [this];
+  // texture.baseTexture._powerOf2 = true;
  
-    // set the uniforms
-    this.uniforms = {
-        displacementMap: {type: 'sampler2D', value:texture},
-        scale:           {type: '2f', value:{x:0.015, y:0.015}},
-        offset:          {type: '2f', value:{x:0, y:0}},
-        mapDimensions:   {type: '2f', value:{x:1, y:5112}},
-        dimensions:   {type: '4fv', value:[0,0,0,0]}
-    };
+  // set the uniforms
+  this.uniforms = {
+    displacementMap: {type: 'sampler2D', value:texture},
+    scale:           {type: '2f', value:{x:0.015, y:0.015}},
+    offset:          {type: '2f', value:{x:0, y:0}},
+    mapDimensions:   {type: '2f', value:{x:1, y:5112}},
+    dimensions:   {type: '4fv', value:[0,0,0,0]}
+  };
  
-    if(texture.baseTexture.hasLoaded)
-    {
-        this.uniforms.mapDimensions.value.x = texture.width;
-        this.uniforms.mapDimensions.value.y = texture.height;
-    }
-    else
-    {
-        this.boundLoadedFunction = this.onTextureLoaded.bind(this);
+  if(texture.baseTexture.hasLoaded)
+  {
+    this.uniforms.mapDimensions.value.x = texture.width;
+    this.uniforms.mapDimensions.value.y = texture.height;
+  }
+  else
+  {
+    this.boundLoadedFunction = this.onTextureLoaded.bind(this);
  
-        texture.baseTexture.on('loaded', this.boundLoadedFunction);
-    }
+    texture.baseTexture.on('loaded', this.boundLoadedFunction);
+  }
  
-    this.fragmentSrc = [
-        'precision mediump float;',
-        'varying vec2 vTextureCoord;',
-        'varying vec4 vColor;',
-        'uniform sampler2D displacementMap;',
-        'uniform sampler2D uSampler;',
-        'uniform vec2 scale;',
-        'uniform vec2 offset;',
-        'uniform vec4 dimensions;',
-        'uniform vec2 mapDimensions;',
+  this.fragmentSrc = [
+    'precision mediump float;',
+    'varying vec2 vTextureCoord;',
+    'varying vec4 vColor;',
+    'uniform sampler2D displacementMap;',
+    'uniform sampler2D uSampler;',
+    'uniform vec2 scale;',
+    'uniform vec2 offset;',
+    'uniform vec4 dimensions;',
+    'uniform vec2 mapDimensions;',
  
-        'void main(void) {',
-        '   vec2 mapCords = vTextureCoord;',
-        '   mapCords.y *= -1.0;',
-        '   mapCords.y += 1.0;',
-        '   float map = texture2D(displacementMap, mapCords).r;',
-        '   map = map * -1.0 + 0.5;',
-        '   vec2 disCords = vTextureCoord;',
-        '   disCords += offset * vec2(1.0, -1.0) * map * scale;',
-        '   gl_FragColor = texture2D(uSampler, disCords) * vColor;',
-        // '   gl_FragColor *= texture2D(displacementMap, mapCords);',
-        '}'
-    ];
+    'void main(void) {',
+    '   vec2 mapCords = vTextureCoord;',
+    '   mapCords.y *= -1.0;',
+    '   mapCords.y += 1.0;',
+    '   float map = texture2D(displacementMap, mapCords).r;',
+    '   map = map * -1.0 + 0.5;',
+    '   vec2 disCords = vTextureCoord;',
+    '   disCords += offset * vec2(1.0, -1.0) * map * scale;',
+    '   gl_FragColor = texture2D(uSampler, disCords) * vColor;',
+    // '   gl_FragColor *= texture2D(displacementMap, mapCords);',
+    '}'
+  ];
 };
  
 PIXI.DepthmapFilter.prototype = Object.create( PIXI.AbstractFilter.prototype );
@@ -65,10 +65,10 @@ PIXI.DepthmapFilter.prototype.constructor = PIXI.DepthmapFilter;
  
 PIXI.DepthmapFilter.prototype.onTextureLoaded = function()
 {
-    this.uniforms.mapDimensions.value.x = this.uniforms.displacementMap.value.width;
-    this.uniforms.mapDimensions.value.y = this.uniforms.displacementMap.value.height;
+  this.uniforms.mapDimensions.value.x = this.uniforms.displacementMap.value.width;
+  this.uniforms.mapDimensions.value.y = this.uniforms.displacementMap.value.height;
  
-    this.uniforms.displacementMap.value.baseTexture.off('loaded', this.boundLoadedFunction);
+  this.uniforms.displacementMap.value.baseTexture.off('loaded', this.boundLoadedFunction);
 };
  
 /**
@@ -78,12 +78,12 @@ PIXI.DepthmapFilter.prototype.onTextureLoaded = function()
  * @type Texture
  */
 Object.defineProperty(PIXI.DepthmapFilter.prototype, 'map', {
-    get: function() {
-        return this.uniforms.displacementMap.value;
-    },
-    set: function(value) {
-        this.uniforms.displacementMap.value = value;
-    }
+  get: function() {
+    return this.uniforms.displacementMap.value;
+  },
+  set: function(value) {
+    this.uniforms.displacementMap.value = value;
+  }
 });
  
 /**
@@ -93,12 +93,12 @@ Object.defineProperty(PIXI.DepthmapFilter.prototype, 'map', {
  * @type Point
  */
 Object.defineProperty(PIXI.DepthmapFilter.prototype, 'scale', {
-    get: function() {
-        return this.uniforms.scale.value;
-    },
-    set: function(value) {
-        this.uniforms.scale.value = value;
-    }
+  get: function() {
+    return this.uniforms.scale.value;
+  },
+  set: function(value) {
+    this.uniforms.scale.value = value;
+  }
 });
  
 /**
@@ -108,10 +108,10 @@ Object.defineProperty(PIXI.DepthmapFilter.prototype, 'scale', {
  * @type Point
  */
 Object.defineProperty(PIXI.DepthmapFilter.prototype, 'offset', {
-    get: function() {
-        return this.uniforms.offset.value;
-    },
-    set: function(value) {
-        this.uniforms.offset.value = value;
-    }
+  get: function() {
+    return this.uniforms.offset.value;
+  },
+  set: function(value) {
+    this.uniforms.offset.value = value;
+  }
 });

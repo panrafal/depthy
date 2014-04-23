@@ -21,6 +21,8 @@
   "globals": {
     "angular": false,
     "$": false,
+    "Modernizr": false,
+    "PIXI": false,
     "_": true
   }
 }
