@@ -13,7 +13,7 @@ angular.module('depthyApp')
     $scope.depthFilter = null;
     $scope.offset = {x: 0, y: 0};
     $scope.easedOffset = {x: 0, y: 0};
-    $scope.easeFactor = Modernizr.mobile ? .75 : .9;
+    $scope.easeFactor = Modernizr.mobile ? .2 : .9;
 
     function setupStage(stage, renderer) {
         var imageTexture, depthTexture, sprite, depthFilter
