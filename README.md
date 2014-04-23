@@ -12,7 +12,7 @@ How to build
 
 - Install node + npm
 - Run anywhere: `npm install -g grunt-cli bower`
-- Run in project directory: `npm install`
+- Run in project directory: `npm install` and `bower install`
 - For local development server run: `grunt serve`
 - For deployment: `grunt build`
 
