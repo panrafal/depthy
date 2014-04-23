@@ -37,9 +37,6 @@
     <a class="btn btn-md btn-danger" ng-click="depthy.viewer.error = ''">Got it!</a>
   </div>
   <div id="viewer" depthy-viewer="depthy.viewer" ng-hide="!viewer.ready || viewer.error" ng-if="Modernizr.webgl">
-    imageSize: {{viewer.imageSize}}
-    depthSize: {{viewer.depthSize}}
-    stageSize: {{viewer.stageSize}}
     <div class="text-center">
       <h2>Parallax view</h2>
       <p class="text-muted">Move your {{Modernizr.devicemotion && Modernizr.mobile ? 'device' : 'cursor'}} around to see the effect</p>
@@ -48,7 +45,7 @@
     </canvas>
     <div class="text-center">
       <div class="btn-group options">
-        <button class="btn btn-primary" ng-click="viewCompound = !viewCompound" ng-class="{active: viewCompound}">Blurred</button>
+        <button class="btn btn-primary" ng-click="viewer.useCompoundImage = !viewer.useCompoundImage" ng-class="{active: viewer.useCompoundImage}">Blurred</button>
         <button class="btn btn-primary" ng-click="animate = !animate" ng-class="{active: animate}">Hypnotize</button>
         <button class="btn btn-primary" ng-click="scaleUp = !scaleUp" ng-class="{active: scaleUp}">Dramatize</button>
       </div>

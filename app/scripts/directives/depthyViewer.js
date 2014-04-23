@@ -26,7 +26,6 @@ angular.module('depthyApp')
       $scope.stage = null;
       $scope.sizeDirty = 0;
 
-      $scope.useCompoundImage = true;
       $scope.animate = false;
       $scope.scaleUp = false;
       $scope.update = 1;
@@ -59,9 +58,11 @@ angular.module('depthyApp')
               texture = PIXI.Texture.fromImage(url);
               if (texture.baseTexture.hasLoaded) {
                 viewer[sizeKey] = texture.frame;
+                viewer.dirty++;
               } else {
                 texture.addEventListener('update', function() {
                   viewer[sizeKey] = texture.frame;
+                  viewer.dirty++;
                   $scope.$apply();
                 });
               }
@@ -72,7 +73,6 @@ angular.module('depthyApp')
 
         // watch image changes
         $scope.$watch('[viewer.dirty, viewer.useCompoundImage]', function() {
-          resetStage();
 
           imageTexture = updateTexture(imageTexture, viewer[viewer.useCompoundImage && viewer.compoundSource ? 'compoundSource' : 'imageSource'], 'imageSize');
           depthTexture = updateTexture(depthTexture, viewer.depthSource, 'depthSize');
@@ -111,29 +111,20 @@ angular.module('depthyApp')
           viewer.stageSize = stageSize;
         }, true);
 
-        $scope.$watch('[viewerVisible, compoundSource, imageSource, depthSource, useCompoundImage, stageSize, compoundSize, imageSize, depthSize, scaleUp]', function() {
-          return;
+        $scope.$watch('[viewer.stageSize, viewer.dirty]', function() {
+          resetStage();
 
-          $scope.imageReady = $scope.viewerVisible && $scope.imageSource && $scope.depthSource
-                   && $scope.imageSize && $scope.depthSize && $scope.compoundSize
-          
-          if (sprite) {
-            stage.removeChild(sprite);
-            sprite = null;
-            $scope.update = 1;
-          }
+          viewer.loaded = !viewer.error && imageTexture && depthTexture && viewer.imageSize && viewer.depthSize && viewer.stageSize;
 
-          if (!$scope.imageReady) return;
+          if (!viewer.loaded) return;
 
-          var imageSize = $scope.compoundSize,
-            stageSize = $scope.stageSize
+          var imageSize = viewer.imageSize,
+            stageSize = viewer.stageSize;
 
           var stageScale = stageSize.width / imageSize.width;
 
           renderer.resize(stageSize.width, stageSize.height);
 
-          imageTexture = PIXI.Texture.fromImage($scope.useCompoundImage ? $scope.compoundSource : $scope.imageSource);
-          depthTexture = PIXI.Texture.fromImage($scope.depthSource);
           sprite = new PIXI.Sprite(imageTexture);
 
           var depthScale = (Modernizr.mobile ? 0.015 : 0.015) * ($scope.scaleUp ? 2 : 1);
@@ -141,18 +132,14 @@ angular.module('depthyApp')
           depthFilter.scale = {
             x: (stageSize.width > stageSize.height ? 1 : stageSize.height / stageSize.width) * depthScale, 
             y: (stageSize.width < stageSize.height ? 1 : stageSize.width / stageSize.height) * depthScale
-          }
+          };
 
           sprite.filters = [depthFilter];
           sprite.scale = new PIXI.Point(stageScale, stageScale);
-          stage.addChild(sprite)
+          stage.addChild(sprite);
           //render on load events
           $scope.update = 1;
-          // allow load events to fire
-          $timeout(function() {
-            $scope.update = 1;
-          }, 100)
-        }, true)
+        }, true);
 
         $element.on('mousemove touchmove', function(e) {
           
@@ -161,7 +148,7 @@ angular.module('depthyApp')
           var elOffset = $element.offset(),
             elWidth = $element.width(),
             elHeight = $element.height(),
-            stageSize = $scope.stageSize.height * 0.8,
+            stageSize = viewer.stageSize.height * 0.8,
             pointerEvent = e.originalEvent.touches ? e.originalEvent.touches[0] : e,
             x = (pointerEvent.pageX - elOffset.left) / elWidth,
             y = (pointerEvent.pageY - elOffset.top) / elHeight
