@@ -1,7 +1,6 @@
 'use strict';
 
-angular
-  .module('depthyApp', [
+angular.module('depthyApp', [
     // 'ngSanitize',
     'ngAnimate',
     'ga',
@@ -9,4 +8,4 @@ angular
     'mgcrea.ngStrap.modal',
     'mgcrea.ngStrap.popover',
     'mgcrea.ngStrap.button'
-  ]);
+]);

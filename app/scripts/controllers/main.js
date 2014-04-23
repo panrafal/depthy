@@ -1,23 +1,25 @@
 'use strict';
 
 angular.module('depthyApp')
-.controller('MainCtrl', function ($scope, $timeout, ga) {
+.controller('MainCtrl', function ($scope, $timeout, ga, depthy) {
 
-    var self = this
+    var self = this;
 
-    $scope.compoundSource = 'samples/flowers-compound.jpg'
-    $scope.depthSource = 'samples/flowers-depth.jpg'
-    $scope.imageSource = 'samples/flowers-image.jpg'
-    $scope.Modernizr = window.Modernizr
-    $scope.processing = false
+    $scope.depthy = depthy;
+
+    $scope.compoundSource = 'samples/flowers-compound.jpg';
+    $scope.depthSource = 'samples/flowers-depth.jpg';
+    $scope.imageSource = 'samples/flowers-image.jpg';
+    $scope.Modernizr = window.Modernizr;
+    $scope.processing = false;
 
     $scope.loadSample = function(name) {
-        $scope.compoundSource = 'samples/'+name+'-compound.jpg'
-        $scope.depthSource = 'samples/'+name+'-depth.jpg'
-        $scope.imageSource = 'samples/'+name+'-image.jpg'
+        $scope.compoundSource = 'samples/'+name+'-compound.jpg';
+        $scope.depthSource = 'samples/'+name+'-depth.jpg';
+        $scope.imageSource = 'samples/'+name+'-image.jpg';
         $scope.metadata = {};
         $scope.compoundError = null;
-        ga('send', 'event', 'sample', name)
+        ga('send', 'event', 'sample', name);
     }
 
     this.handleCompoundFile = function(file) {

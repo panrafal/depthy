@@ -35,7 +35,7 @@
     <p>Make sure you only select photos made in the Lens Blur mode.</p>
     <a class="btn btn-md btn-danger" ng-click="$parent.compoundError = ''">Got it!</a>
 </div>
-<div id="viewer" ng-controller="ViewerCtrl" ng-hide="!compoundSize || !depthSource" ng-if="Modernizr.webgl">
+<div id="viewer" depthy-viewer="depthy.viewer" ng-hide="!compoundSize || !depthSource" ng-if="Modernizr.webgl">
 
     <div class="text-center" ng-if="Modernizr.webgl && compoundSize">
         <h2>Parallax view</h2>

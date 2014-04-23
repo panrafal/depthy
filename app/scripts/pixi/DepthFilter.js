@@ -44,32 +44,18 @@ PIXI.DepthmapFilter = function(texture)
         'uniform vec2 scale;',
         'uniform vec2 offset;',
         'uniform vec4 dimensions;',
-        'uniform vec2 mapDimensions;',// = vec2(256.0, 256.0);',
-        // 'const vec2 textureDimensions = vec2(750.0, 750.0);',
+        'uniform vec2 mapDimensions;',
  
         'void main(void) {',
         '   vec2 mapCords = vTextureCoord;',
-        // '   mapCords += dimensions.zw;',
-        // '   mapCords += (dimensions.zw + offset)/ dimensions.xy ;',
         '   mapCords.y *= -1.0;',
         '   mapCords.y += 1.0;',
-        // '   mapCords *= 2.0;',
         '   float map = texture2D(displacementMap, mapCords).r;',
         '   map = map * -1.0 + 0.5;',
-        // '   map *= 0.3;',
-        // '   matSample -= 0.5;',
-        // '   matSample *= scale;',
-        // '   matSample /= mapDimensions;',
         '   vec2 disCords = vTextureCoord;',
         '   disCords += offset * vec2(1.0, -1.0) * map * scale;',
-        // '   gl_FragColor = texture2D(uSampler, vec2(vTextureCoord.x + matSample.x, vTextureCoord.y + matSample.y));',
         '   gl_FragColor = texture2D(uSampler, disCords) * vColor;',
         // '   gl_FragColor *= texture2D(displacementMap, mapCords);',
-        // '   gl_FragColor.rgb = mix( gl_FragColor.rgb, gl_FragColor.rgb, 1.0);',
-        // '   vec2 cord = vTextureCoord;',
- 
-        //'   gl_FragColor =  texture2D(displacementMap, cord);',
-     //   '   gl_FragColor = gl_FragColor;',
         '}'
     ];
 };
