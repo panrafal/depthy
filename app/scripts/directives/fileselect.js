@@ -13,12 +13,12 @@ angular.module('depthyApp')
       fileInput.style.position = 'absolute';
       fileInput.style.left = '-9000px';
 
-      element.append(fileInput)
+      element.append(fileInput);
 
       var onDrag = function(e) {
         e.stopPropagation();
         e.preventDefault();
-      }
+      };
 
       var onDrop = function(e) {
         e.stopPropagation();
@@ -26,35 +26,32 @@ angular.module('depthyApp')
 
         console.log(e);
 
-        var dt = e.originalEvent.dataTransfer
-        console.log(dt)
+        var dt = e.originalEvent.dataTransfer;
         var files = dt.files;
-        console.log(files)
 
         handleFiles(files);
         scope.$apply();
-      }
+      };
 
       function handleFiles(files) {
         scope.$broadcast('fileselect', files);
-        console.log(attrs.fileselect)
         if (attrs.fileselect) {
-          $parse(attrs.fileselect).assign(scope, files)
+          $parse(attrs.fileselect).assign(scope, files);
         }
       }
 
       scope.selectFile = function(e) {
-        fileInput.click()
-        if (e) e.preventDefault()
-      }
+        fileInput.click();
+        if (e) e.preventDefault();
+      };
 
-      element.on("dragenter", onDrag);
-      element.on("dragover", onDrag);
-      element.on("drop", onDrop);       
+      element.on('dragenter', onDrag);
+      element.on('dragover', onDrag);
+      element.on('drop', onDrop);
       fileInput.addEventListener('change', function() {
-        handleFiles(this.files)
+        handleFiles(this.files);
         scope.$apply();
-      }, false) 
+      }, false);
 
     }
   };

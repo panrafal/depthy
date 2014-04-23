@@ -9,20 +9,18 @@
     <meta property="og:image" content="http://depthy.stamina.pl/preview.gif" />    
     <link rel="shortcut icon" href="favicon.png"/>
     <link rel="apple-touch-icon" href="favicon.png"/>
-    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-    <!-- build:css styles/vendor.css -->
-    <!-- bower:css -->
-    <!-- endbower -->
-    <!-- endbuild -->
+    
     <!-- build:css({.tmp,app}) styles/main.css -->
     <link rel="stylesheet" href="styles/icomoon.css">
     <link rel="stylesheet" href="styles/main.css">
     <!-- endbuild -->
 
     <script>
-      document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/, 'js')
+      // jshint indent: false
+      document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/, 'js');
     </script>
     <script>
+      // jshint ignore: start
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
       m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -30,7 +28,7 @@
 
       ga('create', 'UA-38075080-7');
       ga('send', 'pageview');
-
+      // jshint ignore: end
     </script>    
   </head>
   <body fileselect="compoundFiles" >
@@ -44,12 +42,12 @@
         </div>
     </div>
 
-    <div id="main" ng-include="'views/main.html'" ng-controller="MainCtrl"></div>
+    <span ng-include="'views/main.html'"></span>
 
     <!-- build:js scripts/vendor.js -->
     <!-- bower:js -->
     <script src="bower_components/jquery/dist/jquery.min.js"></script>
-    <script src="bower_components/angular/angular.min.js"></script>
+    <script src="bower_components/angular/angular.js"></script>
     <script src="bower_components/angular-animate/angular-animate.min.js"></script>
     <script src="bower_components/lodash/dist/lodash.compat.js"></script>
     <script src="bower_components/pixi.js/bin/pixi.js"></script>

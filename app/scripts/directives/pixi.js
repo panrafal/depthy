@@ -1,28 +1,28 @@
 'use strict';
 
 angular.module('depthyApp')
-.directive('pixi', function ($parse, $window) {
+.directive('pixi', function ($parse) {
   return {
-    template: '<canvas></canvas>',
+    // template: '<canvas></canvas>',
     restrict: 'A',
-    scope: true,
+    scope: false,
     link: function postLink(scope, element, attrs) {
 
-      var scopeParent = scope.$parent,
+      var
         stageAttr = $parse(attrs.pixi),
-        stage = stageAttr(scopeParent),
-        animateFunc = scopeParent.$eval(attrs.pixiAnimate)
+        stage = stageAttr(scope),
+        animateFunc = scope.$eval(attrs.pixiAnimate);
 
       if (!stage) {
         // create a new instance of a pixi stage
-        stage = new PIXI.Stage(scopeParent.$eval(attrs.pixiBackground || '0'));
-        stageAttr.assign(scopeParent, stage)
+        stage = new PIXI.Stage(scope.$eval(attrs.pixiBackground || '0'));
+        stageAttr.assign(scope, stage);
       }
      
-      var antialias = scopeParent.$eval(attrs.pixiAntialias || 'false'),
-        transparent = scopeParent.$eval(attrs.pixiTransparent || 'false'),
-        rendererType = scopeParent.$eval(attrs.pixiRenderer || 'auto'),
-        renderer
+      var antialias = scope.$eval(attrs.pixiAntialias || 'false'),
+        transparent = scope.$eval(attrs.pixiTransparent || 'false'),
+        rendererType = scope.$eval(attrs.pixiRenderer || 'auto'),
+        renderer;
       // create a renderer instance.
       switch(rendererType) {
         case 'canvas':
@@ -42,7 +42,7 @@ angular.module('depthyApp')
 
       function animate() {
      
-        var render
+        var render;
         if (animateFunc) render = animateFunc(stage, renderer);
 
         requestAnimFrame( animate );
