@@ -7,7 +7,14 @@ Extracts depth map and original from photos made with Google Camera's Lens Blur.
 
 This is the source of the http://depthy.stamina.pl webapp. Contributions more than welcome!
 
+How to build
+============
 
+- Install node + npm
+- Run anywhere: `npm install -g grunt-cli bower`
+- Run in project directory: `npm install`
+- For local development server run: `grunt serve`
+- For deployment: `grunt build`
 
 License
 =======
