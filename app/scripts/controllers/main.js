@@ -11,6 +11,17 @@ angular.module('depthyApp')
 
   depthy.loadSample('flowers', false);
 
+  $scope.$safeApply = function(fn) {
+    var phase = this.$root.$$phase;
+    if(phase === '$apply' || phase === '$digest') {
+      if(fn && (typeof(fn) === 'function')) {
+        fn();
+      }
+    } else {
+      this.$apply(fn);
+    }
+  };
+
   $scope.hasImage = function() {
     return !!depthy.viewer.imageSource;
   };
@@ -24,6 +35,33 @@ angular.module('depthyApp')
     ga('send', 'event', 'sample', name);
   };
 
+  $scope.getNextDepthScaleName = function() {
+    var scale = depthy.viewer.depthScale;
+    return scale > 1.05 ? 'Calmalize' : scale < 0.95 ? 'Normalize' : 'Dramatize';
+  };
+
+  $scope.cycleDepthScale = function() {
+    var scale = depthy.viewer.depthScale;
+    scale = scale > 1.05 ? 0.5 : scale < 0.95 ? 1 : 2;
+
+    $(depthy.viewer).animate({depthScale:scale}, {duration: 250, step: function() {$scope.$safeApply();}});
+  };
+
+  // $scope.$on('popover.show', function() {
+  //   console.log('gif popover');
+  // });
+
+  // $scope.gifExportSetup = function(event) {
+  //   var popover = $popover($(event.currentTarget), {
+  //     placement: 'top',
+  //     trigger: 'manual',
+  //     title: 'How do you want your GIF?',
+  //     contentTemplate: "views/gif-popover.html",
+  //   })
+  //   popover.$promise.then(function() {popover.show()})
+  // }
+
+
   // $scope.$on('fileselect', function(e, files) {
   $scope.$watch('compoundFiles', function(files) {
     if (files && files.length) {
@@ -31,7 +69,7 @@ angular.module('depthyApp')
     }
   });
 
-  $scope.$watch('depthy.viewer.dirty', function() {
+  $scope.$watch('depthy.viewer.sourcesDirty', function() {
     // it's not the angular way, but should save us some memory...
     var image = $element.find('[image-source="image"]')[0],
       depth = $element.find('[image-source="depth"]')[0];

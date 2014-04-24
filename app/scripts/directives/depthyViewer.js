@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('depthyApp')
-.directive('depthyViewer', function ($window, $timeout, $popover) {
+.directive('depthyViewer', function ($window) {
   return {
     // template: '<canvas></canvas>',
     restrict: 'A',
@@ -14,6 +14,7 @@ angular.module('depthyApp')
     controller: function($scope, $element, $attrs) {
       var viewer = $scope.viewer = $scope.$parent.$eval($attrs.depthyViewer),
           imageTexture, depthTexture, sprite, depthFilter,
+          stage, renderer,
           orientation = {},
           easedOffset = {x: 0, y: 0};
 
@@ -22,8 +23,9 @@ angular.module('depthyApp')
         imageSource: null,
         depthSource: null,
         // set it when all sources are ready (they may be loaded earlier)
-        ready: true,
-        dirty: null,
+        sourcesReady: true,
+        // increment when sources change
+        sourcesDirty: null,
         useCompoundImage: true,
         animate: false,
         animDuration: 1,
@@ -33,58 +35,72 @@ angular.module('depthyApp')
         offset: {x: 0, y: 0},
         easeFactor: Modernizr.mobile ? 0.2 : 0.9,
         update: 1,
+        // TRUE when everything is loaded and initialized
+        ready: false,
       });
 
       $scope.stage = null;
       $scope.sizeDirty = 0;
 
+      function updateDepthScale() {
+        if (!viewer.ready) return;
+        var depthScale = (Modernizr.mobile ? 0.015 : 0.015) * (viewer.depthScale || 1),
+            stageSize = viewer.stageSize;
+        depthFilter.scale = {
+          x: (stageSize.width > stageSize.height ? 1 : stageSize.height / stageSize.width) * depthScale,
+          y: (stageSize.width < stageSize.height ? 1 : stageSize.width / stageSize.height) * depthScale
+        };
+      }
 
-      function setupStage(stage, renderer) {
-
-
-        function resetStage() {
-          if (sprite) {
-            stage.removeChild(sprite);
-            sprite = null;
-            viewer.update = 1;
-          }
+      function resetStage() {
+        if (sprite) {
+          stage.removeChild(sprite);
+          sprite = null;
+          viewer.update = 1;
         }
+      }
 
-        function updateTexture(texture, url, sizeKey) {
-          if (!texture || texture.baseTexture.imageUrl !== url) {
-            // free up mem...
-            if (texture) {
-              PIXI.Texture.removeTextureFromCache(texture.baseTexture.imageUrl);
-              texture = null;
-            }
-            viewer[sizeKey] = null;
-            if (url) {
-              texture = PIXI.Texture.fromImage(url);
-              if (texture.baseTexture.hasLoaded) {
+      function updateTexture(texture, url, sizeKey) {
+        if (!texture || texture.baseTexture.imageUrl !== url) {
+          // free up mem...
+          if (texture) {
+            PIXI.Texture.removeTextureFromCache(texture.baseTexture.imageUrl);
+            texture = null;
+          }
+          viewer[sizeKey] = null;
+          if (url) {
+            texture = PIXI.Texture.fromImage(url);
+            if (texture.baseTexture.hasLoaded) {
+              viewer[sizeKey] = texture.frame;
+              $scope.sizeDirty++;
+            } else {
+              texture.addEventListener('update', function() {
                 viewer[sizeKey] = texture.frame;
-                viewer.dirty++;
-              } else {
-                texture.addEventListener('update', function() {
-                  viewer[sizeKey] = texture.frame;
-                  viewer.dirty++;
-                  $scope.$apply();
-                });
-              }
+                $scope.sizeDirty++;
+                $scope.$apply();
+              });
             }
           }
-          return texture;
         }
+        return texture;
+      }
+
+      function setupStage(_stage, _renderer) {
+        // remember them...
+        stage = _stage;
+        renderer = _renderer;
 
         // watch image changes
-        $scope.$watch('[viewer.dirty, viewer.useCompoundImage]', function() {
+        $scope.$watch('[viewer.sourcesDirty, viewer.useCompoundImage, viewer.sourcesReady]', function() {
+          if (!viewer.sourcesReady) return;
 
           imageTexture = updateTexture(imageTexture, viewer[viewer.useCompoundImage && viewer.compoundSource ? 'compoundSource' : 'imageSource'], 'imageSize');
           depthTexture = updateTexture(depthTexture, viewer.depthSource, 'depthSize');
 
         }, true);
 
-        $scope.$watch('[viewer.imageSize, viewer.depthSize, viewer.ready, sizeDirty]', function() {
-          if (!viewer.imageSize || !viewer.depthSize || !viewer.ready) return;
+        $scope.$watch('[viewer.imageSize, viewer.depthSize, viewer.sourcesReady, sizeDirty]', function() {
+          if (!viewer.imageSize || !viewer.depthSize || !viewer.sourcesReady) return;
 
           var imageSize = viewer.imageSize,
               imageRatio = imageSize.width / imageSize.height,
@@ -115,15 +131,15 @@ angular.module('depthyApp')
           viewer.stageSize = stageSize;
         }, true);
 
-        $scope.$watch('[viewer.stageSize, viewer.dirty, viewer.ready]', function() {
+        $scope.$watch('[viewer.stageSize, viewer.sourcesDirty, viewer.sourcesReady, viewer.error, sizeDirty]', function() {
           resetStage();
 
-          viewer.loaded = !viewer.error && imageTexture && depthTexture && viewer.imageSize && viewer.depthSize && viewer.stageSize && viewer.ready;
+          viewer.ready = !viewer.error && imageTexture && depthTexture && viewer.imageSize && viewer.depthSize && viewer.stageSize && viewer.sourcesReady;
 
-          if (!viewer.loaded) return;
+          if (!viewer.ready) return;
 
           var imageSize = viewer.imageSize,
-            stageSize = viewer.stageSize;
+              stageSize = viewer.stageSize;
 
           var stageScale = stageSize.width / imageSize.width;
 
@@ -131,12 +147,8 @@ angular.module('depthyApp')
 
           sprite = new PIXI.Sprite(imageTexture);
 
-          var depthScale = (Modernizr.mobile ? 0.015 : 0.015) * (viewer.depthScale || 1);
           depthFilter = new PIXI.DepthmapFilter(depthTexture);
-          depthFilter.scale = {
-            x: (stageSize.width > stageSize.height ? 1 : stageSize.height / stageSize.width) * depthScale,
-            y: (stageSize.width < stageSize.height ? 1 : stageSize.width / stageSize.height) * depthScale
-          };
+          updateDepthScale();
 
           sprite.filters = [depthFilter];
           sprite.scale = new PIXI.Point(stageScale, stageScale);
@@ -145,8 +157,10 @@ angular.module('depthyApp')
           viewer.update = 1;
         }, true);
 
+        $scope.$watch('viewer.depthScale', updateDepthScale);
+
         $element.on('mousemove touchmove', function(e) {
-          if (viewer.animate || angular.isNumber(viewer.animPosition)) return;
+          if (!viewer.ready || viewer.animate || angular.isNumber(viewer.animPosition)) return;
 
           var elOffset = $element.offset(),
               elWidth = $element.width(),
@@ -167,8 +181,8 @@ angular.module('depthyApp')
         });
 
         $window.addEventListener('deviceorientation', function(event) {
+          if (!viewer.ready || viewer.animate || angular.isNumber(viewer.animPosition)) return;
           if (event.beta === null || event.gamma === null) return;
-          if (viewer.animate || angular.isNumber(viewer.animPosition)) return;
 
           if (orientation) {
             var portrait = window.innerHeight > window.innerWidth,
@@ -232,7 +246,7 @@ angular.module('depthyApp')
 
         if (viewer.animate || angular.isNumber(viewer.animPosition)) {
           var now = angular.isNumber(viewer.animPosition) ?
-                      viewer.animPosition * 1000 
+                      viewer.animPosition * 1000
                       : (Modernizr.performance ? window.performance.now() : new Date().getTime());
           depthFilter.offset = {
             x : Math.sin(now * Math.PI / viewer.animDuration / 1000) * viewer.animScale.x,
@@ -250,19 +264,6 @@ angular.module('depthyApp')
       };
 
 
-      // $scope.$on('popover.show', function() {
-      //   console.log('gif popover');
-      // });
-
-      // $scope.gifExportSetup = function(event) {
-      //   var popover = $popover($(event.currentTarget), {
-      //     placement: 'top',
-      //     trigger: 'manual',
-      //     title: 'How do you want your GIF?',
-      //     contentTemplate: "views/gif-popover.html",
-      //   })
-      //   popover.$promise.then(function() {popover.show()})
-      // }
 
     },
     link: function postLink() {

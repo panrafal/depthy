@@ -14,7 +14,7 @@
         Try using Chrome on your desktop or Android device
       </p>
 
-      <div class="file-select" ng-class="{processing: !viewer.ready}">
+      <div class="file-select" ng-class="{processing: !viewer.sourcesReady}">
         <a class="btn btn-lg btn-success" ng-href="#" ng-click="selectFile($event)">Load the Lens Blur photo</a>
         <div class="progress progress-striped active">
           <div class="progress-bar"  role="progressbar" style="width: 100%">
@@ -36,9 +36,10 @@
     <p>Make sure you only select photos made in the Lens Blur mode.</p>
     <a class="btn btn-md btn-danger" ng-click="depthy.viewer.error = ''">Got it!</a>
   </div>
-  <div id="viewer" depthy-viewer="depthy.viewer" ng-hide="!viewer.ready || viewer.error" ng-if="Modernizr.webgl">
+  <div id="viewer" depthy-viewer="depthy.viewer" ng-hide="viewer.error" ng-if="Modernizr.webgl">
     <div class="text-center">
       <h2>Parallax view</h2>
+      
       <p class="text-muted">Move your {{Modernizr.devicemotion && Modernizr.mobile ? 'device' : 'cursor'}} around to see the effect</p>
     </div>
     <canvas pixi="stage" pixi-animate="pixiAnimate" pixi-transparent="true" pixi-renderer="'webgl'">
@@ -47,7 +48,7 @@
       <div class="btn-group options">
         <button class="btn btn-primary" ng-click="viewer.useCompoundImage = !viewer.useCompoundImage" ng-class="{active: viewer.useCompoundImage}">Blurred</button>
         <button class="btn btn-primary" ng-click="viewer.animate = !viewer.animate" ng-class="{active: viewer.animate}">Hypnotize</button>
-        <button class="btn btn-primary" ng-click="viewer.depthScale = !scaleUp" ng-class="{active: scaleUp}">Dramatize</button>
+        <button class="btn btn-primary" ng-click="cycleDepthScale()" ng-class="{active: viewer.depthScale < 0.9 || viewer.depthScale > 1.1}">{{getNextDepthScaleName()}}</button>
       </div>
       <div class="exports">
         <div class="panel" ng-include="'views/gif-popover.html'"></div>
@@ -57,7 +58,7 @@
 
   </div>
 
-  <div id="file" ng-show="viewer.ready && !viewer.error">
+  <div id="file" ng-show="viewer.sourcesReady && !viewer.error">
     <h2>Extracted images</h2>
     <!-- <img id="compound" ng-src="{{compoundSource}}"> -->
     <div class="images">

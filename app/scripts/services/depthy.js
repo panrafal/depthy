@@ -7,8 +7,8 @@ angular.module('depthyApp').provider('depthy', function depthy() {
       compoundSource: false,
       imageSource: false,
       depthSource: false,
-      ready: false,
-      dirty: 1,
+      sourcesReady: false,
+      sourcesDirty: 1,
     };
 
 
@@ -21,8 +21,8 @@ angular.module('depthyApp').provider('depthy', function depthy() {
         viewer.compoundSource = 'samples/'+name+'-compound.jpg';
         viewer.depthSource = 'samples/'+name+'-depth.jpg';
         viewer.imageSource = 'samples/'+name+'-image.jpg';
-        viewer.ready = true;
-        viewer.dirty++;
+        viewer.sourcesReady = true;
+        viewer.sourcesDirty++;
         viewer.metadata = {};
         viewer.error = false;
       },
@@ -32,8 +32,9 @@ angular.module('depthyApp').provider('depthy', function depthy() {
         var onError = function(e) {
           viewer.imageSource = false;
           viewer.depthSource = false;
-          viewer.ready = true;
-          viewer.dirty++;
+          viewer.compoundSource = false;
+          viewer.sourcesReady = true;
+          viewer.sourcesDirty++;
           viewer.metadata = {};
           viewer.error = e;
           ga('send', 'event', 'image', 'error', e);
@@ -44,12 +45,13 @@ angular.module('depthyApp').provider('depthy', function depthy() {
           return;
         }
 
-        viewer.ready = false;
+        viewer.sourcesReady = false;
         viewer.error = false;
-        viewer.dirty++;
+        viewer.sourcesDirty++;
 
         $timeout(function() {
-          var imageReader = new FileReader();
+          var imageReader = new FileReader(),
+              loaded = 0;
           imageReader.onload = function(e) {
             viewer.error = false;
 
@@ -67,8 +69,8 @@ angular.module('depthyApp').provider('depthy', function depthy() {
               delete image.depthUri;
 
               viewer.metadata = image;
-              viewer.ready = true;
-              viewer.dirty++;
+              viewer.sourcesReady = ++loaded > 1;
+              viewer.sourcesDirty++;
             } catch (e) {
               onError(e);
             }
@@ -81,6 +83,8 @@ angular.module('depthyApp').provider('depthy', function depthy() {
           var dataReader = new FileReader();
           dataReader.onload = function(e) {
             viewer.compoundSource = e.target.result;
+            viewer.sourcesReady =  ++loaded > 1;
+            viewer.sourcesDirty++;
 
             $rootScope.$apply();
           };
