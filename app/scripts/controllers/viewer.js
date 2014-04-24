@@ -11,6 +11,9 @@ angular.module('depthyApp')
     $scope.update = 1;
     $scope.viewerVisible = true;
     $scope.depthFilter = null;
+    $scope.offset = {x: 0, y: 0};
+    $scope.easedOffset = {x: 0, y: 0};
+    $scope.easeFactor = Modernizr.mobile ? .2 : .9;
 
     function setupStage(stage, renderer) {
         var imageTexture, depthTexture, sprite, depthFilter
@@ -102,7 +105,7 @@ angular.module('depthyApp')
             y = Math.max(-1, Math.min(1, (y * 2 - 1) * elHeight / stageSize));
 
             if (depthFilter) {
-                depthFilter.offset = {x : -x, y : -y};
+                $scope.offset = {x: -x, y: -y};
                 $scope.update = 1;
             }
           
@@ -120,11 +123,14 @@ angular.module('depthyApp')
                     y = portrait ? -beta : -gamma
 
                 if (depthFilter) {
-                    depthFilter.offset = {
-                        x : Math.max(-1, Math.min(1, depthFilter.offset.x + x)), 
-                        y : Math.max(-1, Math.min(1, depthFilter.offset.y + y))
-                    };
-                    // console.log("offset %d %d ABG %d %d %d", depthFilter.offset.x * 10, depthFilter.offset.y * 10, event.alpha, event.beta, event.gamma)
+
+                    if (x && y) {
+                        $scope.offset = {
+                            x : Math.max(-1, Math.min(1, $scope.offset.x + x)), 
+                            y : Math.max(-1, Math.min(1, $scope.offset.y + y))
+                        };           
+                    }         
+                    // console.log("offset %d %d ABG %d %d %d", $scope.offset.x, $scope.offset.y, event.alpha, event.beta, event.gamma)
                     $scope.update = 1;
                 }
 
@@ -156,6 +162,23 @@ angular.module('depthyApp')
             $scope.$apply();
             return;
         }
+
+        //should be based on window.performance.now() but maybe later...
+        if ($scope.offset.x != $scope.easedOffset.x || $scope.offset.y != $scope.easedOffset.y) {
+            
+            $scope.easedOffset.x = $scope.easedOffset.x * $scope.easeFactor + $scope.offset.x * (1-$scope.easeFactor);
+            $scope.easedOffset.y = $scope.easedOffset.y * $scope.easeFactor + $scope.offset.y * (1-$scope.easeFactor);
+            if (Math.abs($scope.easedOffset.x - $scope.offset.x) < 0.0001 && Math.abs($scope.easedOffset.y - $scope.offset.y) < 0.0001) {
+                $scope.easedOffset = $scope.offset;
+            }
+
+            $scope.depthFilter.offset = {
+                x : $scope.easedOffset.x, 
+                y : $scope.easedOffset.y
+            } 
+            $scope.update = 1;
+        }
+
         if ($scope.animate) {
             var now = Modernizr.performance ? window.performance.now() : new Date();
             $scope.depthFilter.offset = {
@@ -165,9 +188,11 @@ angular.module('depthyApp')
             $scope.update = 1;
         }
 
+
         if (!$scope.update) {
             return false;
         }
+
         $scope.update--;
     }
 
