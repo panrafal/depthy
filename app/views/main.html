@@ -46,8 +46,8 @@
     <div class="text-center">
       <div class="btn-group options">
         <button class="btn btn-primary" ng-click="viewer.useCompoundImage = !viewer.useCompoundImage" ng-class="{active: viewer.useCompoundImage}">Blurred</button>
-        <button class="btn btn-primary" ng-click="animate = !animate" ng-class="{active: animate}">Hypnotize</button>
-        <button class="btn btn-primary" ng-click="scaleUp = !scaleUp" ng-class="{active: scaleUp}">Dramatize</button>
+        <button class="btn btn-primary" ng-click="viewer.animate = !viewer.animate" ng-class="{active: viewer.animate}">Hypnotize</button>
+        <button class="btn btn-primary" ng-click="viewer.depthScale = !scaleUp" ng-class="{active: scaleUp}">Dramatize</button>
       </div>
       <div class="exports">
         <div class="panel" ng-include="'views/gif-popover.html'"></div>
