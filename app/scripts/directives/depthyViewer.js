@@ -13,7 +13,7 @@ angular.module('depthyApp')
     */
     controller: function($scope, $element, $attrs) {
       var viewer = $scope.viewer = $scope.$parent.$eval($attrs.depthyViewer),
-          imageTexture, imageTextureSprite, imageTextureDOC, imageRender, imageRenderSprite, 
+          imageTexture, imageTextureSprite, imageTextureDOC, imageRender, imageRenderSprite,
           depthTexture, depthTextureSprite, depthTextureDOC, depthRender,
           depthFilter, depthBlurFilter,
           stage, renderer,
@@ -143,7 +143,7 @@ angular.module('depthyApp')
           viewer.stageSize = stageSize;
         }, true);
 
-        $scope.$watch('[viewer.stageSize, viewer.sourcesDirty, viewer.sourcesReady, viewer.error, sizeDirty]', function() {
+        $scope.$watch('[viewer.stageSize, viewer.sourcesDirty, viewer.sourcesReady, viewer.depthBlurSize, viewer.error, sizeDirty]', function() {
           resetStage();
 
           viewer.ready = !viewer.error && imageTexture && depthTexture && viewer.imageSize && viewer.depthSize && viewer.stageSize && viewer.sourcesReady;
@@ -164,7 +164,7 @@ angular.module('depthyApp')
           depthTextureSprite = new PIXI.Sprite(depthTexture);
           depthBlurFilter = new PIXI.BlurFilter();
           depthBlurFilter.blur = depthBlurSize;
-          depthTextureSprite.filters = [depthBlurFilter]
+          depthTextureSprite.filters = [depthBlurFilter];
           depthTextureSprite.scale = new PIXI.Point(stageScale, stageScale);
 
           depthTextureDOC = new PIXI.DisplayObjectContainer();

@@ -39,13 +39,21 @@
   <div id="viewer" depthy-viewer="depthy.viewer" ng-hide="viewer.error" ng-if="Modernizr.webgl">
     <div class="text-center">
       <h2>Parallax view</h2>
-      {{viewer}}
       <p class="text-muted">Move your {{Modernizr.devicemotion && Modernizr.mobile ? 'device' : 'cursor'}} around to see the effect</p>
     </div>
     <canvas pixi="stage" pixi-animate="pixiAnimate" pixi-transparent="true" pixi-renderer="'webgl'">
     </canvas>
     <div class="text-center">
       <div class="options">
+
+        <div class="btn-group">
+          <button type="button" class="btn btn-default" ng-model="viewer.depthBlurSize" btn-radio="0">0</button>
+          <button type="button" class="btn btn-default" ng-model="viewer.depthBlurSize" btn-radio="4">4</button>
+          <button type="button" class="btn btn-default" ng-model="viewer.depthBlurSize" btn-radio="8">8</button>
+          <button type="button" class="btn btn-default" ng-model="viewer.depthBlurSize" btn-radio="16">16</button>
+          <button type="button" class="btn btn-default" ng-model="viewer.depthBlurSize" btn-radio="32">32</button>
+        </div><br/>
+
         <button class="btn btn-primary button-usecompound" ng-click="viewer.useCompoundImage = !viewer.useCompoundImage" ng-class="{active: viewer.useCompoundImage}">Blurred</button>
 
         <span class="popup-group button-animate">
