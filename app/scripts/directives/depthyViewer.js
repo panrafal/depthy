@@ -176,6 +176,7 @@ angular.module('depthyApp')
           depthRender.render(depthTextureDOC);
 
           depthFilter = new PIXI.DepthmapFilter(depthRender);
+          depthFilter.focus = 0.5;
           updateDepthScale();
 
 

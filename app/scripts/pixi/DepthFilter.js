@@ -20,7 +20,8 @@ PIXI.DepthmapFilter = function(texture)
     scale:           {type: '2f', value:{x:0.015, y:0.015}},
     offset:          {type: '2f', value:{x:0, y:0}},
     mapDimensions:   {type: '2f', value:{x:1, y:5112}},
-    dimensions:   {type: '4fv', value:[0,0,0,0]}
+    dimensions:      {type: '4fv', value:[0,0,0,0]},
+    focus:           {type: '1f', value:0.5}
   };
  
   if(texture.baseTexture.hasLoaded)
@@ -45,13 +46,14 @@ PIXI.DepthmapFilter = function(texture)
     'uniform vec2 offset;',
     'uniform vec4 dimensions;',
     'uniform vec2 mapDimensions;',
+    'uniform float focus;',
  
     'void main(void) {',
     '   vec2 mapCords = vTextureCoord;',
     '   mapCords.y *= -1.0;',
     '   mapCords.y += 1.0;',
     '   float map = texture2D(displacementMap, mapCords).r;',
-    '   map = map * -1.0 + 0.5;',
+    '   map = map * -1.0 + focus;',
     '   vec2 disCords = vTextureCoord;',
     '   disCords += offset * vec2(1.0, -1.0) * map * scale;',
     '   gl_FragColor = texture2D(uSampler, disCords) * vColor;',
@@ -101,6 +103,21 @@ Object.defineProperty(PIXI.DepthmapFilter.prototype, 'scale', {
   }
 });
  
+/**
+ * Focus point in paralax
+ *
+ * @property focus
+ * @type float
+ */
+Object.defineProperty(PIXI.DepthmapFilter.prototype, 'focus', {
+  get: function() {
+    return this.uniforms.focus.value;
+  },
+  set: function(value) {
+    this.uniforms.focus.value = Math.min(1,Math.max(0,value));
+  }
+});
+
 /**
  * The offset used to move the displacement map.
  *
