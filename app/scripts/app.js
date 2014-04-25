@@ -11,4 +11,8 @@ angular.module('depthyApp', [
   'ui.bootstrap.buttons',
   'ui.bootstrap.modal',
   'ui.bootstrap.transition',
-]);
+])
+//fix blob
+.config(function($compileProvider) {
+    $compileProvider.imgSrcSanitizationWhitelist(/^\s*(https?|ftp|file|blob):|data:image\//);
+});

@@ -258,7 +258,7 @@ angular.module('depthyApp')
 
 
       var stageReady = false;
-      $scope.pixiAnimate = function(stage, renderer) {
+      $scope.pixiRender = function(stage, renderer) {
         if (!stageReady) {
           setupStage(stage, renderer);
           stageReady = true;

@@ -13,14 +13,14 @@ angular.module('depthyApp').provider('depthy', function depthy() {
 
 
 
-  this.$get = function(ga, $timeout, $rootScope) {
+  this.$get = function(ga, $timeout, $rootScope, $document, $q) {
     var depthy = {
       viewer: viewer,
 
       animatePopuped: false,
       exportPopuped: false,
 
-      exportSize: '150',
+      exportSize: 150,
       exportType: 'gif',
 
       loadSample: function(name) {
@@ -137,15 +137,61 @@ angular.module('depthyApp').provider('depthy', function depthy() {
 
 
       exportAnimation: function() {
+        var deferred = $q.defer();
         Modernizr.load({
           test: window.GIF,
           nope: 'bower_components/gif.js/dist/gif.js',
           complete: function() {
-         
+            var size = depthy.getExportSize(),
+                fps = Math.round(viewer.animDuration >= 2 ? 20 : 30),
+                frames = Math.round(viewer.animDuration * fps),
+                delay = Math.round(1000 / fps),
+                canvas = $document.find('[pixi]'),
+                pixi = canvas.controller('pixi'),
+                gl = pixi.getContext(),
+                gif = new GIF({
+                  workers: 2,
+                  quality: 10,
+                  workerScript: 'bower_components/gif.js/dist/gif.worker.js',
+                  // width: size.width,
+                  // height: size.height,
+                });
+
+            for(var frame = 0; frame < frames; ++frame) {
+              viewer.animPosition = frame / frames;
+              viewer.update = 1;
+              pixi.render(true);              
+
+              gif.addFrame(canvas[0], {copy: true, delay: delay});
+            }
+            viewer.animPosition = null;
+
+            gif.on('progress', function(p) {
+              deferred.notify(p);
+            });
+            gif.on('abort', function() {
+              deferred.reject();
+            });
+            gif.on('finished', function(blob) {
+              deferred.resolve(blob);
+            });
+
+            gif.render();         
           }
         });
+        return deferred.promise;
       },
 
+      getExportSize: function() {
+        if (!viewer.stageSize) return null;
+        var ss = viewer.stageSize,
+            scale = ss[ss.width > ss.height ? 'width' : 'height'] / depthy.exportSize;
+
+        return {
+          width: Math.round(ss.width * scale),
+          height: Math.round(ss.height * scale),
+        };
+      },
 
     };
 

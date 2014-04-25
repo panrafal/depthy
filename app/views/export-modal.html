@@ -1,2 +1,9 @@
+{{exportProgress}}
+<div class="progress">
+  <div class="progress-bar active" role="progressbar" ng-class="{'progress-striped': exportProgress < 0}" ng-style="{width: exportProgress < 0 ? '0%' : exportProgress * 100 + '%'}">
+  </div>
+</div>
+
+<img ng-src="{{imageUrl}}" ng-if="imageUrl" />
 
 <button class="btn btn-success" ng-click="$close()">OK</button>

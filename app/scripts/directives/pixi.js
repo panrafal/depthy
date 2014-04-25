@@ -6,52 +6,64 @@ angular.module('depthyApp')
     // template: '<canvas></canvas>',
     restrict: 'A',
     scope: false,
-    link: function postLink(scope, element, attrs) {
+    controller: function postLink($scope, $element, $attrs) {
 
-      var
-        stageAttr = $parse(attrs.pixi),
-        stage = stageAttr(scope),
-        animateFunc = scope.$eval(attrs.pixiAnimate);
+      var self = this,
+          stageAttr = $parse($attrs.pixi),
+          stage = stageAttr($scope),
+          renderFunc = $scope.$eval($attrs.pixiRender);
 
       if (!stage) {
         // create a new instance of a pixi stage
-        stage = new PIXI.Stage(scope.$eval(attrs.pixiBackground || '0'));
-        stageAttr.assign(scope, stage);
+        stage = new PIXI.Stage($scope.$eval($attrs.pixiBackground || '0'));
+        stageAttr.assign($scope, stage);
       }
      
-      var antialias = scope.$eval(attrs.pixiAntialias || 'false'),
-        transparent = scope.$eval(attrs.pixiTransparent || 'false'),
-        rendererType = scope.$eval(attrs.pixiRenderer || 'auto'),
-        renderer;
+      var antialias = $scope.$eval($attrs.pixiAntialias || 'false'),
+          transparent = $scope.$eval($attrs.pixiTransparent || 'false'),
+          rendererType = $scope.$eval($attrs.pixiRenderer || 'auto'),
+          renderer;
       // create a renderer instance.
       switch(rendererType) {
         case 'canvas':
-          renderer = new PIXI.CanvasRenderer(element.width(), element.height(), element[0], transparent);
+          renderer = new PIXI.CanvasRenderer($element.width(), $element.height(), $element[0], transparent);
           break;
         case 'webgl':
           try {
-            renderer = new PIXI.WebGLRenderer(element.width(), element.height(), element[0], transparent, antialias);
+            renderer = new PIXI.WebGLRenderer($element.width(), $element.height(), $element[0], transparent, antialias);
           } catch (e) {
             Modernizr.webgl = false;
             return;
           }
           break;
         default:
-          renderer = PIXI.autoDetectRenderer(element.width(), element.height(), element[0], antialias, transparent);
+          renderer = PIXI.autoDetectRenderer($element.width(), $element.height(), $element[0], antialias, transparent);
       }
 
-      function animate() {
+      this.render = function render(force) {
      
-        var render;
-        if (animateFunc) render = animateFunc(stage, renderer);
+        var doRender = true;
+        if (renderFunc) doRender = renderFunc(stage, renderer);
 
-        requestAnimFrame( animate );
+        requestAnimFrame( self.render );
      
         // render the stage   
-        if (render !== false) renderer.render(stage);
-      }
+        if (force || doRender !== false) renderer.render(stage);
+      };
 
-      requestAnimFrame( animate );
+      this.getStage = function() {
+        return stage;
+      };
+
+      this.getRenderer = function() {
+        return renderer;
+      };
+
+      this.getContext = function() {
+        return renderer.gl ? renderer.gl : renderer.context;
+      };
+
+      requestAnimFrame( this.render );
 
       // $($window).resize(function() {
       //     renderer.resize(element.width(), element.height())                
