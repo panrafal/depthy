@@ -13,9 +13,15 @@ angular.module('depthyApp').provider('depthy', function depthy() {
 
 
 
-  this.$get = function(ga, $timeout, $rootScope, $rootElement) {
+  this.$get = function(ga, $timeout, $rootScope) {
     var depthy = {
       viewer: viewer,
+
+      animatePopuped: false,
+      exportPopuped: false,
+
+      exportSize: '150',
+      exportType: 'gif',
 
       loadSample: function(name) {
         viewer.compoundSource = 'samples/'+name+'-compound.jpg';
@@ -130,7 +136,15 @@ angular.module('depthyApp').provider('depthy', function depthy() {
       },
 
 
-
+      exportAnimation: function() {
+        Modernizr.load({
+          test: window.GIF,
+          nope: 'bower_components/gif.js/dist/gif.js',
+          complete: function() {
+         
+          }
+        });
+      },
 
 
     };

@@ -1,13 +1,11 @@
 'use strict';
 
 angular.module('depthyApp')
-.controller('MainCtrl', function ($scope, $timeout, ga, depthy, $element) {
+.controller('MainCtrl', function ($rootScope, $scope, $timeout, ga, depthy, $element, $modal) {
 
-  var self = this;
-
-  $scope.depthy = depthy;
-  $scope.viewer = depthy.viewer; // shortcut
-  $scope.Modernizr = window.Modernizr;
+  $rootScope.depthy = depthy;
+  $rootScope.viewer = depthy.viewer; // shortcut
+  $rootScope.Modernizr = window.Modernizr;
 
   depthy.loadSample('flowers', false);
 
@@ -37,29 +35,25 @@ angular.module('depthyApp')
 
   $scope.getNextDepthScaleName = function() {
     var scale = depthy.viewer.depthScale;
-    return scale > 1.05 ? 'Calmalize' : scale < 0.95 ? 'Normalize' : 'Dramatize';
+    return scale > 1.05 ? 'Calmize' : scale < 0.95 ? 'Normalize' : 'Dramatize';
   };
 
   $scope.cycleDepthScale = function() {
     var scale = depthy.viewer.depthScale;
     scale = scale > 1.05 ? 0.5 : scale < 0.95 ? 1 : 2;
-
-    $(depthy.viewer).animate({depthScale:scale}, {duration: 250, step: function() {$scope.$safeApply();}});
+    $scope.animateOption(depthy.viewer, {depthScale: scale});
   };
 
-  // $scope.$on('popover.show', function() {
-  //   console.log('gif popover');
-  // });
-
-  // $scope.gifExportSetup = function(event) {
-  //   var popover = $popover($(event.currentTarget), {
-  //     placement: 'top',
-  //     trigger: 'manual',
-  //     title: 'How do you want your GIF?',
-  //     contentTemplate: "views/gif-popover.html",
-  //   })
-  //   popover.$promise.then(function() {popover.show()})
-  // }
+  $scope.animateOption = function(obj, option, duration) {
+    $(obj).animate(option, {
+      duration: duration || 250,
+      step: function() {$scope.$safeApply();},
+      complete: function() {
+        _.extend(obj, option);
+        $scope.$safeApply();
+      }
+    });
+  };
 
 
   // $scope.$on('fileselect', function(e, files) {
@@ -79,27 +73,45 @@ angular.module('depthyApp')
 
   });
 
-  /*
-  function watchImageSize(type) {
-    $scope.$watch(type + 'Source', function(source) {
-      $scope[type + 'Size'] = null;
-      if (!source) return;
-      var img = new Image();
-      img.onload = function() {
-        $scope[type + 'Size'] = {
-          width: img.width,
-          height: img.height,
-        };
-        img.onload = null;
-        img.src = '';
-        $scope.$apply();
-      };
-      img.src = source;
-    });
-  }
+  // wait for DOM
 
-  watchImageSize('compound');
-  watchImageSize('image');
-  watchImageSize('depth');
-  */
+  // animatePopover = $popover($element.find('#button-animate'), {
+  //   placement: 'top',
+  //   trigger: 'manual',
+  //   // title: 'How do you want your GIF?',
+  //   contentTemplate: 'views/animate-popover.html',
+  // });
+
+  // exportPopover = $popover($element.find('#button-export'), {
+  //   placement: 'top',
+  //   trigger: 'manual',
+  //   // title: 'How do you want your GIF?',
+  //   contentTemplate: 'views/export-popover.html',
+  // });
+
+  $scope.toggleAnimatePopup = function() {
+    if (!depthy.animatePopuped) depthy.viewer.animate = true;
+    depthy.exportPopuped = false;
+    depthy.animatePopuped = !depthy.animatePopuped;
+  };
+
+  $scope.toggleExportPopup = function() {
+    if (!depthy.exportPopuped) depthy.viewer.animate = true;
+    depthy.animatePopuped = false;
+    depthy.exportPopuped = !depthy.exportPopuped;
+  };
+
+  $scope.startExport = function() {
+    var modal = $modal.open({
+      templateUrl: 'views/export-modal.html',
+      controller: 'ExportModalCtrl',
+      backdrop: 'static',
+      keyboard: false,
+      windowClass: 'modal-export',
+    });
+    depthy.exportPopuped = false;
+    depthy.viewer.animate = false;
+
+  };
+
 });

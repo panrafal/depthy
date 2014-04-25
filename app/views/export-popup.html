@@ -1,0 +1,22 @@
+<div class="option">
+  <label>Size</label>
+  <div class="btn-group">
+    <button type="button" class="btn btn-primary btn-sm" ng-model="depthy.exportSize" btn-radio="50">Small</button>
+    <button type="button" class="btn btn-primary btn-sm" ng-model="depthy.exportSize" btn-radio="150">Standard</button>
+    <button type="button" class="btn btn-primary btn-sm" ng-model="depthy.exportSize" btn-radio="500">Large</button>
+  </div>
+</div>
+<!--
+<div class="option">
+  <label>Type</label>
+  <div class="btn-group">
+    <button type="button" class="btn btn-primary btn-sm" ng-model="depthy.exportType" btn-radio="'gif'">GIF</button>
+    <button type="button" class="btn btn-primary btn-sm" ng-model="depthy.exportType" btn-radio="'webm'">WebM</button>
+  </div>
+</div>
+-->
+<div ng-include="'views/animation-options.html'"></div>
+<div ng-include="'views/movement-options.html'"></div>
+
+<button class="btn btn-success" ng-click="startExport()">Export!</button>
+<button class="btn btn-default" ng-click="depthy.exportPopuped = false">Cancel</button>

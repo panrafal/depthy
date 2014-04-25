@@ -1,0 +1,102 @@
+html {
+  width: 100%;
+  height: 100%;
+}
+
+/* Space out content a bit */
+body {
+  padding-top: 0px;
+  padding-bottom: 0px;
+
+  height: 100%;
+  background: darken($body-bg, 10%);
+  // color: #fff;
+}
+
+.notice {
+  font-family: $font-family-serif;
+  font-style: italic;    
+}
+
+.alert {
+  max-width: 700px;
+  margin: 0 auto 2em auto;
+  background: transparent;
+  font-weight: bold;
+  border: none;        
+  text-align: center;
+}
+
+.container {
+  // max-width: 600px;
+}
+
+h1 {
+  color: $color-accent;
+  text-transform: uppercase;
+  margin: 0 0 2rem 0;
+  font-size: 5em;
+  letter-spacing: -1px;
+  font-weight: bold;
+  $shadow-color: #000;
+  text-shadow: 6px 6px 0px fade-out($shadow-color, 0.9)
+         , 5px 5px 0px fade-out($shadow-color, 0.9)
+         , 4px 4px 0px fade-out($shadow-color, 0.9)
+         , 3px 3px 0px fade-out($shadow-color, 0.9)
+         , 2px 2px 0px fade-out($shadow-color, 0.9)
+         , 1px 1px 0px fade-out($shadow-color, 0.9)
+         ;
+}
+
+h2 {
+  margin: 0;
+  text-transform: uppercase;
+  color: darken($headings-color, 10%);
+  $shadow-color: #000;
+  text-shadow: 3px 3px 0px fade-out($shadow-color, 0.9)
+         , 2px 2px 0px fade-out($shadow-color, 0.9)
+         , 1px 1px 0px fade-out($shadow-color, 0.9)
+         ;
+}
+
+.btn {
+  &:focus {
+    outline: 0;
+  }
+  &.active {
+    box-shadow: inset 0px 0px 8px rgba(0,0,0,0.2);
+  }
+  i.icon {
+    vertical-align: middle;
+    &:before {
+      // pixel perfect
+      font-size: 16px;
+    }
+  }
+}
+
+a, a:hover {
+  color: inherit;
+}
+p a {
+  text-decoration: underline;
+}
+
+.icon-rotate-90 {
+  &:before {
+    transform: rotate(90deg);
+    display: inline-block;
+  }
+}
+
+.popup-group {
+  position: relative;
+  .popover {
+    display: block;
+    &.top {
+      top: 0px;
+      left: 50%;
+      transform: translate(-50%, -100%);
+    }
+  }
+}

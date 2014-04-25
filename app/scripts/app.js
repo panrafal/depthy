@@ -5,7 +5,10 @@ angular.module('depthyApp', [
   'ngAnimate',
   'ga',
   // 'visibleClass',
-  'mgcrea.ngStrap.modal',
-  'mgcrea.ngStrap.popover',
-  'mgcrea.ngStrap.button'
+  // 'mgcrea.ngStrap.modal',
+  // 'mgcrea.ngStrap.popover',
+  // 'mgcrea.ngStrap.button'
+  'ui.bootstrap.buttons',
+  'ui.bootstrap.modal',
+  'ui.bootstrap.transition',
 ]);

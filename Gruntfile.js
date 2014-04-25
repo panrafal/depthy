@@ -49,6 +49,10 @@ module.exports = function (grunt) {
       gruntfile: {
         files: ['Gruntfile.js']
       },
+      ngtemplates: {
+        files: '<%= yeoman.app %>/views/*.html',
+        tasks: ['ngtemplates']
+      },
       livereload: {
         options: {
           livereload: '<%= connect.options.livereload %>'
@@ -129,6 +133,39 @@ module.exports = function (grunt) {
     },
 
     // Add vendor prefixed styles
+    ngtemplates: {
+      options: {
+        base: '<%= yeoman.app %>',
+        module: 'depthyApp',
+        // prefix: '/',
+        htmlmin: {
+          collapseBooleanAttributes:      true,
+          collapseWhitespace:             true,
+          removeAttributeQuotes:          true,
+          removeComments:                 true, // Only if you don't use comment directives!
+          removeEmptyAttributes:          true,
+          removeRedundantAttributes:      true,
+          removeScriptTypeAttributes:     true,
+          removeStyleLinkTypeAttributes:  true
+        }
+      },
+      html: {
+        cwd: '<%= yeoman.app %>',
+        src: [
+          'views/**/*.html',
+          'bower_components/angular-ui-bootstrap/template/modal/*.html',
+        ],
+        dest: '.tmp/scripts/templates.js'
+      },
+      uibstemplates: {
+        cwd: '<%= yeoman.app %>/bower_components/angular-ui-bootstrap',
+        src: [
+          'template/modal/*.html',
+        ],
+        dest: '.tmp/scripts/bs-templates.js'
+      },
+
+    },
     autoprefixer: {
       options: {
         browsers: ['last 1 version']
@@ -309,7 +346,8 @@ module.exports = function (grunt) {
             'images/{,*/}*.{webp}',
             'samples/*',
             'fonts/*',
-            'CNAME'
+            'CNAME',
+            'bower_components/gif.js/dist/*.js'
           ]
         }, {
           expand: true,
@@ -329,13 +367,15 @@ module.exports = function (grunt) {
     // Run some tasks in parallel to speed up the build process
     concurrent: {
       server: [
-        'compass:server'
+        'compass:server',
+        'ngtemplates'
       ],
       test: [
         'compass'
       ],
       dist: [
         'compass:dist',
+        'ngtemplates',
         'imagemin',
         'svgmin'
       ]

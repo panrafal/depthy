@@ -13,7 +13,9 @@
     "angular-ga": "~0.1.0",
     "angular-strap": "~2.0.1",
     "angular-motion": "~0.3.2",
-    "angular-animate": "~1.2.16"
+    "angular-animate": "~1.2.16",
+    "angular-ui-bootstrap": "~0.10.0",
+    "gif.js": "*"
   },
   "devDependencies": {
     "angular-mocks": "1.2.15",

@@ -39,20 +39,35 @@
   <div id="viewer" depthy-viewer="depthy.viewer" ng-hide="viewer.error" ng-if="Modernizr.webgl">
     <div class="text-center">
       <h2>Parallax view</h2>
-      
+      {{viewer}}
       <p class="text-muted">Move your {{Modernizr.devicemotion && Modernizr.mobile ? 'device' : 'cursor'}} around to see the effect</p>
     </div>
     <canvas pixi="stage" pixi-animate="pixiAnimate" pixi-transparent="true" pixi-renderer="'webgl'">
     </canvas>
     <div class="text-center">
-      <div class="btn-group options">
-        <button class="btn btn-primary" ng-click="viewer.useCompoundImage = !viewer.useCompoundImage" ng-class="{active: viewer.useCompoundImage}">Blurred</button>
-        <button class="btn btn-primary" ng-click="viewer.animate = !viewer.animate" ng-class="{active: viewer.animate}">Hypnotize</button>
-        <button class="btn btn-primary" ng-click="cycleDepthScale()" ng-class="{active: viewer.depthScale < 0.9 || viewer.depthScale > 1.1}">{{getNextDepthScaleName()}}</button>
+      <div class="options">
+        <button class="btn btn-primary button-usecompound" ng-click="viewer.useCompoundImage = !viewer.useCompoundImage" ng-class="{active: viewer.useCompoundImage}">Blurred</button>
+
+        <span class="popup-group button-animate">
+          <div class="popover top" ng-if="depthy.animatePopuped">
+            <div class="arrow"></div>
+            <div ng-include="'views/animation-options.html'"></div>
+          </div>
+          <div class="btn-group">
+            <button class="btn btn-primary" ng-click="viewer.animate = !viewer.animate" ng-class="{active: viewer.animate}">Hypnotize</button>
+            <button type="button" class="btn btn-primary" ng-click="toggleAnimatePopup()">
+              <span class="caret"></span>
+            </button>
+          </div>
+        </span>
+
+        <button class="btn btn-primary button-scale" ng-click="cycleDepthScale()" ng-class="{active: viewer.depthScale < 0.9 || viewer.depthScale > 1.1}">{{getNextDepthScaleName()}}</button>
       </div>
-      <div class="exports">
-        <div class="panel" ng-include="'views/gif-popover.html'"></div>
-        <button class="btn btn-success" ng-click="gifExportToggle()"><i class="icon icon-movie"></i> Generate GIF</button>
+      <div class="button-export popup-group">
+        <div class="popover top" ng-if="depthy.exportPopuped">
+          <div ng-include="'views/export-popup.html'"></div>
+        </div>
+        <button id="button-export" class="btn btn-success" ng-click="toggleExportPopup()"><i class="icon icon-movie"></i>Export GIF</button>
       </div>  
     </div>
 
