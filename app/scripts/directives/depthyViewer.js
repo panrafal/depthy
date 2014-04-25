@@ -13,7 +13,9 @@ angular.module('depthyApp')
     */
     controller: function($scope, $element, $attrs) {
       var viewer = $scope.viewer = $scope.$parent.$eval($attrs.depthyViewer),
-          imageTexture, depthTexture, sprite, depthFilter,
+          imageTexture, imageTextureSprite, imageTextureDOC, imageRender, imageRenderSprite, 
+          depthTexture, depthTextureSprite, depthTextureDOC, depthRender,
+          depthFilter, depthBlurFilter,
           stage, renderer,
           orientation = {},
           easedOffset = {x: 0, y: 0};
@@ -32,6 +34,7 @@ angular.module('depthyApp')
         animPosition: null,
         animScale: {x: 1, y: 0.5},
         depthScale: 1,
+        depthBlurSize: 16,
         offset: {x: 0, y: 0},
         easeFactor: Modernizr.mobile ? 0.2 : 0.9,
         update: 1,
@@ -53,11 +56,20 @@ angular.module('depthyApp')
       }
 
       function resetStage() {
+        /*
         if (sprite) {
           stage.removeChild(sprite);
           sprite = null;
           viewer.update = 1;
         }
+        */
+
+        if (imageRenderSprite) {
+          stage.removeChild(imageRenderSprite);
+          imageRenderSprite = null;
+          viewer.update = 1;
+        }
+
       }
 
       function updateTexture(texture, url, sizeKey) {
@@ -139,20 +151,49 @@ angular.module('depthyApp')
           if (!viewer.ready) return;
 
           var imageSize = viewer.imageSize,
-              stageSize = viewer.stageSize;
+              stageSize = viewer.stageSize,
+              depthBlurSize = viewer.depthBlurSize;
 
           var stageScale = stageSize.width / imageSize.width;
 
           renderer.resize(stageSize.width, stageSize.height);
 
-          sprite = new PIXI.Sprite(imageTexture);
+          // console.log('stageSize:',stageSize);
 
-          depthFilter = new PIXI.DepthmapFilter(depthTexture);
+          // prepare depth render / filter
+          depthTextureSprite = new PIXI.Sprite(depthTexture);
+          depthBlurFilter = new PIXI.BlurFilter();
+          depthBlurFilter.blur = depthBlurSize;
+          depthTextureSprite.filters = [depthBlurFilter]
+          depthTextureSprite.scale = new PIXI.Point(stageScale, stageScale);
+
+          depthTextureDOC = new PIXI.DisplayObjectContainer();
+          depthTextureDOC.addChild(depthTextureSprite);
+
+          depthRender = new PIXI.RenderTexture(stageSize.width, stageSize.height);
+          //depthRenderSprite = new PIXI.Sprite(depthRender);
+
+          depthRender.render(depthTextureDOC);
+
+          depthFilter = new PIXI.DepthmapFilter(depthRender);
           updateDepthScale();
 
-          sprite.filters = [depthFilter];
-          sprite.scale = new PIXI.Point(stageScale, stageScale);
-          stage.addChild(sprite);
+
+          // prepare image render
+          imageTextureSprite = new PIXI.Sprite(imageTexture);
+          imageTextureSprite.scale = new PIXI.Point(stageScale, stageScale);
+
+          imageTextureDOC = new PIXI.DisplayObjectContainer();
+          imageTextureDOC.addChild(imageTextureSprite);
+
+          imageRender = new PIXI.RenderTexture(stageSize.width, stageSize.height);
+          imageRenderSprite = new PIXI.Sprite(imageRender);
+          imageRenderSprite.filters= [depthFilter];
+
+          imageRender.render(imageTextureDOC);
+
+          stage.addChild(imageRenderSprite);
+
           //render on load events
           viewer.update = 1;
         }, true);
