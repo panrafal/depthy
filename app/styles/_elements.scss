@@ -135,6 +135,7 @@ header {
   .depthy-viewer {
     position: relative;
     margin: 0 auto 2em auto;
+    overflow: hidden;
   }
   canvas {
     position: absolute;

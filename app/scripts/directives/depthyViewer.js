@@ -139,8 +139,7 @@ angular.module('depthyApp')
 
           stageSize = viewerSize;
           if (viewer.overrideStageSize) {
-            console.log(viewer.overrideStageSize);
-            stageSize = fitIn(stageSize, viewer.overrideStageSize);
+            stageSize = fitIn(imageSize, viewer.overrideStageSize);
           }
 
           viewerSize = {width: Math.round(viewerSize.width), height: Math.round(viewerSize.height)};
@@ -296,12 +295,13 @@ angular.module('depthyApp')
 
         if (viewer.animate || angular.isNumber(viewer.animPosition)) {
           var now = angular.isNumber(viewer.animPosition) ?
-                      viewer.animPosition * 1000
+                      viewer.animPosition * viewer.animDuration * 1000
                       : (Modernizr.performance ? window.performance.now() : new Date().getTime());
           depthFilter.offset = {
-            x : Math.sin(now * Math.PI / viewer.animDuration / 1000) * viewer.animScale.x,
-            y : Math.cos(now * Math.PI / viewer.animDuration / 1000) * viewer.animScale.y
+            x : Math.sin(now * Math.PI * 2 / viewer.animDuration / 1000) * viewer.animScale.x,
+            y : Math.cos(now * Math.PI * 2 / viewer.animDuration / 1000) * viewer.animScale.y
           };
+
           viewer.update = true;
         }
 

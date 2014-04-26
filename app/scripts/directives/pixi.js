@@ -45,11 +45,16 @@ angular.module('depthyApp')
         var doRender = true;
         if (renderFunc) doRender = renderFunc(stage, renderer);
 
-        requestAnimFrame( self.render );
-     
         // render the stage   
         if (force || doRender !== false) renderer.render(stage);
       };
+
+      function renderLoop() {
+        self.render();
+        requestAnimFrame( renderLoop );
+      }
+
+      requestAnimFrame( renderLoop );
 
       this.getStage = function() {
         return stage;
@@ -63,7 +68,6 @@ angular.module('depthyApp')
         return renderer.gl ? renderer.gl : renderer.context;
       };
 
-      requestAnimFrame( this.render );
 
       // $($window).resize(function() {
       //     renderer.resize(element.width(), element.height())                

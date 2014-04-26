@@ -101,21 +101,24 @@ angular.module('depthyApp')
     depthy.exportPopuped = !depthy.exportPopuped;
   };
 
-  $scope.$watch('[depthy.exportPopuped, depthy.exportSize]', function() {
-    if (depthy.exportPopuped) {
-      depthy.viewer.overrideStageSize = {width: depthy.exportSize, height: depthy.exportSize};
+  $scope.$watch('(depthy.exportPopuped || depthy.exportActive) && depthy.exportSize', function(size) {
+    if (size) {
+      depthy.viewer.overrideStageSize = {width: size, height: size};
     } else {
       depthy.viewer.overrideStageSize = null;
     }
-  }, true);
+  });
 
   $scope.startExport = function() {
+    depthy.exportActive = true;
     $modal.open({
       templateUrl: 'views/export-modal.html',
       controller: 'ExportModalCtrl',
       backdrop: 'static',
       keyboard: false,
       windowClass: 'modal-export',
+    }).result.finally(function() {
+      depthy.exportActive = false;
     });
     depthy.exportPopuped = false;
     depthy.viewer.animate = false;

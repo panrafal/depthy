@@ -7,14 +7,14 @@ angular.module('depthyApp')
     function exportSuccess(blob) {
       $scope.imageUrl = $sce.trustAsResourceUrl( URL.createObjectURL(blob) );
       console.log(URL.createObjectURL(blob));
-      $scope.$apply();
+      $scope.$safeApply();
     },
     function exportFailed() {
       $scope.exportError = 'Export failed';
     },
     function exportProgress(p) {
       $scope.exportProgress = p;
-      $scope.$apply();
+      $scope.$safeApply();
       // console.log(p)
     }
   );
