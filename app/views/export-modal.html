@@ -1,2 +1,22 @@
+<div class="modal-header">
+  <!-- <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button> -->
+  <h4 class="modal-title">{{imageUrl ? 'Here is your GIF!' : 'Generating GIF'}}</h4>
+</div>
+<div class="modal-body">
+  
+  <div class="progress export-progress" ng-if="!imageUrl">
+    <div class="progress-bar active" role="progressbar" ng-class="{'progress-striped': exportProgress < 0}" ng-style="{width: exportProgress < 0 ? '0%' : exportProgress * 100 + '%'}">
+    </div>
+  </div>
 
-<button class="btn btn-success" ng-click="$close()">OK</button>
+  <div class="text-center" ng-if="imageUrl">
+    <img class="export-image" ng-src="{{imageUrl}}" />
+    <p>{{Modernizr.mobile ? 'Press and hold the image' : 'Right-click the image'}} to save your GIF, it's yours to take!</p>
+  </div>
+  
+</div>
+<div class="modal-footer">
+  <button class="btn btn-default" ng-click="$close()">Close</button>
+</div>
+
+

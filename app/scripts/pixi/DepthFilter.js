@@ -7,6 +7,7 @@
  * @contructor
  * @param texture {Texture} The texture used for the displacemtent map * must be power of 2 texture at the moment
  */
+'use strict';
 PIXI.DepthmapFilter = function(texture)
 {
   PIXI.AbstractFilter.call( this );

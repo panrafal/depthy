@@ -13,14 +13,14 @@ angular.module('depthyApp').provider('depthy', function depthy() {
 
 
 
-  this.$get = function(ga, $timeout, $rootScope) {
+  this.$get = function(ga, $timeout, $rootScope, $document, $q) {
     var depthy = {
       viewer: viewer,
 
       animatePopuped: false,
       exportPopuped: false,
 
-      exportSize: '150',
+      exportSize: 150,
       exportType: 'gif',
 
       loadSample: function(name) {
@@ -137,15 +137,63 @@ angular.module('depthyApp').provider('depthy', function depthy() {
 
 
       exportAnimation: function() {
+        var deferred = $q.defer(), result = deferred.promise, gif;
         Modernizr.load({
           test: window.GIF,
           nope: 'bower_components/gif.js/dist/gif.js',
           complete: function() {
-         
+            var size = {width: depthy.exportSize, height: depthy.exportSize},
+                duration = viewer.animDuration,
+                fps = Math.round(duration >= 2 ? duration >= 4 ? 10 : 20 : 30),
+                frames = Math.round(duration * fps),
+                delay = Math.round(1000 / fps),
+                canvas = $document.find('[pixi]'),
+                pixi = canvas.controller('pixi');
+
+            depthy.viewer.overrideStageSize = size;
+            $rootScope.$safeApply();
+
+            gif = new GIF({
+              workers: 2,
+              quality: 10,
+              workerScript: 'bower_components/gif.js/dist/gif.worker.js',
+              // width: size.width,
+              // height: size.height,
+            });
+            console.log('FPS %d Frames %d Delay %d', fps, frames, delay);
+
+            for(var frame = 0; frame < frames; ++frame) {
+              viewer.animPosition = frame / frames;
+              viewer.update = 1;
+              pixi.render(true);
+              console.log('Frame %d Position %f', frame, viewer.animPosition);
+
+              gif.addFrame(canvas[0], {copy: true, delay: delay});
+            }
+            viewer.animPosition = null;
+
+            gif.on('progress', function(p) {
+              deferred.notify(p);
+            });
+            gif.on('abort', function() {
+              result.abort = function() {};
+              deferred.reject();
+            });
+            gif.on('finished', function(blob) {
+              result.abort = function() {};
+              deferred.resolve(blob);
+              depthy.viewer.overrideStageSize = null;
+              $rootScope.$safeApply();
+            });
+
+            gif.render();
           }
         });
+        result.abort = function() {
+          gif.abort();
+        };
+        return result;
       },
-
 
     };
 

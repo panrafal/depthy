@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('depthyApp')
-.controller('MainCtrl', function ($rootScope, $scope, $timeout, ga, depthy, $element, $modal) {
+.controller('MainCtrl', function ($rootScope, $window, $scope, $timeout, ga, depthy, $element, $modal) {
 
   $rootScope.depthy = depthy;
   $rootScope.viewer = depthy.viewer; // shortcut
@@ -9,7 +9,7 @@ angular.module('depthyApp')
 
   depthy.loadSample('flowers', false);
 
-  $scope.$safeApply = function(fn) {
+  $rootScope.$safeApply = function(fn) {
     var phase = this.$root.$$phase;
     if(phase === '$apply' || phase === '$digest') {
       if(fn && (typeof(fn) === 'function')) {
@@ -35,7 +35,7 @@ angular.module('depthyApp')
 
   $scope.getNextDepthScaleName = function() {
     var scale = depthy.viewer.depthScale;
-    return scale > 1.05 ? 'Calmize' : scale < 0.95 ? 'Normalize' : 'Dramatize';
+    return scale > 1.05 ? 'Tranquilize' : scale < 0.95 ? 'Normalize' : 'Dramatize';
   };
 
   $scope.cycleDepthScale = function() {
@@ -101,17 +101,36 @@ angular.module('depthyApp')
     depthy.exportPopuped = !depthy.exportPopuped;
   };
 
+  $scope.$watch('(depthy.exportPopuped || depthy.exportActive) && depthy.exportSize', function(size) {
+    if (size) {
+      depthy.viewer.overrideStageSize = {width: size, height: size};
+    } else {
+      depthy.viewer.overrideStageSize = null;
+    }
+  });
+
   $scope.startExport = function() {
-    var modal = $modal.open({
+    depthy.exportActive = true;
+    $modal.open({
       templateUrl: 'views/export-modal.html',
       controller: 'ExportModalCtrl',
       backdrop: 'static',
       keyboard: false,
-      windowClass: 'modal-export',
+      windowClass: 'export-modal',
+    }).result.finally(function() {
+      depthy.exportActive = false;
     });
     depthy.exportPopuped = false;
     depthy.viewer.animate = false;
-
   };
+
+  $($window).on('resize', function() {
+    depthy.viewer.maxSize = {
+      width: $window.innerWidth * 1,
+      height: $window.innerHeight * 0.8,
+    };
+    $scope.$safeApply();
+  });
+  $($window).resize();
 
 });

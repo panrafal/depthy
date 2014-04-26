@@ -22,12 +22,12 @@ This is the source of the http://depthy.stamina.pl webapp. Contributions more th
 
 ## How to help
 
-The current state is a weekend hack. I'm currently refactoring the app to make it more modular,
-so changes in API will be signifact. There's an inevitable design/ux overhaul down the pipeline.
-
 There is a lot of stuff you can do with depthmaps. If you have ideas and you know how to code,
 You already know how to help ;) I'm pretty lax on formalities, just make it work and at least 
 try to follow conventions of the code...
+
+Please note, that there's an inevitable design/ux overhaul planned. Though the apps API should
+not change significantly.
 
 ## License
 

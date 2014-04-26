@@ -23,6 +23,7 @@
     "$": false,
     "Modernizr": false,
     "PIXI": false,
+    "GIF": false,
     "_": true,
     "requestAnimFrame": true
   }

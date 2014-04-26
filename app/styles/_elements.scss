@@ -132,10 +132,15 @@ header {
   border-top: 1px solid lighten($body-bg, 6%);
   padding: 2em 0;
 
+  .depthy-viewer {
+    position: relative;
+    margin: 0 auto 2em auto;
+    overflow: hidden;
+  }
   canvas {
-    margin:0 auto 2em auto;
-    // width: 1024px;
-    // height: 1024px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
     display: block;
     pointer-events: none;
     box-shadow: 1px 1px 1px rgba(0,0,0,0.5);
@@ -145,9 +150,30 @@ header {
     display: none;
   }
 
+  .buttons-options {
+    &>button {
+      width: 90px;
+    }
+    .button-group {
+      button {
+        width: 90px - 34px;
+      }
+      button + button {
+        width: 34px;
+      }
+    }
+  }
+
   .button-animate {
     .popover {
-      width: 250px;
+      min-width: 250px;
+    }
+  }
+
+  .button-export {
+    margin-top: 1em;
+    .popover {
+      transform: translate(-50%, -100%) translateY(55px);
     }
   }
 
@@ -166,5 +192,20 @@ footer {
     &:hover {
       color: fade-out(#fff, 0.4);
     }    
+  }
+}
+
+.export-modal {
+  .progress {
+    width: 50%;
+  }
+  .export-progress {
+    margin: 3em auto;
+  }
+  .export-image {
+    max-width: 80vw;
+    max-height: 50vh;
+    margin-bottom: 1em;
+    box-shadow: 1px 1px 2px #000;
   }
 }

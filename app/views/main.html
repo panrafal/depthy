@@ -21,7 +21,7 @@
           </div>
         </div>
       </div>
-      <div class="notice" ng-if="!Modernizr.mobile">or drag&amp;drop it anywhere</div>
+      <em class="text-muted" ng-if="!Modernizr.mobile">or drag&amp;drop it anywhere</em>
       <div class="gallery">
         <img src="samples/flowers-thumb.jpg" ng-click="loadSample('flowers')">
         <img src="samples/hut-thumb.jpg"  ng-click="loadSample('hut')">
@@ -36,16 +36,24 @@
     <p>Make sure you only select photos made in the Lens Blur mode.</p>
     <a class="btn btn-md btn-danger" ng-click="depthy.viewer.error = ''">Got it!</a>
   </div>
-  <div id="viewer" depthy-viewer="depthy.viewer" ng-hide="viewer.error" ng-if="Modernizr.webgl">
+  <div id="viewer" ng-hide="viewer.error" ng-if="Modernizr.webgl">
     <div class="text-center">
       <h2>Parallax view</h2>
       <p class="text-muted">Move your {{Modernizr.devicemotion && Modernizr.mobile ? 'device' : 'cursor'}} around to see the effect</p>
     </div>
-    <canvas pixi="stage" pixi-animate="pixiAnimate" pixi-transparent="true" pixi-renderer="'webgl'">
-    </canvas>
+    <div class="depthy-viewer" depthy-viewer="depthy.viewer" ng-style="{height: v.viewerSize.height + 'px'}">
+      <canvas pixi="stage" pixi-render="pixiRender" pixi-transparent="true" pixi-renderer="'webgl'" 
+        ng-style="{
+          width: v.stageCssSize.width + 'px', 
+          height: v.stageCssSize.height + 'px', 
+          'margin-left': v.stageCssSize.width / -2 + 'px', 
+          'margin-top': v.stageCssSize.height / -2 + 'px'}"
+      >
+      </canvas>
+    </div>
     <div class="text-center">
-      <div class="options">
-
+      <div class="buttons-options">
+        <!--
         <div class="btn-group">
           <button type="button" class="btn btn-default" ng-model="viewer.depthBlurSize" btn-radio="0">0</button>
           <button type="button" class="btn btn-default" ng-model="viewer.depthBlurSize" btn-radio="4">4</button>
@@ -53,13 +61,14 @@
           <button type="button" class="btn btn-default" ng-model="viewer.depthBlurSize" btn-radio="16">16</button>
           <button type="button" class="btn btn-default" ng-model="viewer.depthBlurSize" btn-radio="32">32</button>
         </div><br/>
+        -->
 
-        <button class="btn btn-primary button-usecompound" ng-click="viewer.useCompoundImage = !viewer.useCompoundImage" ng-class="{active: viewer.useCompoundImage}">Blurred</button>
+        <button class="btn btn-primary button-usecompound" ng-click="viewer.useCompoundImage = !viewer.useCompoundImage">{{viewer.useCompoundImage ? 'Blurred' : 'Sharp'}}</button>
 
         <span class="popup-group button-animate">
-          <div class="popover top" ng-if="depthy.animatePopuped">
+          <div class="popover top anim-fade" ng-if="depthy.animatePopuped">
             <div class="arrow"></div>
-            <div ng-include="'views/animation-options.html'"></div>
+            <div class="popover-content" ng-include="'views/animation-options.html'"></div>
           </div>
           <div class="btn-group">
             <button class="btn btn-primary" ng-click="viewer.animate = !viewer.animate" ng-class="{active: viewer.animate}">Hypnotize</button>
@@ -72,7 +81,7 @@
         <button class="btn btn-primary button-scale" ng-click="cycleDepthScale()" ng-class="{active: viewer.depthScale < 0.9 || viewer.depthScale > 1.1}">{{getNextDepthScaleName()}}</button>
       </div>
       <div class="button-export popup-group">
-        <div class="popover top" ng-if="depthy.exportPopuped">
+        <div class="popover top anim-fade" ng-if="depthy.exportPopuped">
           <div ng-include="'views/export-popup.html'"></div>
         </div>
         <button id="button-export" class="btn btn-success" ng-click="toggleExportPopup()"><i class="icon icon-movie"></i>Export GIF</button>
