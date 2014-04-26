@@ -2,16 +2,14 @@
 
 angular.module('visibleClass', [])
 .factory('VisibleClassService', function ($window) {
-  var targets = []
-
-
+  var targets = [];
 
   function doUpdate() {
     var $container = $($window),
       scrollTop = 0, // $container.scrollTop(),
       scrollHeight = $container.height(),
       scrollBottom = scrollTop + scrollHeight,
-      pos, visible
+      pos, visible;
 
 
     _.each(targets, function(item) {
@@ -22,20 +20,20 @@ angular.module('visibleClass', [])
       if (item.v !== visible) {
         if (visible) {
           if (item.cls) item.el.addClass(item.cls);
-          if (item.eval) item.eval(visible);
+          if (item.func) item.func(visible);
           item.v = visible;
         } else if (!item.sticky) {
           if (item.cls) item.el.removeClass(item.cls);
-          if (item.eval) item.eval(visible);
+          if (item.func) item.func(visible);
           item.v = visible;
         }
       }
-    })
+    });
   }
 
-  $($window).on('scroll', function(event) {
-    doUpdate()
-  })
+  $($window).on('scroll', function() {
+    doUpdate();
+  });
 
 
   var svc = {
@@ -44,7 +42,7 @@ angular.module('visibleClass', [])
     },
     doUpdate: doUpdate,
     update: _.throttle(doUpdate, 25)
-  }
+  };
 
   return svc;
 })
@@ -54,7 +52,7 @@ angular.module('visibleClass', [])
     link: function postLink($scope, $element, $attrs) {
       VisibleClassService.addTarget({
         el: $element,
-        cls: $attrs['visibleClass'],
+        cls: $attrs.visibleClass,
       });
     }
   };
@@ -65,7 +63,7 @@ angular.module('visibleClass', [])
     link: function postLink($scope, $element, $attrs) {
       VisibleClassService.addTarget({
         el: $element,
-        cls: $attrs['shownClass'],
+        cls: $attrs.shownClass,
         sticky: true,
       });
     }
@@ -75,10 +73,10 @@ angular.module('visibleClass', [])
   return {
     restrict: 'A',
     link: function postLink($scope, $element, $attrs) {
-      var expr = $attrs['shownEval'];
+      var expr = $attrs.shownEval;
       VisibleClassService.addTarget({
         el: $element,
-        eval: function(visible) { $scope.$eval(expr, {'$visible': visible}); $scope.$apply(); },
+        func: function(visible) { $scope.$eval(expr, {'$visible': visible}); $scope.$apply(); },
         sticky: true,
       });
     }
