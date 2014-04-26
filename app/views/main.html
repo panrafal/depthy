@@ -36,13 +36,21 @@
     <p>Make sure you only select photos made in the Lens Blur mode.</p>
     <a class="btn btn-md btn-danger" ng-click="depthy.viewer.error = ''">Got it!</a>
   </div>
-  <div id="viewer" depthy-viewer="depthy.viewer" ng-hide="viewer.error" ng-if="Modernizr.webgl">
+  <div id="viewer" ng-hide="viewer.error" ng-if="Modernizr.webgl">
     <div class="text-center">
       <h2>Parallax view</h2>
       <p class="text-muted">Move your {{Modernizr.devicemotion && Modernizr.mobile ? 'device' : 'cursor'}} around to see the effect</p>
     </div>
-    <canvas pixi="stage" pixi-render="pixiRender" pixi-transparent="true" pixi-renderer="'webgl'">
-    </canvas>
+    <div class="depthy-viewer" depthy-viewer="depthy.viewer" ng-style="{height: v.viewerSize.height + 'px'}">
+      <canvas pixi="stage" pixi-render="pixiRender" pixi-transparent="true" pixi-renderer="'webgl'" 
+        ng-style="{
+          width: v.stageCssSize.width + 'px', 
+          height: v.stageCssSize.height + 'px', 
+          'margin-left': v.stageCssSize.width / -2 + 'px', 
+          'margin-top': v.stageCssSize.height / -2 + 'px'}"
+      >
+      </canvas>
+    </div>
     <div class="text-center">
       <div class="options">
 

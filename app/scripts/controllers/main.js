@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('depthyApp')
-.controller('MainCtrl', function ($rootScope, $scope, $timeout, ga, depthy, $element, $modal) {
+.controller('MainCtrl', function ($rootScope, $window, $scope, $timeout, ga, depthy, $element, $modal) {
 
   $rootScope.depthy = depthy;
   $rootScope.viewer = depthy.viewer; // shortcut
@@ -9,7 +9,7 @@ angular.module('depthyApp')
 
   depthy.loadSample('flowers', false);
 
-  $scope.$safeApply = function(fn) {
+  $rootScope.$safeApply = function(fn) {
     var phase = this.$root.$$phase;
     if(phase === '$apply' || phase === '$digest') {
       if(fn && (typeof(fn) === 'function')) {
@@ -101,8 +101,16 @@ angular.module('depthyApp')
     depthy.exportPopuped = !depthy.exportPopuped;
   };
 
+  $scope.$watch('[depthy.exportPopuped, depthy.exportSize]', function() {
+    if (depthy.exportPopuped) {
+      depthy.viewer.overrideStageSize = {width: depthy.exportSize, height: depthy.exportSize};
+    } else {
+      depthy.viewer.overrideStageSize = null;
+    }
+  }, true);
+
   $scope.startExport = function() {
-    var modal = $modal.open({
+    $modal.open({
       templateUrl: 'views/export-modal.html',
       controller: 'ExportModalCtrl',
       backdrop: 'static',
@@ -111,7 +119,15 @@ angular.module('depthyApp')
     });
     depthy.exportPopuped = false;
     depthy.viewer.animate = false;
-
   };
+
+  $($window).on('resize', function() {
+    depthy.viewer.maxSize = {
+      width: $window.innerWidth * 1,
+      height: $window.innerHeight * 0.8,
+    };
+    $scope.$safeApply();
+  });
+  $($window).resize();
 
 });

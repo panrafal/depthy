@@ -6,13 +6,8 @@ angular.module('depthyApp')
     // template: '<canvas></canvas>',
     restrict: 'A',
     scope: true,
-    /**
-      imageSize (set)
-      depthSize (set)
-      stageSize (set)
-    */
     controller: function($scope, $element, $attrs) {
-      var viewer = $scope.viewer = $scope.$parent.$eval($attrs.depthyViewer),
+      var viewer = $scope.v = $scope.$parent.$eval($attrs.depthyViewer),
           imageTexture, imageTextureSprite, imageTextureDOC, imageRender, imageRenderSprite,
           depthTexture, depthTextureSprite, depthTextureDOC, depthRender,
           depthFilter, depthBlurFilter,
@@ -24,6 +19,18 @@ angular.module('depthyApp')
         compoundSource: null,
         imageSource: null,
         depthSource: null,
+        imageSize: null,
+        depthSize: null,
+        // *read-only stage size
+        stageSize: null,
+        // *read-only stage size in css pixels
+        stageCssSize: null,
+        // *read-only viewer size
+        viewerSize: null,
+        // maximum size to fit in
+        maxSize: null,
+        // stageSize override
+        overrideStageSize: null,
         // set it when all sources are ready (they may be loaded earlier)
         sourcesReady: true,
         // increment when sources change
@@ -55,22 +62,6 @@ angular.module('depthyApp')
         };
       }
 
-      function resetStage() {
-        /*
-        if (sprite) {
-          stage.removeChild(sprite);
-          sprite = null;
-          viewer.update = 1;
-        }
-        */
-
-        if (imageRenderSprite) {
-          stage.removeChild(imageRenderSprite);
-          imageRenderSprite = null;
-          viewer.update = 1;
-        }
-
-      }
 
       function updateTexture(texture, url, sizeKey) {
         if (!texture || texture.baseTexture.imageUrl !== url) {
@@ -97,12 +88,36 @@ angular.module('depthyApp')
         return texture;
       }
 
+      function fitIn(size, max) {
+        var ratio = size.width / size.height;
+        size = {width: size.width, height: size.height};
+        if (size.height > max.height) {
+          size.height = max.height;
+          size.width = size.height * ratio;
+        }
+        if (size.width > max.width) {
+          size.width = max.width;
+          size.height = size.width / ratio;
+        }
+        return size;
+      }
+
+
+      function resetStage() {
+        if (imageRenderSprite) {
+          stage.removeChild(imageRenderSprite);
+          imageRenderSprite = null;
+          viewer.update = true;
+        }
+
+      }
+
       function setupStage(_stage, _renderer) {
         // remember them...
         stage = _stage;
         renderer = _renderer;
 
-        // watch image changes
+        // watch image changes - exchange textures
         $scope.$watch('[viewer.sourcesDirty, viewer.useCompoundImage, viewer.sourcesReady]', function() {
           if (!viewer.sourcesReady) return;
 
@@ -111,38 +126,38 @@ angular.module('depthyApp')
 
         }, true);
 
-        $scope.$watch('[viewer.imageSize, viewer.depthSize, viewer.sourcesReady, sizeDirty]', function() {
+        // recalculate stage size
+        $scope.$watch('[viewer.imageSize, viewer.depthSize, viewer.sourcesReady, viewer.maxSize, viewer.overrideStageSize, sizeDirty]', function() {
           if (!viewer.imageSize || !viewer.depthSize || !viewer.sourcesReady) return;
 
           var imageSize = viewer.imageSize,
-              imageRatio = imageSize.width / imageSize.height,
-              stageSize = {width: imageSize.width, height: imageSize.height};
+              viewerSize = {width: imageSize.width, height: imageSize.height},
+              stageSize = null,
+              maxSize = viewer.maxSize;
 
-          if (stageSize.height > $($window).height() * 0.8) {
-            stageSize.height = Math.round($($window).height() * 0.8);
-            stageSize.width = stageSize.height * imageRatio;
-          }
-          if (stageSize.width > $($window).width() * 0.8) {
-            stageSize.width = Math.round($($window).width() * 0.8);
-            stageSize.height = stageSize.width / imageRatio;
-          }
-          stageSize.width = Math.round(stageSize.width);
-          stageSize.height = Math.round(stageSize.height);
+          if (maxSize) viewerSize = fitIn(viewerSize, maxSize);
 
+          stageSize = viewerSize;
+          if (viewer.overrideStageSize) {
+            console.log(viewer.overrideStageSize);
+            stageSize = fitIn(stageSize, viewer.overrideStageSize);
+          }
+
+          viewerSize = {width: Math.round(viewerSize.width), height: Math.round(viewerSize.height)};
+          stageSize = {width: Math.round(stageSize.width), height: Math.round(stageSize.height)};
+
+          viewer.stageCssSize = stageSize;
           // retina
-          if (window.devicePixelRatio >= 2) {
+          if (!viewer.overrideStageSize && window.devicePixelRatio >= 2) {
             stageSize.width *= 2;
             stageSize.height *= 2;
-            $element.find('canvas')
-              // .css('transform', 'scale(0.5, 0.5)')
-              .css('width', stageSize.width / 2 + 'px')
-              .css('height', stageSize.height / 2 + 'px');
-
           }
 
+          viewer.viewerSize = viewerSize;
           viewer.stageSize = stageSize;
         }, true);
 
+        // recreate stage on textures / stagesize change
         $scope.$watch('[viewer.stageSize, viewer.sourcesDirty, viewer.sourcesReady, viewer.depthBlurSize, viewer.error, sizeDirty]', function() {
           resetStage();
 
@@ -158,8 +173,6 @@ angular.module('depthyApp')
 
           renderer.resize(stageSize.width, stageSize.height);
 
-          // console.log('stageSize:',stageSize);
-
           // prepare depth render / filter
           depthTextureSprite = new PIXI.Sprite(depthTexture);
           depthBlurFilter = new PIXI.BlurFilter();
@@ -171,7 +184,6 @@ angular.module('depthyApp')
           depthTextureDOC.addChild(depthTextureSprite);
 
           depthRender = new PIXI.RenderTexture(stageSize.width, stageSize.height);
-          //depthRenderSprite = new PIXI.Sprite(depthRender);
 
           depthRender.render(depthTextureDOC);
 
@@ -195,7 +207,7 @@ angular.module('depthyApp')
           stage.addChild(imageRenderSprite);
 
           //render on load events
-          viewer.update = 1;
+          viewer.update = true;
         }, true);
 
         $scope.$watch('viewer.depthScale', updateDepthScale);
@@ -216,7 +228,7 @@ angular.module('depthyApp')
 
           if (depthFilter) {
             viewer.offset = {x: -x, y: -y};
-            viewer.update = 1;
+            viewer.update = true;
           }
           
         });
@@ -239,7 +251,7 @@ angular.module('depthyApp')
               };
             }
             // console.log("offset %d %d ABG %d %d %d", viewer.offset.x, viewer.offset.y, event.alpha, event.beta, event.gamma)
-            viewer.update = 1;
+            viewer.update = true;
 
           }
           orientation = {
@@ -249,10 +261,7 @@ angular.module('depthyApp')
           };
         });
 
-        $window.addEventListener('resize', function() {
-          $scope.sizeDirty ++;
-          $scope.$apply();
-        });
+
 
       }
 
@@ -282,7 +291,7 @@ angular.module('depthyApp')
             x : easedOffset.x,
             y : easedOffset.y
           };
-          viewer.update = 1;
+          viewer.update = true;
         }
 
         if (viewer.animate || angular.isNumber(viewer.animPosition)) {
@@ -293,7 +302,7 @@ angular.module('depthyApp')
             x : Math.sin(now * Math.PI / viewer.animDuration / 1000) * viewer.animScale.x,
             y : Math.cos(now * Math.PI / viewer.animDuration / 1000) * viewer.animScale.y
           };
-          viewer.update = 1;
+          viewer.update = true;
         }
 
 
@@ -301,7 +310,7 @@ angular.module('depthyApp')
           return false;
         }
 
-        viewer.update--;
+        viewer.update = false;
       };
 
 
