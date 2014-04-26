@@ -145,7 +145,7 @@ angular.module('depthyApp')
           viewerSize = {width: Math.round(viewerSize.width), height: Math.round(viewerSize.height)};
           stageSize = {width: Math.round(stageSize.width), height: Math.round(stageSize.height)};
 
-          viewer.stageCssSize = stageSize;
+          viewer.stageCssSize = {width: stageSize.width, height: stageSize.height};
           // retina
           if (!viewer.overrideStageSize && window.devicePixelRatio >= 2) {
             stageSize.width *= 2;
