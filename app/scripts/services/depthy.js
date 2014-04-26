@@ -20,7 +20,7 @@ angular.module('depthyApp').provider('depthy', function depthy() {
       animatePopuped: false,
       exportPopuped: false,
 
-      exportSize: 150,
+      exportSize: Modernizr.mobile ? 150 : 300,
       exportType: 'gif',
 
       loadSample: function(name) {
@@ -144,7 +144,7 @@ angular.module('depthyApp').provider('depthy', function depthy() {
           complete: function() {
             var size = {width: depthy.exportSize, height: depthy.exportSize},
                 duration = viewer.animDuration,
-                fps = Math.round(duration >= 2 ? duration >= 4 ? 10 : 20 : 30),
+                fps = Math.round(duration >= 2 ? duration >= 4 ? 15 : 25 : 30),
                 frames = Math.round(duration * fps),
                 delay = Math.round(1000 / fps),
                 canvas = $document.find('[pixi]'),

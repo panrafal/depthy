@@ -1,16 +1,20 @@
 <div class="modal-header">
   <!-- <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button> -->
-  <h4 class="modal-title">{{imageUrl ? 'Here is your GIF!' : 'Generating GIF'}}</h4>
+  <h4 class="modal-title">{{imageReady ? 'Here is your GIF!' : 'Generating GIF'}}</h4>
 </div>
 <div class="modal-body">
   
-  <div class="progress export-progress" ng-if="!imageUrl">
-    <div class="progress-bar active" role="progressbar" ng-class="{'progress-striped': exportProgress < 0}" ng-style="{width: exportProgress < 0 ? '0%' : exportProgress * 100 + '%'}">
+  <div class="export-progress" ng-if="!imageReady">
+    <div class="progress active">
+      <div class="progress-bar active" role="progressbar" ng-class="{'progress-striped': exportProgress < 0}" ng-style="{width: exportProgress < 0 ? '0%' : exportProgress * 100 + '%'}">
+      </div>
     </div>
+    <p class="text-muted text-center" ng-if="Modernizr.mobile">Generating GIFs on a mobile is a tedious task. If it takes too long, choose a 
+    smaller size or make it shorter...</p>
   </div>
 
-  <div class="text-center" ng-if="imageUrl">
-    <img class="export-image" ng-src="{{imageUrl}}" />
+  <div class="text-center export-image" ng-show="imageReady">
+    <img ng-src="{{imageUrl}}" />
     <p>{{Modernizr.mobile ? 'Press and hold the image' : 'Right-click the image'}} to save your GIF, it's yours to take!</p>
   </div>
   
