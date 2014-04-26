@@ -35,7 +35,7 @@ angular.module('depthyApp')
 
   $scope.getNextDepthScaleName = function() {
     var scale = depthy.viewer.depthScale;
-    return scale > 1.05 ? 'Calmize' : scale < 0.95 ? 'Normalize' : 'Dramatize';
+    return scale > 1.05 ? 'Tranquilize' : scale < 0.95 ? 'Normalize' : 'Dramatize';
   };
 
   $scope.cycleDepthScale = function() {
@@ -116,7 +116,7 @@ angular.module('depthyApp')
       controller: 'ExportModalCtrl',
       backdrop: 'static',
       keyboard: false,
-      windowClass: 'modal-export',
+      windowClass: 'export-modal',
     }).result.finally(function() {
       depthy.exportActive = false;
     });

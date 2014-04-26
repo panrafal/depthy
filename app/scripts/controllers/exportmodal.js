@@ -2,8 +2,10 @@
 
 angular.module('depthyApp')
 .controller('ExportModalCtrl', function ($scope, $modalInstance, depthy, $sce) {
+
   $scope.exportProgress = -1;
-  depthy.exportAnimation().then(
+  var exportPromise = depthy.exportAnimation();
+  exportPromise.then(
     function exportSuccess(blob) {
       $scope.imageUrl = $sce.trustAsResourceUrl( URL.createObjectURL(blob) );
       console.log(URL.createObjectURL(blob));
@@ -18,4 +20,11 @@ angular.module('depthyApp')
       // console.log(p)
     }
   );
+
+  $scope.$close = function() {
+    console.log('close');
+    exportPromise.abort();
+    $modalInstance.close();
+  };
+
 });

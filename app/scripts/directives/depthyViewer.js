@@ -37,7 +37,7 @@ angular.module('depthyApp')
         sourcesDirty: null,
         useCompoundImage: true,
         animate: false,
-        animDuration: 2,
+        animDuration: 4,
         animPosition: null,
         animScale: {x: 1, y: 0.5},
         depthScale: 1,
@@ -166,9 +166,9 @@ angular.module('depthyApp')
 
           var imageSize = viewer.imageSize,
               stageSize = viewer.stageSize,
-              depthBlurSize = viewer.depthBlurSize;
-
-          var stageScale = stageSize.width / imageSize.width;
+              depthBlurSize = viewer.depthBlurSize,
+              stageScale = stageSize.width / imageSize.width,
+              renderUpscale = 1.05;
 
           renderer.resize(stageSize.width, stageSize.height);
 
@@ -177,7 +177,7 @@ angular.module('depthyApp')
           depthBlurFilter = new PIXI.BlurFilter();
           depthBlurFilter.blur = depthBlurSize;
           depthTextureSprite.filters = [depthBlurFilter];
-          depthTextureSprite.scale = new PIXI.Point(stageScale, stageScale);
+          depthTextureSprite.scale = new PIXI.Point(stageScale * renderUpscale, stageScale * renderUpscale);
 
           depthTextureDOC = new PIXI.DisplayObjectContainer();
           depthTextureDOC.addChild(depthTextureSprite);
@@ -192,7 +192,7 @@ angular.module('depthyApp')
 
           // prepare image render
           imageTextureSprite = new PIXI.Sprite(imageTexture);
-          imageTextureSprite.scale = new PIXI.Point(stageScale, stageScale);
+          imageTextureSprite.scale = new PIXI.Point(stageScale * renderUpscale, stageScale * renderUpscale);
 
           imageTextureDOC = new PIXI.DisplayObjectContainer();
           imageTextureDOC.addChild(imageTextureSprite);

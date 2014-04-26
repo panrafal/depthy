@@ -13,11 +13,6 @@ body {
   // color: #fff;
 }
 
-.notice {
-  font-family: $font-family-serif;
-  font-style: italic;    
-}
-
 .alert {
   max-width: 700px;
   margin: 0 auto 2em auto;
@@ -48,7 +43,7 @@ h1 {
          ;
 }
 
-h2 {
+h2, h3, h4 {
   margin: 0;
   text-transform: uppercase;
   color: darken($headings-color, 10%);
@@ -59,19 +54,27 @@ h2 {
          ;
 }
 
+em {
+  font-family: $font-family-serif;
+}
+
 .btn {
-  &:focus {
-    outline: 0;
+  &:focus, &:active {
+    outline: 0!important;
   }
   &.active {
     box-shadow: inset 0px 0px 8px rgba(0,0,0,0.2);
   }
   i.icon {
+    margin-right: 0.5em;
     vertical-align: middle;
     &:before {
       // pixel perfect
       font-size: 16px;
     }
+  }
+  &.btn-icon {
+    .icon {margin: 0;}
   }
 }
 
@@ -96,7 +99,28 @@ p a {
     &.top {
       top: 0px;
       left: 50%;
-      transform: translate(-50%, -100%);
+      transform: translate(-50%, -100%) translateY(-2px);
     }
+  }
+}
+
+.popover {
+  text-align: center;
+}
+.popover-content {
+
+}
+.popover-footer {
+  padding: 8px 14px;
+}
+
+.option {
+  white-space: nowrap;
+  label {
+    // color: lighten($body-bg, 70%);
+    font-weight: normal;
+    font-size: 0.9em;
+    margin: 5px 0 0 0;
+    display: block;
   }
 }
