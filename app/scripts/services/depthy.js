@@ -23,6 +23,8 @@ angular.module('depthyApp').provider('depthy', function depthy() {
       exportSize: Modernizr.mobile ? 150 : 300,
       exportType: 'gif',
 
+      imgurId: 'b4ca5b16efb904b',
+
       loadSample: function(name) {
         viewer.compoundSource = 'samples/'+name+'-compound.jpg';
         viewer.depthSource = 'samples/'+name+'-depth.jpg';
