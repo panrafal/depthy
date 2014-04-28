@@ -54,7 +54,8 @@ angular.module('depthyApp')
       },
       data: {
         image: imageDataUri.substr('data:image/gif;base64,'.length),
-        type: 'base64'
+        type: 'base64',
+        description: 'Generated using DEPTHY - http://depthy.stamina.pl/'
       },
       xhr: function() {
         var xhr = new window.XMLHttpRequest();
