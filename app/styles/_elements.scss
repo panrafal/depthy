@@ -164,6 +164,21 @@ header {
     }
   }
 
+  .popover {
+    .option {
+      margin: 0.5em 0;
+
+      .btn-group {
+        display: table;
+        width: 100%;
+        .btn {
+          display: table-cell;
+          float: none;
+        }
+      }
+    }
+  }
+
   .button-animate {
     .popover {
       min-width: 250px;

@@ -28,7 +28,7 @@
       <div ng-switch="shareUrl" class="export-share">
         <div ng-switch-when="">
           <p class="text-danger" ng-if="shareError">Something went wrong when uploading. Please try again.</p>
-          <button class="btn btn-success btn-lg" ng-click="share()">Share it!</button><br/>
+          <button class="btn btn-success btn-lg" ng-click="share()" ga="['send', 'event', 'export', 'share', send]"><i class="icon icon-cloud-upload"></i>Share it!</button><br/>
           <p class="text-muted disclaimer">
             <em>Your photo will be uploaded to <a href="http://imgur.com" target="_blank">Imgur.com</a>.<br/>It will remain relatively private until you share it too much and it will go viral.</em>
           </p>
@@ -44,7 +44,10 @@
           Your GIF is now uploaded to:<br/>
           <p class="text-primary"><a href="{{shareUrl}}" target="_blank">{{shareUrl}}</a></p>
           <p>
-            Copy this link and use it anywhere you want or <a href="{{tweetUrl}}" target="_blank">tweet about it</a>.
+            Copy this link and use it however you want or share it:<br/>
+            <i class="icon link-share icon-twitter" share-popup="twitter" share-options="share" ga="['send', 'event', 'export', 'share', 'twitter']"></i>
+            <i class="icon link-share icon-facebook" share-popup="facebook" share-options="share" ga="['send', 'event', 'export', 'share', 'facebook']"></i>
+            <i class="icon link-share icon-googleplus" share-popup="google" share-options="share" ga="['send', 'event', 'export', 'share', 'google']"></i>
           </p>
         </div>
       </div>

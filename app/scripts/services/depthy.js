@@ -17,6 +17,9 @@ angular.module('depthyApp').provider('depthy', function depthy() {
     var depthy = {
       viewer: viewer,
 
+      loadedSample: false,
+      loadedName: false,
+
       animatePopuped: false,
       exportPopuped: false,
 
@@ -33,6 +36,7 @@ angular.module('depthyApp').provider('depthy', function depthy() {
         viewer.sourcesDirty++;
         viewer.metadata = {};
         viewer.error = false;
+        depthy.loadedSample = depthy.loadedName = name;
       },
 
       handleCompoundFile: function(file) {
@@ -44,6 +48,7 @@ angular.module('depthyApp').provider('depthy', function depthy() {
           viewer.sourcesReady = true;
           viewer.sourcesDirty++;
           viewer.metadata = {};
+          depthy.loadedSample = depthy.loadedName = false;
           viewer.error = e;
           ga('send', 'event', 'image', 'error', e);
         };
@@ -52,6 +57,9 @@ angular.module('depthyApp').provider('depthy', function depthy() {
           onError('Only JPEGs are supported!');
           return;
         }
+
+        depthy.loadedSample = false;
+        depthy.loadedName = (file.name || '').replace(/\.(jpe?g|png)$/i, '');
 
         viewer.sourcesReady = false;
         viewer.error = false;

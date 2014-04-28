@@ -3,11 +3,11 @@
 </div>
  --><div class="popover-content scrollable">
   <div class="option">
-    <label>Size</label>
+    <!-- <label>Size</label> -->
     <div class="btn-group">
-      <button type="button" class="btn btn-default btn-sm" ng-model="depthy.exportSize" btn-radio="150">Small</button>
-      <button type="button" class="btn btn-default btn-sm" ng-model="depthy.exportSize" btn-radio="300">Standard</button>
-      <button type="button" class="btn btn-default btn-sm" ng-model="depthy.exportSize" btn-radio="500">Large</button>
+      <div class="btn btn-default btn-sm" ng-model="depthy.exportSize" btn-radio="150">Small</div>
+      <div class="btn btn-default btn-sm" ng-model="depthy.exportSize" btn-radio="300">Standard</div>
+      <div class="btn btn-default btn-sm" ng-model="depthy.exportSize" btn-radio="500">Large</div>
     </div>
   </div>
   <!--
@@ -23,6 +23,6 @@
   <div ng-include="'views/movement-options.html'"></div>
 </div>
 <div class="popover-footer">
-  <button class="btn btn-success" ng-click="startExport()">Export!</button>
-  <button class="btn btn-danger" ng-click="depthy.exportPopuped = false">Cancel</button>
+  <button class="btn btn-success" ng-click="startExport()" ga="['send', 'event', 'gif', 'start']"><i class="icon icon-yes"></i>GO!</button>&nbsp;
+  <button class="btn btn-default" ng-click="depthy.exportPopuped = false">Cancel</button>
 </div>

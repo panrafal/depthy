@@ -1,14 +1,14 @@
 'use strict';
 
 angular.module('depthyApp')
-.controller('ExportModalCtrl', function ($scope, $modalInstance, $rootElement, depthy, $sce) {
+.controller('ExportModalCtrl', function ($scope, $modalInstance, $rootElement, depthy) {
   $scope.exportProgress = -1;
   $scope.imageReady = false;
   $scope.shareUrl = '';
   $scope.tweetUrl = null;
   $scope.imageOverLimit = false;
   var exportPromise = depthy.exportAnimation(),
-      sharePromise = null, 
+      sharePromise = null,
       imageDataUri = null;
   exportPromise.then(
     function exportSuccess(blob) {
@@ -55,31 +55,37 @@ angular.module('depthyApp')
       data: {
         image: imageDataUri.substr('data:image/gif;base64,'.length),
         type: 'base64',
-        description: 'Generated using DEPTHY - http://depthy.stamina.pl/'
+        name: depthy.loadedName,
+        title: depthy.loadedName + ' #depthy',
+        description: 'Created using http://depthy.stamina.pl'
       },
       xhr: function() {
         var xhr = new window.XMLHttpRequest();
         //Upload progress
         xhr.upload.addEventListener('progress', function(evt){
-          if (evt.lengthComputable) {  
+          if (evt.lengthComputable) {
             $scope.shareProgress = evt.loaded / evt.total;
             $scope.$safeApply();
           }
-        }, false); 
+        }, false);
         return xhr;
-      },      
+      },
     }).done(function(result) {
-        var id = result.data.id;
-        $scope.shareUrl = 'https://i.imgur.com/' + id + '.gif';
-        $scope.tweetUrl = 'http://twitter.com/home?status=' + encodeURIComponent($scope.shareUrl + ' #depthy');
-        sharePromise = null;
-        $scope.$safeApply();
+      var id = result.data.id;
+      $scope.shareUrl = 'https://imgur.com/' + id;
+      $scope.share = {
+        url: $scope.shareUrl,
+        title: depthy.loadedName + ' #depthy',
+        img: 'https://i.imgur.com/' + id + '.gif'
+      };
+      sharePromise = null;
+      $scope.$safeApply();
     }).fail(function(xhr, status) {
-        sharePromise = null;
-        $scope.shareUrl = '';
-        $scope.shareError = true;
-        console.error('Share failed with status: %s', status);
-        $scope.$safeApply();
+      sharePromise = null;
+      $scope.shareUrl = '';
+      $scope.shareError = true;
+      console.error('Share failed with status: %s', status);
+      $scope.$safeApply();
     });
 
   };

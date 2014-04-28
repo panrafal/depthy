@@ -31,11 +31,13 @@
       </div>
     </div>
   </header>
+
   <div id="error" class="ng-hide" ng-hide="!depthy.viewer.error">
     <h2>{{depthy.viewer.error}}</h2>
     <p>Make sure you only select photos made in the Lens Blur mode.</p>
     <a class="btn btn-md btn-danger" ng-click="depthy.viewer.error = ''">Got it!</a>
   </div>
+
   <div id="viewer" ng-hide="viewer.error" ng-if="Modernizr.webgl">
     <div class="text-center">
       <h2>Parallax view</h2>
@@ -63,7 +65,7 @@
         </div><br/>
         -->
 
-        <button class="btn btn-primary button-usecompound" ng-click="viewer.useCompoundImage = !viewer.useCompoundImage">{{viewer.useCompoundImage ? 'Sharpen' : 'Blur'}}</button>
+        <button class="btn btn-primary button-usecompound" ng-click="viewer.useCompoundImage = !viewer.useCompoundImage" ga>{{viewer.useCompoundImage ? 'Sharpen' : 'Blur'}}</button>
 
         <span class="popup-group button-animate">
           <div class="popover top anim-fade" ng-if="depthy.animatePopuped">
@@ -71,23 +73,22 @@
             <div class="popover-content" ng-include="'views/animation-options.html'"></div>
           </div>
           <div class="btn-group">
-            <button class="btn btn-primary" ng-click="viewer.animate = !viewer.animate" ng-class="{active: viewer.animate}">Hypnotize</button>
-            <button type="button" class="btn btn-primary" ng-click="toggleAnimatePopup()">
+            <button class="btn btn-primary" ng-click="viewer.animate = !viewer.animate" ng-class="{active: viewer.animate}" ga>Hypnotize</button>
+            <button type="button" class="btn btn-primary" ng-click="toggleAnimatePopup()" ga ga-label="'Hypnotize options'">
               <span class="caret"></span>
             </button>
           </div>
         </span>
 
-        <button class="btn btn-primary button-scale" ng-click="cycleDepthScale()">{{getNextDepthScaleName()}}</button>
+        <button class="btn btn-primary button-scale" ng-click="cycleDepthScale()" ga>{{getNextDepthScaleName()}}</button>
       </div>
       <div class="button-export popup-group">
         <div class="popover top anim-fade" ng-if="depthy.exportPopuped">
           <div ng-include="'views/export-popup.html'"></div>
         </div>
-        <button id="button-export" class="btn btn-success" ng-click="toggleExportPopup()"><i class="icon icon-movie"></i>Export GIF</button>
+        <button id="button-export" class="btn btn-success" ng-click="toggleExportPopup()" ga><i class="icon icon-movie"></i>Create GIF</button>
       </div>  
     </div>
-
   </div>
 
   <div id="file" ng-show="viewer.sourcesReady && !viewer.error">
@@ -102,7 +103,6 @@
       </div>
     </div>
     <!-- {{metaData}} -->
-
   </div>
 
 

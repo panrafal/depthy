@@ -68,9 +68,10 @@ em {
   i.icon {
     margin-right: 0.5em;
     vertical-align: middle;
+    // pixel perfect
+    font-size: 16px;
+    display: inline-block;
     &:before {
-      // pixel perfect
-      font-size: 16px;
     }
   }
   &.btn-icon {
@@ -81,6 +82,32 @@ em {
 a, a:hover {
   color: inherit;
 }
+
+.link-icon {
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.link-share {
+  @extend .link-icon;
+  font-size: 32px;
+  background: #fff;
+  border-radius: 0.2em;
+  line-height: 150%;
+  margin: 0em 0.1em;
+
+  &.icon-facebook {
+    color: $facebook-color; 
+  }
+  &.icon-googleplus {
+    color: $google-color; 
+  }
+  &.icon-twitter {
+    color: $twitter-color; 
+  }
+
+}
+
 p a {
   text-decoration: underline;
 }
@@ -91,6 +118,7 @@ p a {
     display: inline-block;
   }
 }
+
 
 .popup-group {
   position: relative;
