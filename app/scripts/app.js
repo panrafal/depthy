@@ -13,6 +13,7 @@ angular.module('depthyApp', [
   'ui.bootstrap.transition',
 ])
 //fix blob
-.config(function($compileProvider) {
-  $compileProvider.imgSrcSanitizationWhitelist(/^\s*(https?|ftp|file|blob):|data:image\//);
+.config(function($compileProvider, $sceDelegateProvider) {
+  $compileProvider.imgSrcSanitizationWhitelist(/^\s*(https?|blob):|data:image\//);
+  $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|blob):/);
 });

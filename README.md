@@ -17,8 +17,8 @@ This is the source of the http://depthy.stamina.pl webapp. Contributions more th
 
 ## Authors
 
-- [Rafał Lindemann](http://www.stamina.pl/) - idea, code, ux
-- [Łukasz Marcinkowski](http://th7.org/) - idea, help
+**[Rafał Lindemann](http://www.stamina.pl/)** (idea, code, ux) with much appreciated help of
+**[Łukasz Marcinkowski](http://th7.org/)** (idea, code)
 
 ## How to help
 

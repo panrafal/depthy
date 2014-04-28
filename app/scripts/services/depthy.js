@@ -20,8 +20,10 @@ angular.module('depthyApp').provider('depthy', function depthy() {
       animatePopuped: false,
       exportPopuped: false,
 
-      exportSize: 150,
+      exportSize: Modernizr.mobile ? 150 : 300,
       exportType: 'gif',
+
+      imgurId: 'b4ca5b16efb904b',
 
       loadSample: function(name) {
         viewer.compoundSource = 'samples/'+name+'-compound.jpg';
@@ -144,7 +146,7 @@ angular.module('depthyApp').provider('depthy', function depthy() {
           complete: function() {
             var size = {width: depthy.exportSize, height: depthy.exportSize},
                 duration = viewer.animDuration,
-                fps = Math.round(duration >= 2 ? duration >= 4 ? 10 : 20 : 30),
+                fps = Math.min(25, Math.max(8, (viewer.depthScale * (size < 300 ? 0.5 : 1) * 15) / duration)),
                 frames = Math.round(duration * fps),
                 delay = Math.round(1000 / fps),
                 canvas = $document.find('[pixi]'),
@@ -160,14 +162,12 @@ angular.module('depthyApp').provider('depthy', function depthy() {
               // width: size.width,
               // height: size.height,
             });
-            console.log('FPS %d Frames %d Delay %d', fps, frames, delay);
+            console.log('FPS %d Frames %d Delay %d Scale %d Size %d Duration %d', fps, frames, delay, viewer.depthScale, depthy.exportSize, duration);
 
             for(var frame = 0; frame < frames; ++frame) {
               viewer.animPosition = frame / frames;
               viewer.update = 1;
               pixi.render(true);
-              console.log('Frame %d Position %f', frame, viewer.animPosition);
-
               gif.addFrame(canvas[0], {copy: true, delay: delay});
             }
             viewer.animPosition = null;
