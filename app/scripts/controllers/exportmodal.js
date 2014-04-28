@@ -1,11 +1,12 @@
 'use strict';
 
 angular.module('depthyApp')
-.controller('ExportModalCtrl', function ($scope, $modalInstance, depthy, $sce) {
+.controller('ExportModalCtrl', function ($scope, $modalInstance, $rootElement, depthy, $sce) {
   $scope.exportProgress = -1;
   $scope.imageReady = false;
   $scope.shareUrl = '';
-  $scope.tweetUrl = null; 
+  $scope.tweetUrl = null;
+  $scope.imageOverLimit = false;
   var exportPromise = depthy.exportAnimation(),
       sharePromise = null, 
       imageDataUri = null;
@@ -15,7 +16,10 @@ angular.module('depthyApp')
       imageReader.onload = function() {
         imageDataUri = imageReader.result;
         $scope.imageSize = imageDataUri.length;
-        $scope.imageUrl = $sce.trustAsResourceUrl( imageDataUri );
+        $scope.imageOverLimit = imageDataUri.length > 8000000;
+        // $scope.imageUrl = $sce.trustAsResourceUrl( imageDataUri );
+        // this is way way waaay quicker
+        $rootElement.find('.export-modal .export-image img')[0].src = imageDataUri;
         $scope.imageReady = true;
         $scope.$safeApply();
       };

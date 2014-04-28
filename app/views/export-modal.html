@@ -14,28 +14,37 @@
   </div>
 
   <div class="text-center export-image" ng-show="imageReady">
-    <img ng-src="{{imageUrl}}" />
+    <img src="" />
     <p>{{Modernizr.mobile ? 'Press and hold the image' : 'Right-click the image'}} to save your GIF, it's yours to take!</p>
-    <p><em class="text-muted">or</em></p>
-    <div ng-switch="shareUrl" class="export-share">
-      <div ng-switch-when="">
-        <p class="text-danger" ng-if="shareError">Something went wrong when uploading. Please try again.</p>
-        <button class="btn btn-success btn-lg" ng-click="share()">Share it!</button><br/>
-        <em class="text-muted disclaimer">Your photo will be uploaded to <a href="http://imgur.com" target="_blank">Imgur.com</a>.<br/>It will remain relatively private until you go really viral :)</em>
-      </div>
-      <div ng-switch-when="sharing">
-        <div class="progress progress-striped active">
-          <div class="progress-bar" role="progressbar" ng-style="{width: shareProgress * 100 + '%'}">
-          </div>
+
+    <div ng-if="imageOverLimit" class="text-center text-warning">
+    Your GIF came out really <b>big</b>! It's {{imageSize / 1024 / 1024 | number: 2}}MB in size which makes it too big to share.
+    Share it on your own, or make it smaller...
+    </div>
+    <div ng-if="!imageOverLimit">
+      <p><em class="text-muted">or</em></p>
+      <div ng-switch="shareUrl" class="export-share">
+        <div ng-switch-when="">
+          <p class="text-danger" ng-if="shareError">Something went wrong when uploading. Please try again.</p>
+          <button class="btn btn-success btn-lg" ng-click="share()">Share it!</button><br/>
+          <p class="text-muted disclaimer">
+            <em>Your photo will be uploaded to <a href="http://imgur.com" target="_blank">Imgur.com</a>.<br/>It will remain relatively private until you share it too much and it will go viral.</em>
+          </p>
         </div>
-        <p class="text-muted">Uploading, please wait...</p>
-      </div>
-      <div ng-switch-default>
-        Your GIF is now uploaded to:<br/>
-        <p class="text-primary"><a href="{{shareUrl}}" target="_blank">{{shareUrl}}</a></p>
-        <p>
-          Copy this link and use it anywhere you want or <a href="{{tweetUrl}}" target="_blank">tweet about it</a>.
-        </p>
+        <div ng-switch-when="sharing">
+          <div class="progress progress-striped active">
+            <div class="progress-bar" role="progressbar" ng-style="{width: shareProgress * 100 + '%'}">
+            </div>
+          </div>
+          <p class="text-muted">Uploading, please wait...</p>
+        </div>
+        <div ng-switch-default>
+          Your GIF is now uploaded to:<br/>
+          <p class="text-primary"><a href="{{shareUrl}}" target="_blank">{{shareUrl}}</a></p>
+          <p>
+            Copy this link and use it anywhere you want or <a href="{{tweetUrl}}" target="_blank">tweet about it</a>.
+          </p>
+        </div>
       </div>
     </div>
   </div>

@@ -146,7 +146,7 @@ angular.module('depthyApp').provider('depthy', function depthy() {
           complete: function() {
             var size = {width: depthy.exportSize, height: depthy.exportSize},
                 duration = viewer.animDuration,
-                fps = Math.min(30, Math.max(10, (viewer.depthScale * (size < 300 ? 0.5 : 1) * 20) / duration)),
+                fps = Math.min(25, Math.max(8, (viewer.depthScale * (size < 300 ? 0.5 : 1) * 15) / duration)),
                 frames = Math.round(duration * fps),
                 delay = Math.round(1000 / fps),
                 canvas = $document.find('[pixi]'),
