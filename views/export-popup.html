@@ -1,0 +1,12 @@
+<!-- <div class="popover-title">
+  How do you want your GIF?
+</div>
+ --><div class="popover-content scrollable"><div class="option"><!-- <label>Size</label> --><div class="btn-group"><div class="btn btn-default btn-sm" ng-model="depthy.exportSize" btn-radio="150">Small</div><div class="btn btn-default btn-sm" ng-model="depthy.exportSize" btn-radio="300">Standard</div><div class="btn btn-default btn-sm" ng-model="depthy.exportSize" btn-radio="500">Large</div></div></div><!--
+  <div class="option">
+    <label>Type</label>
+    <div class="btn-group">
+      <button type="button" class="btn btn-primary btn-sm" ng-model="depthy.exportType" btn-radio="'gif'">GIF</button>
+      <button type="button" class="btn btn-primary btn-sm" ng-model="depthy.exportType" btn-radio="'webm'">WebM</button>
+    </div>
+  </div>
+  --><div ng-include="'views/animation-options.html'"></div><div ng-include="'views/movement-options.html'"></div></div><div class="popover-footer"><button class="btn btn-success btn-lg" ng-click="startExport()" ga="['send', 'event', 'gif', 'start']"><i class="icon icon-yes"></i>C'mon!</button>&nbsp; <button class="btn btn-default btn-sm" ng-click="depthy.exportPopuped = false">Nah...</button></div>
