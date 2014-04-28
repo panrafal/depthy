@@ -146,7 +146,7 @@ angular.module('depthyApp').provider('depthy', function depthy() {
           complete: function() {
             var size = {width: depthy.exportSize, height: depthy.exportSize},
                 duration = viewer.animDuration,
-                fps = Math.round(duration >= 2 ? duration >= 4 ? 15 : 25 : 30),
+                fps = Math.min(30, Math.max(10, (viewer.depthScale * (size < 300 ? 0.5 : 1) * 20) / duration)),
                 frames = Math.round(duration * fps),
                 delay = Math.round(1000 / fps),
                 canvas = $document.find('[pixi]'),
@@ -162,14 +162,12 @@ angular.module('depthyApp').provider('depthy', function depthy() {
               // width: size.width,
               // height: size.height,
             });
-            console.log('FPS %d Frames %d Delay %d', fps, frames, delay);
+            console.log('FPS %d Frames %d Delay %d Scale %d Size %d Duration %d', fps, frames, delay, viewer.depthScale, depthy.exportSize, duration);
 
             for(var frame = 0; frame < frames; ++frame) {
               viewer.animPosition = frame / frames;
               viewer.update = 1;
               pixi.render(true);
-              console.log('Frame %d Position %f', frame, viewer.animPosition);
-
               gif.addFrame(canvas[0], {copy: true, delay: delay});
             }
             viewer.animPosition = null;

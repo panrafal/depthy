@@ -7,13 +7,15 @@ angular.module('depthyApp')
   $scope.shareUrl = '';
   $scope.tweetUrl = null; 
   var exportPromise = depthy.exportAnimation(),
-      sharePromise = null;
+      sharePromise = null, 
+      imageDataUri = null;
   exportPromise.then(
     function exportSuccess(blob) {
-
       var imageReader = new FileReader();
       imageReader.onload = function() {
-        $scope.imageUrl = $sce.trustAsResourceUrl( imageReader.result );
+        imageDataUri = imageReader.result;
+        $scope.imageSize = imageDataUri.length;
+        $scope.imageUrl = $sce.trustAsResourceUrl( imageDataUri );
         $scope.imageReady = true;
         $scope.$safeApply();
       };
@@ -42,7 +44,7 @@ angular.module('depthyApp')
         Accept: 'application/json'
       },
       data: {
-        image: $sce.getTrustedResourceUrl($scope.imageUrl).replace(/^data:image\/gif;base64,/, ''),
+        image: imageDataUri.substr('data:image/gif;base64,'.length),
         type: 'base64'
       },
       xhr: function() {
