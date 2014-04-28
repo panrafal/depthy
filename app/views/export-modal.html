@@ -14,13 +14,15 @@
   </div>
 
   <div class="text-center export-image" ng-show="imageReady">
-    <img src="" />
+    <img src="" title="Size is {{imageSize / 1024 / 1024 | number: 2}}MB" />
     <p>{{Modernizr.mobile ? 'Press and hold the image' : 'Right-click the image'}} to save your GIF, it's yours to take!</p>
-
-    <div ng-if="imageOverLimit" class="text-center text-warning">
-    Your GIF came out really <b>big</b>! It's {{imageSize / 1024 / 1024 | number: 2}}MB in size which makes it too big to share.
-    Share it on your own, or make it smaller...
-    </div>
+    <p ng-if="Modernizr.android && Modernizr.chrome && imageSize > 1000000" class="text-center text-warning">
+      Due to the bug in Chrome the option to save the GIF can be greyed out. You'll have to make it smaller or share it.
+    </p>
+    <p ng-if="imageOverLimit" class="text-center text-warning">
+      Your GIF came out really <b>big</b>! It's {{imageSize / 1024 / 1024 | number: 2}}MB in size which makes it too big to share.
+      Share it on your own, or make it smaller...
+    </p>
     <div ng-if="!imageOverLimit">
       <p><em class="text-muted">or</em></p>
       <div ng-switch="shareUrl" class="export-share">

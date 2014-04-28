@@ -63,7 +63,7 @@
         </div><br/>
         -->
 
-        <button class="btn btn-primary button-usecompound" ng-click="viewer.useCompoundImage = !viewer.useCompoundImage">{{viewer.useCompoundImage ? 'Blurred' : 'Sharp'}}</button>
+        <button class="btn btn-primary button-usecompound" ng-click="viewer.useCompoundImage = !viewer.useCompoundImage">{{viewer.useCompoundImage ? 'Sharpen' : 'Blur'}}</button>
 
         <span class="popup-group button-animate">
           <div class="popover top anim-fade" ng-if="depthy.animatePopuped">
@@ -78,7 +78,7 @@
           </div>
         </span>
 
-        <button class="btn btn-primary button-scale" ng-click="cycleDepthScale()" ng-class="{active: viewer.depthScale < 0.9 || viewer.depthScale > 1.1}">{{getNextDepthScaleName()}}</button>
+        <button class="btn btn-primary button-scale" ng-click="cycleDepthScale()">{{getNextDepthScaleName()}}</button>
       </div>
       <div class="button-export popup-group">
         <div class="popover top anim-fade" ng-if="depthy.exportPopuped">

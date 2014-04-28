@@ -16,15 +16,20 @@ angular.module('depthyApp')
       imageReader.onload = function() {
         imageDataUri = imageReader.result;
         $scope.imageSize = imageDataUri.length;
-        $scope.imageOverLimit = imageDataUri.length > 8000000;
-        // $scope.imageUrl = $sce.trustAsResourceUrl( imageDataUri );
-        // this is way way waaay quicker
-        $rootElement.find('.export-modal .export-image img')[0].src = imageDataUri;
+        $scope.imageOverLimit = imageDataUri.length > 7000000;
+
+        // this is way way waaay quicker if you set data uris directly......
+        var img = $rootElement.find('.export-modal .export-image img')[0];
+        if (Modernizr.android && Modernizr.chrome) {
+          // chrome on Android can save only data uris, it's opposite for others
+          img.src = imageDataUri;
+        } else {
+          img.src = URL.createObjectURL(blob);
+        }
         $scope.imageReady = true;
         $scope.$safeApply();
       };
       imageReader.readAsDataURL(blob);
-
     },
     function exportFailed() {
       $scope.exportError = 'Export failed';
@@ -82,6 +87,7 @@ angular.module('depthyApp')
     console.log('close');
     if (exportPromise) exportPromise.abort();
     if (sharePromise) sharePromise.abort();
+    if ($scope.imageUrl) URL.revokeObjectURL($scope.imageUrl);
     $modalInstance.close();
   };
 
