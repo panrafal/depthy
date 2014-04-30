@@ -20,6 +20,16 @@
     <div class="btn btn-default btn-sm btn-icon" ng-model="viewer.animScale" btn-radio="{x:0, y:1}" title="Top-bottom movement" ga><i class="icon icon-loop-flat icon-rotate-90"></i></div>
   </div>
 </div>
+<div class="option">
+  <!-- <label>Speed</label> -->
+  <div class="btn-group">
+    <div class="btn btn-default btn-sm" ng-model="viewer.depthFocus" btn-radio="0.00" ga>Near</div>
+    <!-- <div class="btn btn-default btn-sm" ng-model="viewer.depthFocus" btn-radio="0.25" ga>0.25</div> -->
+    <div class="btn btn-default btn-sm" ng-model="viewer.depthFocus" btn-radio="0.50" ga>Middle</div>
+    <!-- <div class="btn btn-default btn-sm" ng-model="viewer.depthFocus" btn-radio="0.75" ga>0.75</div> -->
+    <div class="btn btn-default btn-sm" ng-model="viewer.depthFocus" btn-radio="1.00" ga>Far</div>
+  </div>
+</div>
 
 
 

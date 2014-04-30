@@ -44,6 +44,7 @@ angular.module('depthyApp')
         depthBlurSize: 16,
         offset: {x: 0, y: 0},
         easeFactor: Modernizr.mobile ? 0.2 : 0.9,
+        depthFocus: 0.5,
         update: 1,
         // TRUE when everything is loaded and initialized
         ready: false,
@@ -157,7 +158,7 @@ angular.module('depthyApp')
         }, true);
 
         // recreate stage on textures / stagesize change
-        $scope.$watch('[viewer.stageSize, viewer.sourcesDirty, viewer.sourcesReady, viewer.depthBlurSize, viewer.error, sizeDirty]', function() {
+        $scope.$watch('[viewer.stageSize, viewer.sourcesDirty, viewer.sourcesReady, viewer.depthBlurSize, viewer.depthFocus, viewer.error, sizeDirty]', function() {
           resetStage();
 
           viewer.ready = !viewer.error && imageTexture && depthTexture && viewer.imageSize && viewer.depthSize && viewer.stageSize && viewer.sourcesReady;
@@ -187,7 +188,7 @@ angular.module('depthyApp')
           depthRender.render(depthTextureDOC);
 
           depthFilter = new PIXI.DepthmapFilter(depthRender);
-          depthFilter.focus = 0.5;
+          depthFilter.focus = viewer.depthFocus;
           updateDepthScale();
 
 
