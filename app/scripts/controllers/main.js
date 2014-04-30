@@ -124,14 +124,13 @@ angular.module('depthyApp')
     });
     depthy.exportPopuped = false;
     depthy.viewer.animate = false;
-    ga('send', 'event', 'gif', 'start');
   };
 
   $scope.$on('pixi.webgl.init.exception', function(evt, exception) {
     console.error('WebGL Init Exception', exception);
     Modernizr.webgl = false;
     ga('send', 'event', 'webgl', 'exception', exception.toString(), {nonInteraction: 1});
-  })
+  });
 
   $($window).on('resize', function() {
     depthy.viewer.maxSize = {

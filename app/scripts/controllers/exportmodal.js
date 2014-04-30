@@ -10,15 +10,21 @@ angular.module('depthyApp')
   var exportPromise = depthy.exportAnimation(),
       sharePromise = null,
       imageDataUri = null,
-      exportStarted = new Date();
+      exportStarted = new Date(),
+      gaLabel = 'size ' + depthy.exportSize + ' dur ' + depthy.viewer.animDuration;
+
+  ga('send', 'event', 'gif', 'start', gaLabel);
+
   exportPromise.then(
     function exportSuccess(blob) {
-      ga('send', 'timing', 'gif', 'created', new Date() - exportStarted, 'size ' + depthy.exportSize + ' dur ' + depthy.viewer.animDuration);
+      ga('send', 'timing', 'gif', 'created', new Date() - exportStarted, gaLabel);
+      ga('send', 'event', 'gif', 'created', gaLabel, blob.size);
+      $scope.imageSize = blob.size;
+      $scope.imageOverLimit = blob.size > 2097152;
+
       var imageReader = new FileReader();
       imageReader.onload = function() {
         imageDataUri = imageReader.result;
-        $scope.imageSize = imageDataUri.length;
-        $scope.imageOverLimit = imageDataUri.length > 7000000;
 
         // this is way way waaay quicker if you set data uris directly......
         var img = $rootElement.find('.export-modal .export-image img')[0];
@@ -49,7 +55,7 @@ angular.module('depthyApp')
     $scope.shareError = null;
     $scope.shareProgress = 0;
     sharePromise = $.ajax({
-      url: 'https://api.imgur.com/3/image',
+      url: 'https://api.imgur.com/3/image.json',
       method: 'POST',
       headers: {
         Authorization: 'Client-ID ' + depthy.imgurId,
@@ -73,9 +79,11 @@ angular.module('depthyApp')
         }, false);
         return xhr;
       },
-    }).done(function(result) {
+    }).done(function(response, status, xhr) {
+      console.log(response, status, xhr);
+      var id = response.data.id;
+
       ga('send', 'event', 'gif', 'upload-success');
-      var id = result.data.id;
       $scope.shareUrl = 'https://imgur.com/' + id;
       $scope.share = {
         url: $scope.shareUrl,
@@ -84,12 +92,14 @@ angular.module('depthyApp')
       };
       sharePromise = null;
       $scope.$safeApply();
-    }).fail(function(xhr, status) {
-      ga('send', 'event', 'gif', 'upload-error', status);
+    }).fail(function(xhr) {
+      var response = xhr.responseJSON || {};
+
       sharePromise = null;
       $scope.shareUrl = '';
-      $scope.shareError = 'Something went wrong when uploading. Please try again.';
-      console.error('Share failed with status: %s', status);
+      $scope.shareError = (response.data || {}).error || 'Something went wrong... Please try again.';
+      console.error('Share failed with ', response);
+      ga('send', 'event', 'gif', 'upload-error', $scope.shareError);
       $scope.$safeApply();
     });
 

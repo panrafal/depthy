@@ -37,7 +37,7 @@ angular.module('depthyApp')
         sourcesDirty: null,
         useCompoundImage: true,
         animate: false,
-        animDuration: 4,
+        animDuration: 2,
         animPosition: null,
         animScale: {x: 1, y: 0.5},
         depthScale: 1,
