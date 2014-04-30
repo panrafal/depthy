@@ -15,20 +15,22 @@
 
   <div class="text-center export-image" ng-show="imageReady">
     <img src="" title="Size is {{imageSize / 1024 / 1024 | number: 2}}MB" />
-    <p>{{Modernizr.mobile ? 'Press and hold the image' : 'Right-click the image'}} to save your GIF, it's yours to take!</p>
+    <p>Your GIF weights {{imageSize / 1024 / 1024 | number: 2}}MB and is ready to take! {{Modernizr.mobile ? 'Press and hold the image' : 'Right-click the image'}} to save it.</p>
     <p ng-if="Modernizr.android && Modernizr.chrome && imageSize > 1000000" class="text-center text-warning">
       Due to the bug in Chrome the option to save the GIF can be unavailable. You'll have to make it smaller or share it.
     </p>
     <p ng-if="imageOverLimit" class="text-center text-warning">
-      Your GIF came out really <b>big</b>! It's {{imageSize / 1024 / 1024 | number: 2}}MB in size which makes it too big to share.
-      Share it on your own, or make it smaller...
+      Your GIF came out really <b>big</b>! It's too big to share.
+      You'll have to do it on your own, or make it smaller...
     </p>
     <div ng-if="!imageOverLimit">
       <p><em class="text-muted">or</em></p>
       <div ng-switch="shareUrl" class="export-share">
         <div ng-switch-when="">
-          <p class="text-danger" ng-if="shareError">Something went wrong when uploading. Please try again.</p>
-          <button class="btn btn-success btn-lg" ng-click="share()"><i class="icon icon-cloud-upload"></i>Share it!</button><br/>
+          <p class="text-danger" ng-if="shareError">{{shareError}}</p>
+          <p>
+            <button class="btn btn-success btn-lg" ng-click="share()"><i class="icon icon-cloud-upload"></i>Share it!</button><br/>
+          </p>
           <p class="text-muted disclaimer">
             <em>Your photo will be uploaded to <a href="http://imgur.com" target="_blank">Imgur.com</a>.<br/>It will remain relatively private until you share it too much and it will go viral.</em>
           </p>
@@ -49,12 +51,10 @@
             <i class="icon link-share icon-facebook" share-popup="facebook" share-options="share" ga="['send', 'event', 'export', 'share', 'facebook']"></i>
             <i class="icon link-share icon-googleplus" share-popup="google" share-options="share" ga="['send', 'event', 'export', 'share', 'google']"></i>
           </p>
-          <p>
-            To gain good karma use #depthy in your shares, thanks!
-          </p>
         </div>
       </div>
     </div>
+    <p>To gain good karma use <b>#depthy</b> in your shares, thanks!</p>
   </div>
   
 </div>

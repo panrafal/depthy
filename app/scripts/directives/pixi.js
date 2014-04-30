@@ -32,7 +32,7 @@ angular.module('depthyApp')
           try {
             renderer = new PIXI.WebGLRenderer($element.width(), $element.height(), $element[0], transparent, antialias);
           } catch (e) {
-            Modernizr.webgl = false;
+            $scope.$emit('pixi.webgl.init.exception', e);
             return;
           }
           break;

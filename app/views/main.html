@@ -14,7 +14,7 @@
         Try using Chrome on your desktop or Android device
       </p>
 
-      <div class="file-select" ng-class="{processing: !viewer.sourcesReady}">
+      <div class="file-select" ng-class="{processing: !viewer.sourcesReady && !viewer.error}">
         <a class="btn btn-lg btn-success" ng-href="#" ng-click="selectFile($event)">Load the Lens Blur photo</a>
         <div class="progress progress-striped active">
           <div class="progress-bar"  role="progressbar" style="width: 100%">

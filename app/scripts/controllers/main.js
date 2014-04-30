@@ -127,6 +127,12 @@ angular.module('depthyApp')
     ga('send', 'event', 'gif', 'start');
   };
 
+  $scope.$on('pixi.webgl.init.exception', function(evt, exception) {
+    console.error('WebGL Init Exception', exception);
+    Modernizr.webgl = false;
+    ga('send', 'event', 'webgl', 'exception', exception.toString(), {nonInteraction: 1});
+  })
+
   $($window).on('resize', function() {
     depthy.viewer.maxSize = {
       width: $window.innerWidth * 1,

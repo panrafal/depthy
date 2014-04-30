@@ -88,7 +88,7 @@ angular.module('depthyApp')
       ga('send', 'event', 'gif', 'upload-error', status);
       sharePromise = null;
       $scope.shareUrl = '';
-      $scope.shareError = true;
+      $scope.shareError = 'Something went wrong when uploading. Please try again.';
       console.error('Share failed with status: %s', status);
       $scope.$safeApply();
     });
