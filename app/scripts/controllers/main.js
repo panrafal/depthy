@@ -7,6 +7,8 @@ angular.module('depthyApp')
   $rootScope.viewer = depthy.viewer; // shortcut
   $rootScope.Modernizr = window.Modernizr;
 
+  ga('set', 'dimension1', (Modernizr.webgl ? 'webgl' : 'no-webgl') + ' ' + (Modernizr.webp ? 'webp' : 'no-webp'));
+
   depthy.loadSample('flowers', false);
 
   $rootScope.$safeApply = function(fn) {
@@ -122,6 +124,7 @@ angular.module('depthyApp')
     });
     depthy.exportPopuped = false;
     depthy.viewer.animate = false;
+    ga('send', 'event', 'gif', 'start');
   };
 
   $($window).on('resize', function() {

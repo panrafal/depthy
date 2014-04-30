@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('depthyApp')
-.controller('ExportModalCtrl', function ($scope, $modalInstance, $rootElement, depthy) {
+.controller('ExportModalCtrl', function ($scope, $modalInstance, $rootElement, depthy, ga) {
   $scope.exportProgress = -1;
   $scope.imageReady = false;
   $scope.shareUrl = '';
@@ -9,9 +9,11 @@ angular.module('depthyApp')
   $scope.imageOverLimit = false;
   var exportPromise = depthy.exportAnimation(),
       sharePromise = null,
-      imageDataUri = null;
+      imageDataUri = null,
+      exportStarted = new Date();
   exportPromise.then(
     function exportSuccess(blob) {
+      ga('send', 'timing', 'gif', 'created', new Date() - exportStarted, 'size ' + depthy.exportSize + ' dur ' + depthy.viewer.animDuration);
       var imageReader = new FileReader();
       imageReader.onload = function() {
         imageDataUri = imageReader.result;
@@ -42,6 +44,7 @@ angular.module('depthyApp')
   );
 
   $scope.share = function() {
+    ga('send', 'event', 'gif', 'upload', '', $scope.imageSize);
     $scope.shareUrl = 'sharing';
     $scope.shareError = null;
     $scope.shareProgress = 0;
@@ -71,6 +74,7 @@ angular.module('depthyApp')
         return xhr;
       },
     }).done(function(result) {
+      ga('send', 'event', 'gif', 'upload-success');
       var id = result.data.id;
       $scope.shareUrl = 'https://imgur.com/' + id;
       $scope.share = {
@@ -81,6 +85,7 @@ angular.module('depthyApp')
       sharePromise = null;
       $scope.$safeApply();
     }).fail(function(xhr, status) {
+      ga('send', 'event', 'gif', 'upload-error', status);
       sharePromise = null;
       $scope.shareUrl = '';
       $scope.shareError = true;

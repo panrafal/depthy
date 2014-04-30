@@ -17,7 +17,7 @@
     <img src="" title="Size is {{imageSize / 1024 / 1024 | number: 2}}MB" />
     <p>{{Modernizr.mobile ? 'Press and hold the image' : 'Right-click the image'}} to save your GIF, it's yours to take!</p>
     <p ng-if="Modernizr.android && Modernizr.chrome && imageSize > 1000000" class="text-center text-warning">
-      Due to the bug in Chrome the option to save the GIF can be greyed out. You'll have to make it smaller or share it.
+      Due to the bug in Chrome the option to save the GIF can be unavailable. You'll have to make it smaller or share it.
     </p>
     <p ng-if="imageOverLimit" class="text-center text-warning">
       Your GIF came out really <b>big</b>! It's {{imageSize / 1024 / 1024 | number: 2}}MB in size which makes it too big to share.
@@ -28,7 +28,7 @@
       <div ng-switch="shareUrl" class="export-share">
         <div ng-switch-when="">
           <p class="text-danger" ng-if="shareError">Something went wrong when uploading. Please try again.</p>
-          <button class="btn btn-success btn-lg" ng-click="share()" ga="['send', 'event', 'export', 'share', send]"><i class="icon icon-cloud-upload"></i>Share it!</button><br/>
+          <button class="btn btn-success btn-lg" ng-click="share()"><i class="icon icon-cloud-upload"></i>Share it!</button><br/>
           <p class="text-muted disclaimer">
             <em>Your photo will be uploaded to <a href="http://imgur.com" target="_blank">Imgur.com</a>.<br/>It will remain relatively private until you share it too much and it will go viral.</em>
           </p>
@@ -48,6 +48,9 @@
             <i class="icon link-share icon-twitter" share-popup="twitter" share-options="share" ga="['send', 'event', 'export', 'share', 'twitter']"></i>
             <i class="icon link-share icon-facebook" share-popup="facebook" share-options="share" ga="['send', 'event', 'export', 'share', 'facebook']"></i>
             <i class="icon link-share icon-googleplus" share-popup="google" share-options="share" ga="['send', 'event', 'export', 'share', 'google']"></i>
+          </p>
+          <p>
+            To gain good karma use #depthy in your shares, thanks!
           </p>
         </div>
       </div>
