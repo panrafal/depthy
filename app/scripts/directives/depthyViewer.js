@@ -53,7 +53,7 @@ angular.module('depthyApp')
       $scope.stage = null;
       $scope.sizeDirty = 0;
 
-      function updateDepthScale() {
+      function updateDepthFilter() {
         if (!viewer.ready) return;
         var depthScale = (Modernizr.mobile ? 0.015 : 0.015) * (viewer.depthScale || 1),
             stageSize = viewer.stageSize;
@@ -61,6 +61,7 @@ angular.module('depthyApp')
           x: (stageSize.width > stageSize.height ? 1 : stageSize.height / stageSize.width) * depthScale,
           y: (stageSize.width < stageSize.height ? 1 : stageSize.width / stageSize.height) * depthScale
         };
+        depthFilter.focus = viewer.depthFocus;
       }
 
 
@@ -188,8 +189,7 @@ angular.module('depthyApp')
           depthRender.render(depthTextureDOC);
 
           depthFilter = new PIXI.DepthmapFilter(depthRender);
-          depthFilter.focus = viewer.depthFocus;
-          updateDepthScale();
+          updateDepthFilter();
 
 
           // prepare image render
@@ -211,7 +211,7 @@ angular.module('depthyApp')
           viewer.update = true;
         }, true);
 
-        $scope.$watch('viewer.depthScale', updateDepthScale);
+        $scope.$watch('[viewer.depthScale, viewer.depthFocus]', updateDepthFilter, true);
 
         $element.on('mousemove touchmove', function(e) {
           if (!viewer.ready || viewer.animate || angular.isNumber(viewer.animPosition)) return;
