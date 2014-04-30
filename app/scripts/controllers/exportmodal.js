@@ -50,7 +50,7 @@ angular.module('depthyApp')
   );
 
   $scope.share = function() {
-    ga('send', 'event', 'gif', 'upload', '', $scope.imageSize);
+    ga('send', 'event', 'gif', 'upload', gaLabel, $scope.imageSize);
     $scope.shareUrl = 'sharing';
     $scope.shareError = null;
     $scope.shareProgress = 0;
@@ -92,14 +92,14 @@ angular.module('depthyApp')
       };
       sharePromise = null;
       $scope.$safeApply();
-    }).fail(function(xhr) {
+    }).fail(function(xhr, status) {
       var response = xhr.responseJSON || {};
 
       sharePromise = null;
       $scope.shareUrl = '';
       $scope.shareError = (response.data || {}).error || 'Something went wrong... Please try again.';
       console.error('Share failed with ', response);
-      ga('send', 'event', 'gif', 'upload-error', $scope.shareError);
+      ga('send', 'event', 'gif', 'upload-error', status + ': ' + $scope.shareError);
       $scope.$safeApply();
     });
 
