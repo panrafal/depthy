@@ -1,19 +1,24 @@
 $icon-font-path: "/bower_components/bootstrap-sass-official/vendor/assets/fonts/bootstrap/";
 
-$color-accent: #2BBFF0;
-
-$body-bg: #092933;
-$text-color: #fff;
-$well-bg: rgba(0,0,0,0.2);
-$headings-font-weight: 700;
-$headings-color: $color-accent;
-$text-muted: #88a0a8;
-
-$brand-primary: $color-accent;
+$brand-primary: #2BBFF0; //#0165BD; 
 $brand-danger: #F83A2D;
 $brand-success: #47A447;
 $brand-warning: #F8D920;
-$state-warning-text: #F8D920;
+$brand-info: #5bc0de;
+
+$body-bg: #222;
+$text-color: #eee;
+$headings-color: $brand-primary;
+$text-muted: #88a0a8;
+
+$font-family-sans-serif: 'Roboto Condensed', Helvetica, Arial, sans-serif;
+
+$headings-font-family: $font-family-sans-serif;
+$headings-font-weight: 700;
+
+$well-bg: rgba(0,0,0,0.2);
+
+$state-warning-text: $brand-warning;
 
 $btn-default-color: #fff;
 $btn-default-bg: lighten($body-bg, 20%);
@@ -28,16 +33,31 @@ $modal-content-bg: $body-bg;
 $modal-header-border-color: lighten($body-bg, 10%);
 // $border-radius-base: 0px;
 
+@import "_bootstrap.scss";
+
+$navbar-height: 40px;
+$navbar-bg: $body-bg;
+
+$leftpane-bg: $body-bg;
+$leftpane-width: 450px;
+
+$samples-width: 75px;
+$samples-bg: $body-bg;
+
 $facebook-color: #3B5998;
 $google-color: #D74635;
 $twitter-color: #00C3F8;
 
-@import "_bootstrap.scss";
+$media-small: "(max-width: #{$screen-xs-max})";
+$media-small: "(min-width: #{$screen-sm-min}) and (max-width: #{$screen-sm-max})";
+$media-medium: "(min-width: #{$screen-md-min}) and (max-width: #{$screen-md-max})";
+$media-large: "(min-width: #{$screen-lg-min})";
+$media-dekstop: "(min-width: #{$screen-md-min})";
 
-// bower:scss
-// endbower
 
+@import "_mixins.scss";
 @import "_common.scss";
 @import "_animations.scss";
 @import "_elements.scss";
+@import "_rwd.scss";
 @import "_poor.scss";

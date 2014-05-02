@@ -1,10 +1,64 @@
-header {
-  padding: 2em 0 2em 0;
-  background: $body-bg;
+
+
+#main {
+  position: fixed;
+  left: 0px;
+  top: 0px;
+  width: 100vw;
+  height: 100vh;
+}
+
+// ---------------------------------------
+#navbar {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  height: remify($navbar-height);
+  z-index: 40;
+  background: $navbar-bg;
+
+  logo {
+    font-size: remify($navbar-height);
+  }
+}
+
+// ---------------------------------------
+#leftpane {
+  position: absolute;
+  left: 0px;
+  top: remify($navbar-height);
+  width: remify($leftpane-width);
+  bottom: 0px;
+  max-width: 100vw;
+  z-index: 50;
+  background: $leftpane-bg;
+}
+
+// ---------------------------------------
+#about {
+  position: absolute;
+  height: 100%;
+  left: 0px;
+  right: percentage($samples-width / $leftpane-width);
+
+  padding: 2em;
+
+  oveflow-y: auto;
   // color: #fff;
+
+  header {
+    text-align: center;
+  }
+
+  logo {
+    font-size: 5em;
+    margin-bottom: 2rem;
+  }
+
   .container {
     max-width: 650px;
-  }
+  } 
 
   .notice {
     opacity: 0.5;
@@ -39,18 +93,41 @@ header {
     }
   }
 
-  .gallery {
-    margin-top: 2em;
-    
-     img {
-      cursor:pointer;
-      width: 80px;
-      height: 80px;
-      box-shadow: 1px 1px 1px rgba(0,0,0,0.5);
-      margin-bottom: 0.3em;
-     }
+}
+
+// ---------------------------------------
+#samples {
+  position: absolute;
+  height: 100%;
+  right: 0px;
+  width: percentage($samples-width / $leftpane-width);
+  background: $samples-bg;
+
+  img {
+    cursor:pointer;
+    max-width: 100%;
+    box-shadow: 1px 1px 1px rgba(0,0,0,0.5);
+    margin-bottom: 0.3em;
   }
 }
+
+// ---------------------------------------
+#viewer {
+  z-index: 1;
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  top: 0px;
+  bottom: 0px;
+}
+
+
+
+
+
+
+
+
 
 #error {
   $error-bg: darken($brand-danger, 35%);

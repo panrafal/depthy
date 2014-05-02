@@ -1,48 +1,57 @@
 <div id="main" ng-controller="MainCtrl">
-  <header>
-    <div class="container text-center">
-      <h1>Depthy</h1>
-      <p class="lead">Poke around with awesome photos<br/>made with <a href="https://play.google.com/store/apps/details?id=com.google.android.GoogleCamera" target="_blank">Google Camera</a>'s Lens Blur.</p>
-      <p>
-        Make a photo using Lens Blur mode and load it using the button below.<br/>
-        Photos are processed on your device - no uploading!
-        <span ng-if="!Modernizr.mobile"><br/>It works on your Android device too!</span>
-      </p>
-      <p ng-if="!Modernizr.webgl">
-        Please note, that your browser does not support WebGL.
-        You'll not see the parallax effect...<br/>
-        Try using Chrome on your desktop or Android device
-      </p>
+  <nav id="navbar">
+    <logo><span>depthy</span></logo>
+    <div class="btn btn-success">Open</div>
+  </nav>
 
-      <div class="file-select" ng-class="{processing: !viewer.sourcesReady && !viewer.error}">
-        <a class="btn btn-lg btn-success" ng-href="#" ng-click="selectFile($event)">Load the Lens Blur photo</a>
-        <div class="progress progress-striped active">
-          <div class="progress-bar"  role="progressbar" style="width: 100%">
+  <div id="leftpane">
+    <section id="about">
+      <header>
+        <logo><span>depthy</span></logo>
+        <p class="lead">Poke around with awesome photos<br/>made with <a href="https://play.google.com/store/apps/details?id=com.google.android.GoogleCamera" target="_blank">Google Camera</a>'s Lens Blur.</p>
+      </header>
+      <article>
+        <p>
+          Make a photo using Lens Blur mode and load it using the button below.<br/>
+          Photos are processed on your device - no uploading!
+          <span ng-if="!Modernizr.mobile"><br/>It works on your Android device too!</span>
+        </p>
+        <div class="file-select" ng-class="{processing: !viewer.sourcesReady && !viewer.error}">
+          <a class="btn btn-lg btn-success" ng-href="#" ng-click="selectFile($event)">Load the Lens Blur photo</a>
+          <div class="progress progress-striped active">
+            <div class="progress-bar"  role="progressbar" style="width: 100%">
+            </div>
           </div>
         </div>
-      </div>
-      <em class="text-muted" ng-if="!Modernizr.mobile">or drag&amp;drop it anywhere</em>
-      <div class="gallery">
-        <img src="samples/flowers-thumb.jpg" ng-click="loadSample('flowers')">
-        <img src="samples/hut-thumb.jpg"  ng-click="loadSample('hut')">
-        <img src="samples/shelf-thumb.jpg"  ng-click="loadSample('shelf')">
-        <img src="samples/mango-thumb.jpg"  ng-click="loadSample('mango')">
-        <img src="samples/tunnel-thumb.jpg"  ng-click="loadSample('tunnel')">
-      </div>
-    </div>
-  </header>
+        <em class="text-muted" ng-if="!Modernizr.mobile">or drag&amp;drop it anywhere</em>
+      </article>
+      <footer>
+        Depthy 0.1.1 created by <a href="http://www.stamina.pl/">Rafał Lindemann</a>.<br/>
+        Ideas? Issues? Code? It's open sourced on <a href="https://github.com/panrafal/depthy">GitHub</a>!
+      </footer>
+    </section>
+    <section id="samples">
+      <img src="samples/flowers-thumb.jpg" ng-click="loadSample('flowers')">
+      <img src="samples/hut-thumb.jpg"  ng-click="loadSample('hut')">
+      <img src="samples/shelf-thumb.jpg"  ng-click="loadSample('shelf')">
+      <img src="samples/mango-thumb.jpg"  ng-click="loadSample('mango')">
+      <img src="samples/tunnel-thumb.jpg"  ng-click="loadSample('tunnel')">
+    </section>
+  </div>
 
-  <div id="error" class="ng-hide" ng-hide="!depthy.viewer.error">
+
+<!--   <div id="error" class="ng-hide" ng-hide="!depthy.viewer.error">
     <h2>{{depthy.viewer.error}}</h2>
     <p>Make sure you only select photos made in the Lens Blur mode.</p>
     <a class="btn btn-md btn-danger" ng-click="depthy.viewer.error = ''">Got it!</a>
   </div>
-
-  <div id="viewer" ng-hide="viewer.error" ng-if="Modernizr.webgl">
-    <div class="text-center">
+ -->
+  <section id="viewer">
+<!--     <div class="text-center">
       <h2>Parallax view</h2>
       <p class="text-muted">Move your {{Modernizr.devicemotion && Modernizr.mobile ? 'device' : 'cursor'}} around to see the effect</p>
     </div>
+ -->    
     <div class="depthy-viewer" depthy-viewer="depthy.viewer" ng-style="{height: v.viewerSize.height + 'px'}">
       <canvas pixi="stage" pixi-render="pixiRender" pixi-transparent="true" pixi-renderer="'webgl'" 
         ng-style="{
@@ -89,25 +98,6 @@
         <button id="button-export" class="btn btn-success btn-lg" ng-click="toggleExportPopup()" ga><i class="icon icon-movie"></i>Create GIF</button>
       </div>  
     </div>
-  </div>
+  </section>
 
-  <div id="file" ng-show="viewer.sourcesReady && !viewer.error">
-    <h2>Extracted images</h2>
-    <!-- <img id="compound" ng-src="{{compoundSource}}"> -->
-    <div class="images">
-      <div id="image" class="image" ng-class="{empty: !hasImage()}">
-        <img ng-hide="!hasImage()" image-source="image">
-      </div>
-      <div id="depth" class="image" ng-class="{empty: !hasDepth()}">
-        <img ng-hide="!hasDepth()" image-source="depth">
-      </div>
-    </div>
-    <!-- {{metaData}} -->
-  </div>
-
-
-  <footer>
-    Depthy 0.1.1 created by <a href="http://www.stamina.pl/">Rafał Lindemann</a>.<br/>
-    Ideas? Issues? Code? It's open sourced on <a href="https://github.com/panrafal/depthy">GitHub</a>!
-  </footer>
 </div>
