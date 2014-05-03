@@ -24,6 +24,9 @@
     "Modernizr": false,
     "PIXI": false,
     "GIF": false,
+    "isJpg": false,
+    "isPng": false,
+    "DepthReader": false,
     "_": true,
     "requestAnimFrame": true
   }

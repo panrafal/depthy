@@ -13,12 +13,11 @@ angular.module('depthyApp').provider('depthy', function depthy() {
 
 
 
-  this.$get = function(ga, $timeout, $rootScope, $document, $q) {
+  this.$get = function(ga, $timeout, $rootScope, $document, $window, $q, $modal, $state, $location) {
     var depthy = {
       viewer: viewer,
 
-      loadedSample: false,
-      loadedName: false,
+      loaded: {},
 
       animatePopuped: false,
       exportPopuped: false,
@@ -46,129 +45,133 @@ angular.module('depthyApp').provider('depthy', function depthy() {
         return !!viewer.compoundSource;
       },
 
-      loadSample: function(name) {
-        if (depthy.loadedSample === name) return;
-        viewer.compoundSource = 'samples/'+name+'-compound.jpg';
-        viewer.depthSource = 'samples/'+name+'-depth.jpg';
-        viewer.imageSource = 'samples/'+name+'-image.jpg';
-        viewer.sourcesReady = true;
-        viewer.sourcesDirty++;
-        viewer.metadata = {};
-        viewer.error = false;
-        depthy.loadedSample = depthy.loadedName = name;
+      showAlert: function(message, options, state) {
+        // push state for back button
+        state = state || 'alert';
+        if (state) $state.go(state);
+        var modal, deregister;
+        modal = $modal.open(angular.extend({
+          templateUrl: 'views/alert-modal.html',
+          windowClass: 'alert-modal',
+          scope: angular.extend($rootScope.$new(), {message: message}),
+        }, options || {}));
+
+        modal.result.then(
+          function() { 
+            if (deregister) deregister();
+            if (state) $window.history.back();
+          }, 
+          function() {
+            if (deregister) deregister();
+            if (state) $location.replace();
+          }
+        );
+
+        if (state) {
+          deregister = $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState) {
+            if (fromState.name === state) {
+              deregister();
+              deregister = null;
+              state = false;
+              modal.close();
+            }
+          });
+        }
+        return modal;
       },
 
-      handleCompoundFile: function(file) {
-        var deferred = $q.defer(), result = deferred.promise; 
+      loadSampleImage: function(name) {
+        if (depthy.loaded.sample === name) return;
+        this._changeSource('compoundSource', 'samples/'+name+'-compound.jpg');
+        this._changeSource('depthSource', 'samples/'+name+'-depth.jpg');
+        this._changeSource('imageSource', 'samples/'+name+'-image.jpg');
+        viewer.sourcesReady = true;
+        viewer.sourcesDirty++;
+        depthy.loaded = {
+          sample: name,
+          name: name,
+        };
+      },
 
-        var onError = function(e) {
-          viewer.imageSource = false;
-          viewer.depthSource = false;
-          viewer.compoundSource = false;
-          viewer.sourcesReady = true;
-          viewer.sourcesDirty++;
-          viewer.metadata = {};
-          depthy.loadedSample = depthy.loadedName = false;
-          viewer.error = e;
-          ga('send', 'event', 'image', 'error', e);
-          deferred.reject();
+      loadLocalImage: function(file) {
+        var reader = new FileReader(), 
+            deferred = $q.defer(); 
+
+        this._resetSources();
+        depthy.loaded = {
+          local: true,
+          name: (file.name || '').replace(/\.(jpe?g|png)$/i, ''),
         };
 
         if (file.type !== 'image/jpeg') {
+          viewer.sourcesReady = true;
           deferred.reject('Only JPEG files are supported!');
-          return;
+        } else {
+          reader.onload = function() {
+            depthy._parseArrayBuffer(reader.result, deferred);
+          };
+          reader.readAsArrayBuffer(file);
         }
 
-        depthy.loadedSample = false;
-        depthy.loadedName = (file.name || '').replace(/\.(jpe?g|png)$/i, '');
-
-        viewer.imageSource = false;
-        viewer.depthSource = false;
-        viewer.compoundSource = false;
-        viewer.sourcesReady = false;
-        viewer.error = false;
-        viewer.sourcesDirty++;
-
-        $timeout(function() {
-          var imageReader = new FileReader(),
-              loaded = 0;
-          imageReader.onload = function(e) {
-            viewer.error = false;
-
-            try {
-              var image = depthy.parseCompoundImage(e.target.result);
-
-              ga('send', 'event', 'image', 'parsed');
-
-              viewer.imageSource = image.imageUri;
-              viewer.depthSource = image.depthUri;
-
-              delete image.imageData;
-              delete image.depthData;
-              delete image.imageUri;
-              delete image.depthUri;
-
-              viewer.metadata = image;
-              viewer.sourcesReady = ++loaded > 1;
-              viewer.sourcesDirty++;
-            } catch (e) {
-              onError(e);
-            }
-
-            $rootScope.$apply();
-          };
-
-          imageReader.readAsBinaryString(file);
-
-          var dataReader = new FileReader();
-          dataReader.onload = function(e) {
-            viewer.compoundSource = e.target.result;
-            viewer.sourcesReady =  ++loaded > 1;
-            viewer.sourcesDirty++;
-
-            $rootScope.$apply();
-          };
-          dataReader.readAsDataURL(file);
-        }, 100);
-
-        return result;
+        return deferred.promise;
       },
 
-      parseCompoundImage: function(data) {
-        // this IS a really quick and HACKY way of extracting this info, 
-        // please go to https://github.com/spite/android-lens-blur-depth-extractor 
-        // for proper implementation! I'll be using it soon too ;)
-        var extendedXmp = (data.match(/xmpNote:HasExtendedXMP="(.+?)"/i) || [])[1];
-        if (extendedXmp) {
-          // we need to clear out JPEG's block headers. Let's be juvenile and don't care about checking this for now, shall we?
-          // 2b + 2b + http://ns.adobe.com/xmp/extension/ + 1b + extendedXmp + 4b + 4b
-          data = data.replace(new RegExp('[\\s\\S]{4}http:\\/\\/ns\\.adobe\\.com\\/xmp\\/extension\\/[\\s\\S]' + extendedXmp + '[\\s\\S]{8}', 'g'), '');
+      loadUrlImage: function(url) {
+        if (depthy.loaded.url === url) return;
+
+        this._resetSources();
+        depthy.loaded = {
+          url: url,
+          name: false,
+        };
+
+        var xhr = new XMLHttpRequest(),
+            deferred = $q.defer(); 
+        //todo: cors
+        xhr.open( 'get', url );
+        xhr.responseType = 'arraybuffer';
+        xhr.onload = function() {
+          depthy._parseArrayBuffer(this.response, deferred);
+        };
+        xhr.send( null );
+        return deferred.promise;
+      },
+
+
+      _changeSource: function(type, source) {
+        //todo: release blob url
+        viewer[type] = source;
+      },
+
+      _resetSources: function() {
+        this._changeSource('imageSource', false);
+        this._changeSource('depthSource', false);
+        this._changeSource('compoundSource', false);
+        viewer.sourcesReady = false;
+        viewer.sourcesDirty++;
+      },
+
+      _parseArrayBuffer: function(buffer, deferred) {
+        var byteArray = new Uint8Array(buffer);
+        if (isJpg(byteArray)) {
+          var reader = new DepthReader();
+
+          var result = function(error) {
+            console.log('DepthExtractor result', error);
+            depthy._changeSource('imageSource', reader.image.data ? 'data:' + reader.image.mime + ';base64,' + reader.image.data : false);
+            depthy._changeSource('depthSource', reader.depth.data ? 'data:' + reader.depth.mime + ';base64,' + reader.depth.data : false);
+            depthy._changeSource('compoundSource', URL.createObjectURL( new Blob([buffer], {type: 'image/jpeg'}) ));
+            viewer.sourcesReady = true;
+            viewer.sourcesDirty++;
+            deferred.resolve(!!viewer.depthSource);
+          };
+
+          reader.parseFile(buffer, result, result);
+        } else {
+          viewer.sourcesReady = true;
+          viewer.sourcesDirty++;
+          deferred.reject('JPG required!');
         }
-
-        var xmp = data.match(/<x:xmpmeta [\s\S]+?<\/x:xmpmeta>/g),
-          result = {};
-        if (!xmp) throw 'No XMP metadata found!';
-        xmp = xmp.join('\n', xmp);
-
-
-        result.imageMime = (xmp.match(/GImage:Mime="(.+?)"/i) || [])[1];
-        result.imageData = (xmp.match(/GImage:Data="(.+?)"/i) || [])[1];
-        result.depthMime = (xmp.match(/GDepth:Mime="(.+?)"/i) || [])[1];
-        result.depthData = (xmp.match(/GDepth:Data="(.+?)"/i) || [])[1];
-
-        if (result.imageMime && result.imageData) {
-          result.imageUri = 'data:' + result.imageMime + ';base64,' + result.imageData;
-        }
-        if (result.depthMime && result.depthData) {
-          result.depthUri = 'data:' + result.depthMime + ';base64,' + result.depthData;
-        }
-
-        if (!result.depthUri) throw 'No depth map found!';
-        if (!result.imageUri) throw 'No original image found!';
-
-        result.focalDistance = (xmp.match(/GFocus:FocalDistance="(.+?)"/i) || [])[1];
-
-        return result;
       },
 
 

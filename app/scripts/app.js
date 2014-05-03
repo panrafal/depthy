@@ -24,7 +24,6 @@ angular.module('depthyApp', [
 
   $urlRouterProvider.otherwise('/');
 
-  var firstState = true;
   $stateProvider
   .state('index', {
       url: '/',
@@ -32,18 +31,30 @@ angular.module('depthyApp', [
         if (!$state.current.name) {
           // first timer
           depthy.leftpaneOpen();
-          depthy.loadSample('flowers');
+          depthy.loadSampleImage('flowers');
         }
       }
   })
   .state('sample', {
-      url: '/sample/:sample',
-      onEnter: function ($stateParams, depthy) {
-        console.log('Sample ROUTE!', $stateParams);
-        depthy.loadSample($stateParams.sample);
+      url: '/sample/:id',
+      controller: function ($stateParams, depthy) {
+        depthy.loadSampleImage($stateParams.id);
       }
   })
-
+  .state('imgur', {
+      url: '/i/:id',
+      controller: function ($stateParams, depthy) {
+        depthy.loadUrlImage('http://i.imgur.com/' + $stateParams.id);
+      }
+  })
+  // hollow state for locally loaded files
+  .state('file', {
+      url: '/file',
+  })
+  // hollow state for back button on alerts
+  .state('alert', {
+      url: '/alert',
+  });
 })
 .run(function($rootScope, ga, $location) {
   $rootScope.$on('$stateChangeSuccess', function() {

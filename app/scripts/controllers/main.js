@@ -29,7 +29,7 @@ angular.module('depthyApp')
   };
 
   $scope.loadSample = function(name) {
-    $state.go('sample', {sample: name});
+    $state.go('sample', {id: name});
     depthy.leftpaneOpen(true);
   };
 
@@ -59,7 +59,18 @@ angular.module('depthyApp')
   // $scope.$on('fileselect', function(e, files) {
   $scope.$watch('compoundFiles', function(files) {
     if (files && files.length) {
-      depthy.handleCompoundFile(files[0]);
+      $state.go('file');
+      depthy.loadLocalImage(files[0]).then(
+        function(withDepthmap) {
+          ga('send', 'event', 'image', 'parsed', withDepthmap ? 'depthmap' : 'no-depthmap');
+          depthy.leftpaneClose();
+        },
+        function(e) {
+          ga('send', 'event', 'image', 'error', e);
+          depthy.showAlert(e);
+        }
+      );
+      // depthy.handleCompoundFile(files[0]);
     }
   });
 

@@ -159,10 +159,10 @@ angular.module('depthyApp')
         }, true);
 
         // recreate stage on textures / stagesize change
-        $scope.$watch('[viewer.stageSize, viewer.sourcesDirty, viewer.sourcesReady, viewer.depthBlurSize, viewer.depthFocus, viewer.error, sizeDirty]', function() {
+        $scope.$watch('[viewer.stageSize, viewer.sourcesDirty, viewer.sourcesReady, viewer.depthBlurSize, viewer.depthFocus, sizeDirty]', function() {
           resetStage();
 
-          viewer.ready = !viewer.error && imageTexture && depthTexture && viewer.imageSize && viewer.depthSize && viewer.stageSize && viewer.sourcesReady;
+          viewer.ready = imageTexture && depthTexture && viewer.imageSize && viewer.depthSize && viewer.stageSize && viewer.sourcesReady;
 
           if (!viewer.ready) return;
 
