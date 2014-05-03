@@ -28,7 +28,26 @@ angular.module('depthyApp').provider('depthy', function depthy() {
 
       imgurId: 'b4ca5b16efb904b',
 
+      // true - opened fully, 'samples' opened on samples
+      leftpaneOpened: false,
+
+      zenMode: false,
+
+      isProcessing: function() {
+        return !viewer.sourcesReady;
+      },
+      hasImage: function() {
+        return !!viewer.imageSource;
+      },
+      hasDepthmap: function() {
+        return !!viewer.depthSource;
+      },
+      hasCompoundImage: function() {
+        return !!viewer.compoundSource;
+      },
+
       loadSample: function(name) {
+        if (depthy.loadedSample === name) return;
         viewer.compoundSource = 'samples/'+name+'-compound.jpg';
         viewer.depthSource = 'samples/'+name+'-depth.jpg';
         viewer.imageSource = 'samples/'+name+'-image.jpg';
@@ -40,6 +59,7 @@ angular.module('depthyApp').provider('depthy', function depthy() {
       },
 
       handleCompoundFile: function(file) {
+        var deferred = $q.defer(), result = deferred.promise; 
 
         var onError = function(e) {
           viewer.imageSource = false;
@@ -51,16 +71,20 @@ angular.module('depthyApp').provider('depthy', function depthy() {
           depthy.loadedSample = depthy.loadedName = false;
           viewer.error = e;
           ga('send', 'event', 'image', 'error', e);
+          deferred.reject();
         };
 
         if (file.type !== 'image/jpeg') {
-          onError('Only JPEGs are supported!');
+          deferred.reject('Only JPEG files are supported!');
           return;
         }
 
         depthy.loadedSample = false;
         depthy.loadedName = (file.name || '').replace(/\.(jpe?g|png)$/i, '');
 
+        viewer.imageSource = false;
+        viewer.depthSource = false;
+        viewer.compoundSource = false;
         viewer.sourcesReady = false;
         viewer.error = false;
         viewer.sourcesDirty++;
@@ -106,6 +130,8 @@ angular.module('depthyApp').provider('depthy', function depthy() {
           };
           dataReader.readAsDataURL(file);
         }, 100);
+
+        return result;
       },
 
       parseCompoundImage: function(data) {
@@ -202,6 +228,19 @@ angular.module('depthyApp').provider('depthy', function depthy() {
         };
         return result;
       },
+
+      leftpaneToggle: function() {
+        depthy.leftpaneOpened = depthy.leftpaneOpened !== true;
+      },
+
+      leftpaneOpen: function(samples) {
+        depthy.leftpaneOpened = samples ? 'samples' : true;
+      },
+
+      leftpaneClose: function() {
+        depthy.leftpaneOpened = false;
+      },
+
 
     };
 

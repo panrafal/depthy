@@ -1,15 +1,13 @@
 'use strict';
 
 angular.module('depthyApp')
-.controller('MainCtrl', function ($rootScope, $window, $scope, $timeout, ga, depthy, $element, $modal) {
+.controller('MainCtrl', function ($rootScope, $window, $scope, $timeout, ga, depthy, $element, $modal, $state) {
 
   $rootScope.depthy = depthy;
   $rootScope.viewer = depthy.viewer; // shortcut
   $rootScope.Modernizr = window.Modernizr;
 
   ga('set', 'dimension1', (Modernizr.webgl ? 'webgl' : 'no-webgl') + ' ' + (Modernizr.webp ? 'webp' : 'no-webp'));
-
-  depthy.loadSample('flowers', false);
 
   $rootScope.$safeApply = function(fn) {
     var phase = this.$root.$$phase;
@@ -31,8 +29,8 @@ angular.module('depthyApp')
   };
 
   $scope.loadSample = function(name) {
-    depthy.loadSample(name);
-    ga('send', 'event', 'sample', name);
+    $state.go('sample', {sample: name});
+    depthy.leftpaneOpen(true);
   };
 
   $scope.getNextDepthScaleName = function() {
@@ -75,21 +73,6 @@ angular.module('depthyApp')
 
   });
 
-  // wait for DOM
-
-  // animatePopover = $popover($element.find('#button-animate'), {
-  //   placement: 'top',
-  //   trigger: 'manual',
-  //   // title: 'How do you want your GIF?',
-  //   contentTemplate: 'views/animate-popover.html',
-  // });
-
-  // exportPopover = $popover($element.find('#button-export'), {
-  //   placement: 'top',
-  //   trigger: 'manual',
-  //   // title: 'How do you want your GIF?',
-  //   contentTemplate: 'views/export-popover.html',
-  // });
 
   $scope.toggleAnimatePopup = function() {
     if (!depthy.animatePopuped) depthy.viewer.animate = true;

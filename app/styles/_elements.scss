@@ -19,6 +19,8 @@
   background: $navbar-bg;
 
   logo {
+    position: absolute;
+    left: 0px;
     font-size: remify($navbar-height);
   }
 }
@@ -33,6 +35,17 @@
   max-width: 100vw;
   z-index: 50;
   background: $leftpane-bg;
+
+  transition: all 0.5s ease-in-out;
+  transform: translateX(-100%);
+
+  .leftpane-opened & {
+    transform: translateX(0%);
+  }
+
+  .leftpane-samples & {
+    transform: translateX(- percentage(1 - $samples-width / $leftpane-width));
+  }
 }
 
 // ---------------------------------------

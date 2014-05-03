@@ -1,53 +1,63 @@
 
 .anim-fade {
-    transition: all 0.2s ease-in;
+  transition: all 0.2s ease-in;
 
-    &.ng-hide-remove, &.ng-enter {
-        opacity: 0;
-    }
-    &.ng-hide-remove-active, &.ng-enter-active {
-        opacity: 1;
-    }
+  &.ng-hide-remove, &.ng-enter {
+    opacity: 0;
+  }
+  &.ng-hide-remove-active, &.ng-enter-active {
+    opacity: 1;
+  }
 
-    &.ng-hide-active, &.ng-leave-active {
-        opacity: 0;
-    }    
+  &.ng-hide-active, &.ng-leave-active {
+    opacity: 0;
+  }    
 }
 
 .anim-slideup {
-    transition: all 0.5s ease-in;
+  transition: all 0.5s ease-in;
 
-    &.ng-hide-remove, &.ng-enter {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    &.ng-hide-remove-active, &.ng-enter-active {
-        opacity: 1;
-        transform: translateY(0px);
-    }
+  &.ng-hide-remove, &.ng-enter {
+    opacity: 0;
+      transform: translateY(20px);
+  }
+  &.ng-hide-remove-active, &.ng-enter-active {
+    opacity: 1;
+    transform: translateY(0px);
+  }
 
-    &.ng-hide-active, &.ng-leave-active {
-        opacity: 0;
-        transform: translateY(20px);
-    }    
+  &.ng-hide-active, &.ng-leave-active {
+    opacity: 0;
+    transform: translateY(20px);
+  }    
 }
 
 .anim-expand {
-    transition: all 0.2s ease-in;
-    overflow:hidden;
+  transition: all 0.2s ease-in;
+  overflow:hidden;
 
-    &.ng-hide-remove:not(.ng-hide-remove-active), 
-    &.ng-enter:not(.ng-enter-active),
-    &.ng-hide-active,
-    &.ng-leave-active {
-        height: 0px;
-        margin-top: 0px;
-        margin-bottom: 0px;
-        padding-top: 0px;
-        padding-botto: 0px;
-    }
-    &.ng-hide-remove-active, &.ng-enter-active {
-        // height: auto;
-    }
+  &.ng-hide-remove:not(.ng-hide-remove-active), 
+  &.ng-enter:not(.ng-enter-active),
+  &.ng-hide-active,
+  &.ng-leave-active {
+    height: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    padding-top: 0px;
+    padding-botto: 0px;
+  }
+  &.ng-hide-remove-active, &.ng-enter-active {
+      // height: auto;
+  }
 
+}
+
+
+@keyframes icon-rotate { 
+  0% { 
+    transform: rotate(0deg); 
+  }
+  100% { 
+    transform: rotate(359deg); 
+  } 
 }

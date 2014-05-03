@@ -1,7 +1,7 @@
-<div id="main" ng-controller="MainCtrl">
-  <nav id="navbar">
-    <logo><span>depthy</span></logo>
-    <div class="btn btn-success">Open</div>
+<div id="main" ng-controller="MainCtrl" ng-class="{'leftpane-opened': depthy.leftpaneOpened === true, 'leftpane-samples': depthy.leftpaneOpened === 'samples', 'zen-mode': depthy.zenMode}">
+  <nav id="navbar" class="text-right">
+    <logo ng-click="depthy.leftpaneToggle()"><span>depthy</span></logo>
+    <div class="btn btn-success" ng-click="selectFile($event)"><i class="icon" ng-class="depthy.isProcessing() ? 'icon-loading' : 'icon-open'"></i>Open</div>
   </nav>
 
   <div id="leftpane">
@@ -16,12 +16,8 @@
           Photos are processed on your device - no uploading!
           <span ng-if="!Modernizr.mobile"><br/>It works on your Android device too!</span>
         </p>
-        <div class="file-select" ng-class="{processing: !viewer.sourcesReady && !viewer.error}">
-          <a class="btn btn-lg btn-success" ng-href="#" ng-click="selectFile($event)">Load the Lens Blur photo</a>
-          <div class="progress progress-striped active">
-            <div class="progress-bar"  role="progressbar" style="width: 100%">
-            </div>
-          </div>
+        <div class="file-select">
+          <div class="btn btn-lg btn-success" ng-click="selectFile($event)"><i class="icon" ng-class="depthy.isProcessing() ? 'icon-loading' : 'icon-open'"></i>Open Lens Blur photo</div>
         </div>
         <em class="text-muted" ng-if="!Modernizr.mobile">or drag&amp;drop it anywhere</em>
       </article>

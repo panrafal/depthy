@@ -20,54 +20,9 @@ body {
 
 }
 
-
-.alert {
-  max-width: 700px;
-  margin: 0 auto 2em auto;
-  background: transparent;
-  font-weight: bold;
-  border: none;        
-  text-align: center;
+a, a:hover {
+  color: inherit;
 }
-
-.container {
-  // max-width: 600px;
-}
-
-logo {
-  display: inline-block;
-  color: $brand-primary;
-  border: 0.11em solid $brand-primary;
-  text-transform: lowercase;
-  font-family: $headings-font-family;
-  font-weight: $headings-font-weight;
-
-  // font-size: 5em;
-
-  letter-spacing: -0.02em;
-  line-height: 0.6em;
-  height: 1em;
-  padding: 0.11em 0.12em 0.11em 0.09em;
-
-  vertical-align: middle;
-
-  $shadow-color: fade-out($brand-primary, 0.9);
-  $shadow-size: 0.03em;
-  box-shadow: inset 0px 0px 0px $shadow-size * 1 $shadow-color,
-              inset 0px 0px 0px $shadow-size * 2 $shadow-color,
-              inset 0px 0px 0px $shadow-size * 3 $shadow-color,
-              inset 0px 0px 0px $shadow-size * 4 $shadow-color,
-              inset 0px 0px 0px $shadow-size * 5 $shadow-color
-              // inset 0px 0px 0px $shadow-size * 6 $shadow-color,
-              // inset 0px 0px 0px $shadow-size * 7 $shadow-color
-              ;
-
-  span {
-    font-size: 0.8em;
-    vertical-align: bottom;
-  }
-}
-
 
 h1, h2, h3, h4 {
   margin: 0;
@@ -84,6 +39,26 @@ em {
   font-family: $font-family-serif;
 }
 
+p a {
+  text-decoration: underline;
+}
+
+// ------------------------------------------------------ icons
+
+.icon-rotate-90 {
+  &:before {
+    transform: rotate(90deg);
+    display: inline-block;
+  }
+}
+
+.icon-loading {
+  @extend .icon-loop2;
+  animation: 1s icon-rotate linear infinite;
+}
+
+
+// ------------------------------------------------------ elements
 .btn {
   &:focus, &:active {
     outline: 0!important;
@@ -103,10 +78,6 @@ em {
   &.btn-icon {
     .icon {margin: 0;}
   }
-}
-
-a, a:hover {
-  color: inherit;
 }
 
 .link-icon {
@@ -134,15 +105,50 @@ a, a:hover {
 
 }
 
-p a {
-  text-decoration: underline;
+// ------------------------------------------------------ components
+
+logo {
+  display: inline-block;
+  color: $brand-primary;
+  border: 0.11em solid $brand-primary;
+  text-transform: lowercase;
+  font-family: $headings-font-family;
+  font-weight: $headings-font-weight;
+
+  // font-size: 5em;
+
+  letter-spacing: -0.03em;
+  line-height: 0.6em;
+  height: 1em;
+  padding: 0.11em 0.12em 0.11em 0.09em;
+
+  vertical-align: middle;
+
+  $shadow-color: fade-out($brand-primary, 0.9);
+  $shadow-size: 0.03em;
+  box-shadow: inset 0px 0px 0px $shadow-size * 1 $shadow-color,
+              inset 0px 0px 0px $shadow-size * 2 $shadow-color,
+              inset 0px 0px 0px $shadow-size * 3 $shadow-color,
+              inset 0px 0px 0px $shadow-size * 4 $shadow-color,
+              inset 0px 0px 0px $shadow-size * 5 $shadow-color
+              // inset 0px 0px 0px $shadow-size * 6 $shadow-color,
+              // inset 0px 0px 0px $shadow-size * 7 $shadow-color
+              ;
+
+  span {
+    font-size: 0.8em;
+    vertical-align: bottom;
+  }
 }
 
-.icon-rotate-90 {
-  &:before {
-    transform: rotate(90deg);
-    display: inline-block;
-  }
+
+.alert {
+  max-width: 700px;
+  margin: 0 auto 2em auto;
+  background: transparent;
+  font-weight: bold;
+  border: none;        
+  text-align: center;
 }
 
 
@@ -178,3 +184,7 @@ p a {
     display: block;
   }
 }
+
+
+
+
