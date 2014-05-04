@@ -81,8 +81,16 @@ angular.module('depthyApp')
     depthy.animatePopuped = !depthy.animatePopuped;
   };
 
-  $scope.toggleZenMode = function() {
+  $scope.zenModeToggle = function() {
     depthy.zenMode = !depthy.zenMode;
+  };
+
+  $scope.imageOptions = function() {
+    depthy.showModal('image.options', {
+      templateUrl: 'views/options-popup.html',
+      windowClass: 'options-popup',
+      scope: $scope
+    });
   };
 
   $scope.exportGifOptions = function() {

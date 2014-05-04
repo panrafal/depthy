@@ -18,11 +18,13 @@
   z-index: 40;
   background: $navbar-bg;
   transition: all 0.5s ease-in-out;
+  backface-visibility: hidden;
 
   logo {
     position: absolute;
     left: 0px;
     font-size: remify($navbar-height);
+    cursor: pointer;
   }
 
   .zen-mode & {
@@ -44,6 +46,7 @@
 
   transition: all 0.5s ease-in-out;
   transform: translateX(-100%);
+  backface-visibility: hidden;
 
   .leftpane-opened & {
     transform: translateX(0%);

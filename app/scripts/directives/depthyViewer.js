@@ -50,6 +50,8 @@ angular.module('depthyApp')
         update: 1,
         // TRUE when everything is loaded and initialized
         ready: false,
+        // jquery element/selector to control mouse movements
+        movementElement: false,
       });
 
       $scope.stage = null;
@@ -231,12 +233,13 @@ angular.module('depthyApp')
 
         $scope.$watch('[viewer.depthScale, viewer.depthFocus]', updateDepthFilter, true);
 
-        $element.on('mousemove touchmove', function(e) {
+        var movementElement = viewer.movementElement ? angular.element(viewer.movementElement) : $element;
+        movementElement.on('mousemove touchmove', function(e) {
           if (!viewer.ready || viewer.animate || angular.isNumber(viewer.animPosition)) return;
 
-          var elOffset = $element.offset(),
-              elWidth = $element.width(),
-              elHeight = $element.height(),
+          var elOffset = movementElement.offset(),
+              elWidth = movementElement.width(),
+              elHeight = movementElement.height(),
               stageSize = viewer.stageSize.height * 0.8,
               pointerEvent = e.originalEvent.touches ? e.originalEvent.touches[0] : e,
               x = (pointerEvent.pageX - elOffset.left) / elWidth,

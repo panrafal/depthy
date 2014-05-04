@@ -1,4 +1,11 @@
-<div id="main" ng-controller="MainCtrl" ng-class="{'leftpane-opened': depthy.leftpaneOpened === true, 'leftpane-samples': depthy.leftpaneOpened === 'samples', 'zen-mode': depthy.zenMode}">
+<div id="main" ng-controller="MainCtrl" 
+  ng-class="{
+    'leftpane-opened': depthy.leftpaneOpened === true, 
+    'leftpane-samples': depthy.leftpaneOpened === 'samples', 
+    'zen-mode': depthy.zenMode}"
+  ng-swipe-right="depthy.leftpaneOpen()"
+  ng-swipe-left="depthy.leftpaneClose()"
+>
   <nav id="navbar" class="text-right">
     <logo ng-click="depthy.leftpaneToggle()"><span>depthy</span></logo>
     <button class="btn btn-default" ng-click="viewer.coverFit = !viewer.coverFit"><i class="icon" ng-class="viewer.coverFit ? 'icon-contract' : 'icon-expand'"></i></button>
@@ -60,7 +67,7 @@
         <p><span class="btn btn-link btn-success" ng-click="selectFile($event)">Open</span> another one shot with Google Camera's LensBlur, choose one of the <span class="btn btn-link" ng-click="depthy.leftpaneOpen(true)">samples</span>, or load the depthmap by hand.</p>
       </div>
     </div>
-    <div class="depthy-viewer" depthy-viewer="depthy.viewer" ng-click="toggleZenMode()">
+    <div class="depthy-viewer" depthy-viewer="depthy.viewer" ng-click="zenModeToggle()">
       <canvas pixi="stage" pixi-render="pixiRender" pixi-transparent="true" pixi-renderer="'webgl'" 
         ng-style="{
           width: v.stageCssSize.width + 'px', 
@@ -71,15 +78,6 @@
       </canvas>
     </div>
     <div class="buttons-options">
-      <!--
-      <div class="btn-group">
-        <button type="button" class="btn btn-default" ng-model="viewer.depthBlurSize" btn-radio="0">0</button>
-        <button type="button" class="btn btn-default" ng-model="viewer.depthBlurSize" btn-radio="4">4</button>
-        <button type="button" class="btn btn-default" ng-model="viewer.depthBlurSize" btn-radio="8">8</button>
-        <button type="button" class="btn btn-default" ng-model="viewer.depthBlurSize" btn-radio="16">16</button>
-        <button type="button" class="btn btn-default" ng-model="viewer.depthBlurSize" btn-radio="32">32</button>
-      </div><br/>
-      -->
 
       <div class="btn-group dropdown dropup">
         <button type="button" class="btn btn-primary dropdown-toggle" ng-disabled="!depthy.hasCompleteImage()">
@@ -90,22 +88,11 @@
         </ul>
       </div>
 
-      <button class="btn btn-primary button-usecompound" ng-click="viewer.useAlternativeImage = !viewer.useAlternativeImage" ga>{{viewer.useAlternativeImage ? 'Blur' : 'Sharpen'}}</button>
+      <button class="btn btn-primary" ng-click="imageInfo()" ga><i class="icon icon-image"></i>Info</button>
 
-      <span class="popup-group button-animate">
-        <div class="popover top anim-fade" ng-if="depthy.animatePopuped">
-          <div class="arrow"></div>
-          <div class="popover-content" ng-include="'views/animation-options.html'"></div>
-        </div>
-        <div class="btn-group">
-          <button class="btn btn-primary" ng-click="viewer.animate = !viewer.animate" ng-class="{active: viewer.animate}" ga>Hypnotize</button>
-          <button type="button" class="btn btn-primary" ng-click="toggleAnimatePopup()" ga ga-label="'Hypnotize options'">
-            <span class="caret"></span>
-          </button>
-        </div>
-      </span>
+      <button class="btn btn-primary" ng-click="imageOptions()" ga><i class="icon icon-settings"></i>Options</button>
 
-      <button class="btn btn-primary button-scale" ng-click="cycleDepthScale()" ga>{{getNextDepthScaleName()}}</button>
+
     </div>
   </section>
 
