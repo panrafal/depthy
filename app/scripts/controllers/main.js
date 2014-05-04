@@ -74,27 +74,42 @@ angular.module('depthyApp')
     }
   });
 
-  $scope.$watch('depthy.viewer.sourcesDirty', function() {
-    // it's not the angular way, but should save us some memory...
-    var image = $element.find('[image-source="image"]')[0],
-      depth = $element.find('[image-source="depth"]')[0];
-    
-    if (image && image.src !== depthy.viewer.imageSource) image.src = depthy.viewer.imageSource || '';
-    if (depth && depth.src !== depthy.viewer.depthSource) depth.src = depthy.viewer.depthSource || '';
-
-  });
 
 
   $scope.toggleAnimatePopup = function() {
     if (!depthy.animatePopuped) depthy.viewer.animate = true;
-    depthy.exportPopuped = false;
     depthy.animatePopuped = !depthy.animatePopuped;
   };
 
-  $scope.toggleExportPopup = function() {
-    if (!depthy.exportPopuped) depthy.viewer.animate = true;
-    depthy.animatePopuped = false;
-    depthy.exportPopuped = !depthy.exportPopuped;
+  $scope.toggleZenMode = function() {
+    depthy.zenMode = !depthy.zenMode;
+  };
+
+  $scope.exportGifOptions = function() {
+    var oldAnimate = depthy.viewer.animate;
+    depthy.viewer.animate = true;
+    depthy.exportPopuped = true;
+    depthy.showModal('export.gif.options', {
+      templateUrl: 'views/export-popup.html',
+      scope: $scope
+    }).result.finally(function() {
+      depthy.exportPopuped = false;
+      depthy.viewer.animate = oldAnimate;
+    });
+  };
+
+  $scope.exportGifRun = function() {
+    depthy.exportActive = true;
+    depthy.showModal('export.gif.run', {
+      stateOptions: {location: 'replace'},
+      templateUrl: 'views/export-modal.html',
+      controller: 'ExportModalCtrl',
+      backdrop: 'static',
+      // keyboard: false,
+      windowClass: 'export-modal',
+    }).result.finally(function() {
+      depthy.exportActive = false;
+    });
   };
 
   $scope.$watch('(depthy.exportPopuped || depthy.exportActive) && depthy.exportSize', function(size) {
@@ -105,20 +120,6 @@ angular.module('depthyApp')
     }
   });
 
-  $scope.startExport = function() {
-    depthy.exportActive = true;
-    $modal.open({
-      templateUrl: 'views/export-modal.html',
-      controller: 'ExportModalCtrl',
-      backdrop: 'static',
-      keyboard: false,
-      windowClass: 'export-modal',
-    }).result.finally(function() {
-      depthy.exportActive = false;
-    });
-    depthy.exportPopuped = false;
-    depthy.viewer.animate = false;
-  };
 
   $scope.$on('pixi.webgl.init.exception', function(evt, exception) {
     console.error('WebGL Init Exception', exception);
@@ -127,9 +128,9 @@ angular.module('depthyApp')
   });
 
   $($window).on('resize', function() {
-    depthy.viewer.maxSize = {
-      width: $window.innerWidth * 1,
-      height: $window.innerHeight * 0.8,
+    depthy.viewer.viewportSize = {
+      width: $window.innerWidth,
+      height: $window.innerHeight,
     };
     $scope.$safeApply();
   });

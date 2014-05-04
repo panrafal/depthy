@@ -12,6 +12,7 @@ angular.module('depthyApp', [
   'ui.bootstrap.buttons',
   'ui.bootstrap.modal',
   'ui.bootstrap.transition',
+  'ui.bootstrap.dropdown',
 ])
 //fix blob
 .config(function($compileProvider) {
@@ -51,10 +52,23 @@ angular.module('depthyApp', [
   .state('file', {
       url: '/file',
   })
-  // hollow state for back button on alerts
+  // hollow states for back button on alerts
   .state('alert', {
       url: '/alert',
-  });
+  })
+  .state('export', {
+      url: '/export',
+  })
+  .state('export.gif', {
+      url: '/gif',
+  })
+  .state('export.gif.options', {
+      url: '/options',
+  })
+  .state('export.gif.run', {
+      url: '/run',
+  })
+  ;
 })
 .run(function($rootScope, ga, $location) {
   $rootScope.$on('$stateChangeSuccess', function() {

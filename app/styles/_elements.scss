@@ -8,7 +8,7 @@
   height: 100vh;
 }
 
-// ---------------------------------------
+// ------------------------------------------------------ NAVBAR
 #navbar {
   position: absolute;
   top: 0px;
@@ -17,15 +17,21 @@
   height: remify($navbar-height);
   z-index: 40;
   background: $navbar-bg;
+  transition: all 0.5s ease-in-out;
 
   logo {
     position: absolute;
     left: 0px;
     font-size: remify($navbar-height);
   }
+
+  .zen-mode & {
+    transform: translateY(-100%);
+  }
+
 }
 
-// ---------------------------------------
+// ------------------------------------------------------ LEFTPANE
 #leftpane {
   position: absolute;
   left: 0px;
@@ -46,9 +52,14 @@
   .leftpane-samples & {
     transform: translateX(- percentage(1 - $samples-width / $leftpane-width));
   }
+
+  .zen-mode & {
+    transform: translateX(-100%);
+  }
+
 }
 
-// ---------------------------------------
+// ------------------------------------------------------ ABOUT
 #about {
   position: absolute;
   height: 100%;
@@ -108,7 +119,7 @@
 
 }
 
-// ---------------------------------------
+// ------------------------------------------------------ SAMPLES
 #samples {
   position: absolute;
   height: 100%;
@@ -124,7 +135,7 @@
   }
 }
 
-// ---------------------------------------
+// ------------------------------------------------------ VIEWER
 #viewer {
   z-index: 1;
   position: absolute;
@@ -132,6 +143,69 @@
   right: 0px;
   top: 0px;
   bottom: 0px;
+
+  .alerts {
+    position: absolute;
+    width: remify(400px);
+    max-width: 80%;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    transition: all 0.5s ease-in-out;
+
+    .zen-mode & {
+      opacity: 0;
+    }    
+  }
+
+  .depthy-viewer {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+  }
+
+  canvas {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    display: block;
+    pointer-events: none;
+    box-shadow: 1px 1px 1px rgba(0,0,0,0.5);
+
+    html.no-webgl & {
+      display: none;
+    }
+  }
+
+  .buttons-options {
+    position: absolute;
+    left: remify(20px);
+    right: remify(0px);
+    text-align:center;
+    bottom: remify(20px);
+    z-index: 20;
+    transition: all 0.5s ease-in-out;
+
+    &>button {
+      width: 90px;
+    }
+    .button-group {
+      button {
+        width: 90px - 34px;
+      }
+      button + button {
+        width: 34px;
+      }
+    }
+
+    .zen-mode & {
+      transform: translateY(100%) translateY(remify(20px));
+    }
+
+  }
+
 }
 
 
@@ -140,33 +214,6 @@
 
 
 
-
-
-#error {
-  $error-bg: darken($brand-danger, 35%);
-  background: linear-gradient(to bottom, darken($error-bg, 4%) 0%,$error-bg 2em);
-  border-top: 1px solid lighten($error-bg, 2%);
-  text-align: center;
-  padding: 2em;
-  overflow: hidden;
-  transition: all 0.5s ease;
-  max-height: 200px;
-
-  h2 {
-    color: $brand-danger;
-  }
-  a {
-    margin-top: 1em;
-  }
-
-  &.ng-hide {
-    max-height: 0px;
-    display: block!important;
-    padding: 0;
-    border-top-width: 0;
-  }
-
-}
 
 #file {
   // background: #125267;
@@ -217,42 +264,9 @@
 
 }
 
-#viewer {
-  background: linear-gradient(to bottom, darken($body-bg, 8%) 0%,darken($body-bg, 5%) 2em);
-  border-top: 1px solid lighten($body-bg, 6%);
-  padding: 2em 0;
+#viewer-- {
 
-  .depthy-viewer {
-    position: relative;
-    margin: 0 auto 2em auto;
-    overflow: hidden;
-  }
-  canvas {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    display: block;
-    pointer-events: none;
-    box-shadow: 1px 1px 1px rgba(0,0,0,0.5);
-  }
 
-  html.no-webgl canvas {
-    display: none;
-  }
-
-  .buttons-options {
-    &>button {
-      width: 90px;
-    }
-    .button-group {
-      button {
-        width: 90px - 34px;
-      }
-      button + button {
-        width: 34px;
-      }
-    }
-  }
 
   .popover {
     .option {

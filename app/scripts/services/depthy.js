@@ -4,11 +4,12 @@ angular.module('depthyApp').provider('depthy', function depthy() {
 
   // global settings object, synchronized with the remote profile, only simple values!
   var viewer = {
-      compoundSource: false,
       imageSource: false,
       depthSource: false,
-      sourcesReady: false,
+      alternativeSource: false,
+      sourcesReady: true,
       sourcesDirty: 1,
+      coverFit: true,
     };
 
 
@@ -30,6 +31,8 @@ angular.module('depthyApp').provider('depthy', function depthy() {
       // true - opened fully, 'samples' opened on samples
       leftpaneOpened: false,
 
+      movearoundShow: false,
+
       zenMode: false,
 
       isProcessing: function() {
@@ -41,29 +44,28 @@ angular.module('depthyApp').provider('depthy', function depthy() {
       hasDepthmap: function() {
         return !!viewer.depthSource;
       },
-      hasCompoundImage: function() {
-        return !!viewer.compoundSource;
+      hasAlternativeImage: function() {
+        return !!viewer.alternativeSource;
+      },
+      hasCompleteImage: function() {
+        return this.hasImage() && this.hasDepthmap();
       },
 
-      showAlert: function(message, options, state) {
+      showModal: function(state, options) {
         // push state for back button
-        state = state || 'alert';
-        if (state) $state.go(state);
+        state = state;
+        if (state && $state.current.name !== state && !options.stateCurrent) $state.go(state, options.stateParams, options.stateOptions);
         var modal, deregister;
-        modal = $modal.open(angular.extend({
-          templateUrl: 'views/alert-modal.html',
-          windowClass: 'alert-modal',
-          scope: angular.extend($rootScope.$new(), {message: message}),
-        }, options || {}));
+        modal = $modal.open(options || {});
 
         modal.result.then(
-          function() { 
-            if (deregister) deregister();
-            if (state) $window.history.back();
-          }, 
           function() {
             if (deregister) deregister();
             if (state) $location.replace();
+          },
+          function() {
+            if (deregister) deregister();
+            if (state) $window.history.back();
           }
         );
 
@@ -80,9 +82,17 @@ angular.module('depthyApp').provider('depthy', function depthy() {
         return modal;
       },
 
+      showAlert: function(message, options, state) {
+        return this.showModal(state || 'alert', angular.extend({
+          templateUrl: 'views/alert-modal.html',
+          windowClass: 'alert-modal',
+          scope: angular.extend($rootScope.$new(), {message: message}),
+        }, options || {}));
+      },
+
       loadSampleImage: function(name) {
         if (depthy.loaded.sample === name) return;
-        this._changeSource('compoundSource', 'samples/'+name+'-compound.jpg');
+        this._changeSource('alternativeSource', 'samples/'+name+'-alternative.jpg');
         this._changeSource('depthSource', 'samples/'+name+'-depth.jpg');
         this._changeSource('imageSource', 'samples/'+name+'-image.jpg');
         viewer.sourcesReady = true;
@@ -146,7 +156,7 @@ angular.module('depthyApp').provider('depthy', function depthy() {
       _resetSources: function() {
         this._changeSource('imageSource', false);
         this._changeSource('depthSource', false);
-        this._changeSource('compoundSource', false);
+        this._changeSource('alternativeSource', false);
         viewer.sourcesReady = false;
         viewer.sourcesDirty++;
       },
@@ -158,9 +168,9 @@ angular.module('depthyApp').provider('depthy', function depthy() {
 
           var result = function(error) {
             console.log('DepthExtractor result', error);
-            depthy._changeSource('imageSource', reader.image.data ? 'data:' + reader.image.mime + ';base64,' + reader.image.data : false);
+            depthy._changeSource('imageSource', URL.createObjectURL( new Blob([buffer], {type: 'image/jpeg'}) ));
             depthy._changeSource('depthSource', reader.depth.data ? 'data:' + reader.depth.mime + ';base64,' + reader.depth.data : false);
-            depthy._changeSource('compoundSource', URL.createObjectURL( new Blob([buffer], {type: 'image/jpeg'}) ));
+            depthy._changeSource('alternativeSource', reader.image.data ? 'data:' + reader.image.mime + ';base64,' + reader.image.data : false);
             viewer.sourcesReady = true;
             viewer.sourcesDirty++;
             deferred.resolve(!!viewer.depthSource);

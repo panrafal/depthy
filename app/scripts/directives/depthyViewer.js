@@ -16,7 +16,7 @@ angular.module('depthyApp')
           easedOffset = {x: 0, y: 0};
 
       _.defaults(viewer, {
-        compoundSource: null,
+        alternativeSource: null,
         imageSource: null,
         depthSource: null,
         imageSize: null,
@@ -28,14 +28,16 @@ angular.module('depthyApp')
         // *read-only viewer size
         viewerSize: null,
         // maximum size to fit in
-        maxSize: null,
+        viewportSize: null,
+        // cover the viewport instead of fitting in
+        coverFit: false,
         // stageSize override
         overrideStageSize: null,
         // set it when all sources are ready (they may be loaded earlier)
         sourcesReady: true,
         // increment when sources change
         sourcesDirty: null,
-        useCompoundImage: true,
+        useAlternativeImage: false,
         animate: false,
         animDuration: 2,
         animPosition: null,
@@ -104,6 +106,19 @@ angular.module('depthyApp')
         return size;
       }
 
+      function fitOut(size, min) {
+        var ratio = size.width / size.height;
+        size = {width: size.width, height: size.height};
+        if (size.height < min.height) {
+          size.height = min.height;
+          size.width = size.height * ratio;
+        }
+        if (size.width < min.width) {
+          size.width = min.width;
+          size.height = size.width / ratio;
+        }
+        return size;
+      }
 
       function resetStage() {
         if (imageRenderSprite) {
@@ -120,24 +135,27 @@ angular.module('depthyApp')
         renderer = _renderer;
 
         // watch image changes - exchange textures
-        $scope.$watch('[viewer.sourcesDirty, viewer.useCompoundImage, viewer.sourcesReady]', function() {
+        $scope.$watch('[viewer.sourcesDirty, viewer.useAlternativeImage, viewer.sourcesReady]', function() {
           if (!viewer.sourcesReady) return;
 
-          imageTexture = updateTexture(imageTexture, viewer[viewer.useCompoundImage && viewer.compoundSource ? 'compoundSource' : 'imageSource'], 'imageSize');
+          imageTexture = updateTexture(imageTexture, viewer[viewer.useAlternativeImage && viewer.alternativeSource ? 'alternativeSource' : 'imageSource'], 'imageSize');
           depthTexture = updateTexture(depthTexture, viewer.depthSource, 'depthSize');
 
         }, true);
 
         // recalculate stage size
-        $scope.$watch('[viewer.imageSize, viewer.depthSize, viewer.sourcesReady, viewer.maxSize, viewer.overrideStageSize, sizeDirty]', function() {
+        $scope.$watch('[viewer.imageSize, viewer.depthSize, viewer.sourcesReady, viewer.viewportSize, viewer.coverFit, viewer.overrideStageSize, sizeDirty]', function() {
           if (!viewer.imageSize || !viewer.depthSize || !viewer.sourcesReady) return;
 
           var imageSize = viewer.imageSize,
               viewerSize = {width: imageSize.width, height: imageSize.height},
               stageSize = null,
-              maxSize = viewer.maxSize;
+              viewportSize = viewer.viewportSize;
 
-          if (maxSize) viewerSize = fitIn(viewerSize, maxSize);
+          if (viewportSize) {
+            viewerSize = (viewer.coverFit ? fitOut : fitIn)(viewerSize, viewportSize);
+            viewerSize = fitIn(viewerSize, imageSize);
+          }
 
           stageSize = viewerSize;
           if (viewer.overrideStageSize) {
