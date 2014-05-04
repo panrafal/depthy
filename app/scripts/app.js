@@ -63,6 +63,9 @@ angular.module('depthyApp', [
   .state('image.options', {
       url: '/options',
   })
+  .state('image.info', {
+      url: '/info',
+  })
   .state('export', {
       url: '/export',
   })

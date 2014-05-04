@@ -64,7 +64,7 @@
       </div>
       <div class="alert alert-info" ng-if="!depthy.isProcessing() && depthy.hasImage() && !depthy.hasDepthmap()">
         <p>The loaded image does not contain depth information.</p>
-        <p><span class="btn btn-link btn-success" ng-click="selectFile($event)">Open</span> another one shot with Google Camera's LensBlur, choose one of the <span class="btn btn-link" ng-click="depthy.leftpaneOpen(true)">samples</span>, or load the depthmap by hand.</p>
+        <p><span class="btn btn-link btn-success" ng-click="selectFile($event)">Open</span> another one shot with Google Camera's LensBlur, choose one of the <span class="btn btn-link" ng-click="depthy.leftpaneOpen(true)">samples</span>, or <span class="btn btn-link" ng-click="imageInfo()">load the depthmap</span> by hand.</p>
       </div>
     </div>
     <div class="depthy-viewer" depthy-viewer="depthy.viewer" ng-click="zenModeToggle()">

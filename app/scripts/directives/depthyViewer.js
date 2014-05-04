@@ -155,8 +155,11 @@ angular.module('depthyApp')
               viewportSize = viewer.viewportSize;
 
           if (viewportSize) {
-            viewerSize = (viewer.coverFit ? fitOut : fitIn)(viewerSize, viewportSize);
-            viewerSize = fitIn(viewerSize, imageSize);
+            viewerSize = fitIn(viewerSize, viewportSize);
+            if (viewer.coverFit) {
+              viewerSize = fitOut(viewerSize, viewportSize);
+              viewerSize = fitIn(viewerSize, imageSize);
+            }
           }
 
           stageSize = viewerSize;

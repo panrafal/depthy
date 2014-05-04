@@ -93,6 +93,14 @@ angular.module('depthyApp')
     });
   };
 
+  $scope.imageInfo = function() {
+    depthy.showModal('image.info', {
+      templateUrl: 'views/image-info-modal.html',
+      windowClass: 'info-modal',
+      controller: 'ImageInfoModalCtrl',
+    });
+  };
+
   $scope.exportGifOptions = function() {
     var oldAnimate = depthy.viewer.animate;
     depthy.viewer.animate = true;

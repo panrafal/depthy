@@ -97,7 +97,6 @@ angular.module('depthyApp').provider('depthy', function depthy() {
         this._changeSource('depthSource', 'samples/'+name+'-depth.jpg');
         this._changeSource('imageSource', 'samples/'+name+'-image.jpg');
         viewer.sourcesReady = true;
-        viewer.sourcesDirty++;
         depthy.loaded = {
           sample: name,
           name: name,
@@ -152,6 +151,7 @@ angular.module('depthyApp').provider('depthy', function depthy() {
       _changeSource: function(type, source) {
         //todo: release blob url
         viewer[type] = source;
+        viewer.sourcesDirty++;
       },
 
       _resetSources: function() {
@@ -185,6 +185,41 @@ angular.module('depthyApp').provider('depthy', function depthy() {
         }
       },
 
+      loadLocalDepthmap: function(file) {
+        var reader = new FileReader(), 
+            deferred = $q.defer(); 
+
+        depthy.loaded.changed = true;
+
+        if (file.type === 'image/jpeg') {
+          // look for depthmap
+          reader.onload = function() {
+            var buffer = reader.result,
+                byteArray = new Uint8Array(buffer);
+            if (isJpg(byteArray)) {
+              var depthReader = new DepthReader();
+
+              var result = function() {
+                depthy._changeSource('depthSource', depthReader.depth.data ? 
+                  'data:' + depthReader.depth.mime + ';base64,' + depthReader.depth.data : 
+                  URL.createObjectURL( new Blob([buffer], {type: 'image/jpeg'})));
+                deferred.resolve(!!depthReader.depth.data);
+              };
+              depthReader.parseFile(buffer, result, result);
+            } else {
+            }
+          };
+          reader.readAsArrayBuffer(file);
+        } else if (file.type === 'image/png') {
+          depthy._changeSource('depthSource', URL.createObjectURL( file ));
+          deferred.resolve();
+        } else {
+          deferred.reject('Only JPEG and PNG files are supported!');
+        }
+
+        return deferred.promise;
+
+      },
 
       exportAnimation: function() {
         var deferred = $q.defer(), result = deferred.promise, gif;

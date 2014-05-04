@@ -1,0 +1,28 @@
+<div class="modal-header">
+  <!-- <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button> -->
+  <h4 class="modal-title">Extracted images</h4>
+</div>
+<div class="modal-body" fileselect="info.depthFiles" >
+  <ul class="images">
+    <li ng-if="depthy.hasDepthmap()">
+      <h4>Depthmap</h4>
+      <img image-source="depth">
+    </li>
+    <li ng-if="depthy.hasAlternativeImage()">
+      <h4>Original image</h4>
+      <img image-source="alternative">
+    </li>
+  </ul>
+  <p ng-if="depthy.hasDepthmap() || depthy.hasAlternativeImage()">
+    {{Modernizr.mobile ? 'Press and hold the images' : 'Right-click the images'}} to save them.
+    
+  </p>
+  <p>You can change the depthmap by clicking below. The new depthmap should be a monochromatic
+  file of the same size as the original image. You can load lens blur photos to extract the
+  depthmap from them...</p>
+  <button class="btn btn-success" ng-click="selectFile($event)"><i class="icon" ng-class="isDepthmapProcessing ? 'icon-loading' : 'icon-open'"></i>Load depthmap</button>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-default" ng-click="$dismiss()">Close</button>
+</div>
+
