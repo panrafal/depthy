@@ -317,7 +317,7 @@ module.exports = function (grunt) {
         files: [{
           expand: true,
           cwd: '.tmp/concat/scripts',
-          src: '*.js',
+          src: 'scripts.js',
           dest: '.tmp/concat/scripts'
         }]
       }
@@ -345,7 +345,7 @@ module.exports = function (grunt) {
             'views/{,*/}*.html',
             'images/{,*/}*.{webp}',
             'samples/*',
-            'fonts/*',
+            'styles/fonts/*',
             'CNAME',
             'bower_components/gif.js/dist/*.js'
           ]
@@ -394,15 +394,13 @@ module.exports = function (grunt) {
     //     }
     //   }
     // },
-    // uglify: {
-    //   dist: {
-    //     files: {
-    //       '<%= yeoman.dist %>/scripts/scripts.js': [
-    //         '<%= yeoman.dist %>/scripts/scripts.js'
-    //       ]
-    //     }
-    //   }
-    // },
+    uglify: {
+      options: {
+        // compress: false,
+        // preserveComments: 'all',
+        // beautify: true,
+      }
+    },
     // concat: {
     //   dist: {}
     // },

@@ -46,7 +46,8 @@
     <span ui-view></span>
 
     <!-- build:js scripts/vendor.js -->
-    <!-- bower:js -->
+    <script src="scripts/modernizr.js"></script>
+    <script src="scripts/modernizr-platform.js"></script>
     <script src="bower_components/jquery/dist/jquery.min.js"></script>
     <script src="bower_components/angular/angular.js"></script>
     <script src="bower_components/angular-animate/angular-animate.min.js"></script>
@@ -62,7 +63,6 @@
     <script src="bower_components/is-jpg/browser.js"></script>
     <script src="bower_components/is-png/browser.js"></script>
     <script src="scripts/vendor/LensBlurDepthExtractor.js"></script>
-    <!-- endbower -->
     <!-- endbuild -->
 
     <!-- 
@@ -80,8 +80,6 @@
     -->
 
     <!-- build:js({.tmp,app}) scripts/scripts.js -->
-    <script src="scripts/modernizr.js"></script>
-    <script src="scripts/modernizr-platform.js"></script>
     <script src="scripts/app.js"></script>
     <script src="scripts/services/depthy.js"></script>
     <script src="scripts/controllers/main.js"></script>

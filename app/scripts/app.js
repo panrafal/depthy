@@ -29,25 +29,25 @@ angular.module('depthyApp', [
   $stateProvider
   .state('index', {
       url: '/',
-      onEnter: function (depthy, $state) {
+      onEnter: ['depthy', '$state', function (depthy, $state) {
         if (!$state.current.name) {
           // first timer
           depthy.leftpaneOpen();
           depthy.loadSampleImage('flowers');
         }
-      }
+      }]
   })
   .state('sample', {
       url: '/sample/:id',
-      controller: function ($stateParams, depthy) {
+      controller: ['$stateParams', 'depthy', function ($stateParams, depthy) {
         depthy.loadSampleImage($stateParams.id);
-      }
+      }]
   })
   .state('imgur', {
       url: '/i/:id',
-      controller: function ($stateParams, depthy) {
+      controller: ['$stateParams', 'depthy', function ($stateParams, depthy) {
         depthy.loadUrlImage('http://i.imgur.com/' + $stateParams.id);
-      }
+      }]
   })
   // hollow state for locally loaded files
   .state('file', {
@@ -83,12 +83,12 @@ angular.module('depthyApp', [
   })
   .state('howto.lensblur', {
       url: '/lensblur',
-      onEnter: function(depthy) {
+      onEnter: ['depthy', function(depthy) {
         depthy.showModal('howto.lensblur', {
           stateCurrent: true,
           templateUrl: 'views/howto-lensblur.html',
         });
-      }
+      }]
   })
   ;
 })
