@@ -37,6 +37,8 @@ angular.module('depthyApp')
         sourcesReady: true,
         // increment when sources change
         sourcesDirty: null,
+        // take depth from alpha channel
+        depthFromAlpha: false,
         useAlternativeImage: false,
         animate: false,
         animDuration: 2,
@@ -204,6 +206,15 @@ angular.module('depthyApp')
           depthTextureSprite.filters = [depthBlurFilter];
           depthTextureSprite.scale = new PIXI.Point(stageScale * renderUpscale, stageScale * renderUpscale);
 
+          if (viewer.depthFromAlpha) {
+            var depthColorFilter = new PIXI.ColorMatrixFilter2();
+            depthColorFilter.matrix = [0,0,0,1,
+                                       0,0,0,0,
+                                       0,0,0,0,
+                                       0,0,0,0];
+            depthTextureSprite.filters = [depthColorFilter, depthBlurFilter];
+          }
+
           depthTextureDOC = new PIXI.DisplayObjectContainer();
           depthTextureDOC.addChild(depthTextureSprite);
 
@@ -218,6 +229,19 @@ angular.module('depthyApp')
           // prepare image render
           imageTextureSprite = new PIXI.Sprite(imageTexture);
           imageTextureSprite.scale = new PIXI.Point(stageScale * renderUpscale, stageScale * renderUpscale);
+          // imageTextureSprite.alpha = 1;
+
+          /*
+          if (viewer.depthFromAlpha) {
+            var imageColorFilter = new PIXI.ColorMatrixFilter2();
+            imageColorFilter.matrix = [1,0,0,0,
+                                       0,1,0,0,
+                                       0,0,1,0,
+                                       0,0,0,0];
+            imageColorFilter.shift = [0,0,0,1];
+            depthTextureSprite.filters = [imageColorFilter];
+          }
+          */
 
           imageTextureDOC = new PIXI.DisplayObjectContainer();
           imageTextureDOC.addChild(imageTextureSprite);

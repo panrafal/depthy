@@ -113,9 +113,9 @@ angular.module('depthyApp').provider('depthy', function depthy() {
           name: (file.name || '').replace(/\.(jpe?g|png)$/i, ''),
         };
 
-        if (file.type !== 'image/jpeg') {
+        if (file.type !== 'image/jpeg' && file.type !== 'image/png') {
           viewer.sourcesReady = true;
-          deferred.reject('Only JPEG files are supported!');
+          deferred.reject('Only JPEG and PNG files are supported!');
         } else {
           reader.onload = function() {
             depthy._parseArrayBuffer(reader.result, deferred);
@@ -158,8 +158,8 @@ angular.module('depthyApp').provider('depthy', function depthy() {
         this._changeSource('imageSource', false);
         this._changeSource('depthSource', false);
         this._changeSource('alternativeSource', false);
+        viewer.depthFromAlpha = false;
         viewer.sourcesReady = false;
-        viewer.sourcesDirty++;
       },
 
       _parseArrayBuffer: function(buffer, deferred) {
@@ -168,16 +168,32 @@ angular.module('depthyApp').provider('depthy', function depthy() {
           var reader = new DepthReader();
 
           var result = function(error) {
+            // no matter what, we use it...
             console.log('DepthExtractor result', error);
             depthy._changeSource('imageSource', URL.createObjectURL( new Blob([buffer], {type: 'image/jpeg'}) ));
             depthy._changeSource('depthSource', reader.depth.data ? 'data:' + reader.depth.mime + ';base64,' + reader.depth.data : false);
             depthy._changeSource('alternativeSource', reader.image.data ? 'data:' + reader.image.mime + ';base64,' + reader.image.data : false);
             viewer.sourcesReady = true;
-            viewer.sourcesDirty++;
             deferred.resolve(!!viewer.depthSource);
           };
 
           reader.parseFile(buffer, result, result);
+        } else if (isPng(byteArray)) {
+          // 8b signature, 4b chunk length, 4b chunk type
+          // IHDR: 4b width, 4b height, 1b bit depth, 1b color type
+          var bitDepth = byteArray[24],
+              colorType = byteArray[25],
+              isTransparent = colorType === 4 || colorType === 6, 
+              imageSource = URL.createObjectURL( new Blob([buffer], {type: 'image/jpeg'}) );
+          console.log('PNG depth %d colorType %d transparent %s', bitDepth, colorType, isTransparent);
+
+          depthy._changeSource('imageSource', imageSource);
+          depthy._changeSource('depthSource', isTransparent ? imageSource : false);
+          depthy._changeSource('alternativeSource', false);
+          viewer.depthFromAlpha = isTransparent;
+          viewer.sourcesReady = true;
+          deferred.resolve(isTransparent);
+
         } else {
           viewer.sourcesReady = true;
           viewer.sourcesDirty++;
@@ -202,7 +218,9 @@ angular.module('depthyApp').provider('depthy', function depthy() {
               var result = function() {
                 depthy._changeSource('depthSource', depthReader.depth.data ? 
                   'data:' + depthReader.depth.mime + ';base64,' + depthReader.depth.data : 
-                  URL.createObjectURL( new Blob([buffer], {type: 'image/jpeg'})));
+                  URL.createObjectURL( new Blob([buffer], {type: 'image/jpeg'}))
+                );
+                viewer.depthFromAlpha = false;
                 deferred.resolve(!!depthReader.depth.data);
               };
               depthReader.parseFile(buffer, result, result);
@@ -212,6 +230,7 @@ angular.module('depthyApp').provider('depthy', function depthy() {
           reader.readAsArrayBuffer(file);
         } else if (file.type === 'image/png') {
           depthy._changeSource('depthSource', URL.createObjectURL( file ));
+          viewer.depthFromAlpha = false;
           deferred.resolve();
         } else {
           deferred.reject('Only JPEG and PNG files are supported!');
