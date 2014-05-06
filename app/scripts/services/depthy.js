@@ -9,7 +9,7 @@ angular.module('depthyApp').provider('depthy', function depthy() {
       alternativeSource: false,
       sourcesReady: true,
       sourcesDirty: 1,
-      coverFit: true,
+      coverFit: false,
       movementElement: 'body'
     };
 

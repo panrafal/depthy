@@ -4,7 +4,7 @@
 
 /**
  *
- * The ColorMatrixFilter class lets you apply a 4x4 matrix transformation on the RGBA
+ * The ColorMatrixFilter2 class lets you apply a 4x4 matrix transformation on the RGBA
  * color and alpha values of every pixel on your displayObject to produce a result
  * with a new set of RGBA color and alpha values. Its pretty powerful!
  * @class ColorMatrixFilter
@@ -23,7 +23,7 @@ PIXI.ColorMatrixFilter2 = function()
                                    0,1,0,0,
                                    0,0,1,0,
                                    0,0,0,1]},
-    shift: {type: 'vec4', value:  [0,0,0,0]},
+    shift: {type: '4fv', value:  [0.0,0.0,0.0,0.0]},
   };
 
   this.fragmentSrc = [
@@ -42,8 +42,8 @@ PIXI.ColorMatrixFilter2 = function()
   ];
 };
 
-PIXI.ColorMatrixFilter.prototype = Object.create( PIXI.AbstractFilter.prototype );
-PIXI.ColorMatrixFilter.prototype.constructor = PIXI.ColorMatrixFilter;
+PIXI.ColorMatrixFilter2.prototype = Object.create( PIXI.AbstractFilter.prototype );
+PIXI.ColorMatrixFilter2.prototype.constructor = PIXI.ColorMatrixFilter2;
 
 /**
  * Sets the matrix of the color matrix filter
@@ -52,7 +52,7 @@ PIXI.ColorMatrixFilter.prototype.constructor = PIXI.ColorMatrixFilter;
  * @type Array and array of 16 numbers
  * @default [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]
  */
-Object.defineProperty(PIXI.ColorMatrixFilter.prototype, 'matrix', {
+Object.defineProperty(PIXI.ColorMatrixFilter2.prototype, 'matrix', {
   get: function() {
     return this.uniforms.matrix.value;
   },
@@ -68,7 +68,7 @@ Object.defineProperty(PIXI.ColorMatrixFilter.prototype, 'matrix', {
  * @type Array and array of 26 numbers
  * @default [0,0,0,0]
  */
-Object.defineProperty(PIXI.ColorMatrixFilter.prototype, 'shift', {
+Object.defineProperty(PIXI.ColorMatrixFilter2.prototype, 'shift', {
   get: function() {
     return this.uniforms.shift.value;
   },

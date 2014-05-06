@@ -8,7 +8,7 @@ angular.module('depthyApp')
     scope: true,
     controller: function($scope, $element, $attrs) {
       var viewer = $scope.v = $scope.$parent.$eval($attrs.depthyViewer),
-          imageTexture, imageTextureSprite, imageTextureDOC, imageRender, imageRenderSprite,
+          imageTexture, imageTextureSprite, imageTextureDOC, imageRender, compoundSprite,
           depthTexture, depthTextureSprite, depthTextureDOC, depthRender,
           depthFilter, depthBlurFilter,
           stage, renderer,
@@ -125,9 +125,9 @@ angular.module('depthyApp')
       }
 
       function resetStage() {
-        if (imageRenderSprite) {
-          stage.removeChild(imageRenderSprite);
-          imageRenderSprite = null;
+        if (compoundSprite) {
+          stage.removeChild(compoundSprite);
+          compoundSprite = null;
           viewer.update = true;
         }
 
@@ -199,6 +199,29 @@ angular.module('depthyApp')
 
           renderer.resize(stageSize.width, stageSize.height);
 
+          // prepare image render
+          imageTextureSprite = new PIXI.Sprite(imageTexture);
+          imageTextureSprite.scale = new PIXI.Point(stageScale * renderUpscale, stageScale * renderUpscale);
+          // imageTextureSprite.alpha = 1;
+
+          if (true || viewer.depthFromAlpha) {
+            // discard alpha channel
+            var imageColorFilter = new PIXI.ColorMatrixFilter2();
+            imageColorFilter.matrix = [1.0, 0.0, 0.0, 0.0, 
+                                       0.0, 1.0, 0.0, 0.0, 
+                                       0.0, 0.0, 1.0, 0.0, 
+                                       0.0, 0.0, 0.0, 1.0];
+            imageColorFilter.shift =  [0.0, 0.0, 0.0, 1.0];
+            imageTextureSprite.filters = [imageColorFilter];
+            imageTexture.baseTexture.premultipliedAlpha = false;
+          }
+
+          imageTextureDOC = new PIXI.DisplayObjectContainer();
+          imageTextureDOC.addChild(imageTextureSprite);
+
+          imageRender = new PIXI.RenderTexture(stageSize.width, stageSize.height);
+          imageRender.render(imageTextureDOC);
+
           // prepare depth render / filter
           depthTextureSprite = new PIXI.Sprite(depthTexture);
           depthBlurFilter = new PIXI.BlurFilter();
@@ -207,12 +230,15 @@ angular.module('depthyApp')
           depthTextureSprite.scale = new PIXI.Point(stageScale * renderUpscale, stageScale * renderUpscale);
 
           if (viewer.depthFromAlpha) {
+            // move inverted alpha to rgb, set alpha to 1
             var depthColorFilter = new PIXI.ColorMatrixFilter2();
-            depthColorFilter.matrix = [0,0,0,1,
-                                       0,0,0,0,
-                                       0,0,0,0,
-                                       0,0,0,0];
+            depthColorFilter.matrix = [0.0, 0.0, 0.0,-1.0, 
+                                       0.0, 0.0, 0.0,-1.0, 
+                                       0.0, 0.0, 0.0,-1.0, 
+                                       0.0, 0.0, 0.0, 0.0];
+            depthColorFilter.shift =  [1.0, 1.0, 1.0, 1.0];
             depthTextureSprite.filters = [depthColorFilter, depthBlurFilter];
+            depthTexture.baseTexture.premultipliedAlpha = false;
           }
 
           depthTextureDOC = new PIXI.DisplayObjectContainer();
@@ -222,37 +248,14 @@ angular.module('depthyApp')
 
           depthRender.render(depthTextureDOC);
 
+          // combine image with depthmap
           depthFilter = new PIXI.DepthmapFilter(depthRender);
           updateDepthFilter();
 
+          compoundSprite = new PIXI.Sprite(imageRender);
+          compoundSprite.filters= [depthFilter];
 
-          // prepare image render
-          imageTextureSprite = new PIXI.Sprite(imageTexture);
-          imageTextureSprite.scale = new PIXI.Point(stageScale * renderUpscale, stageScale * renderUpscale);
-          // imageTextureSprite.alpha = 1;
-
-          /*
-          if (viewer.depthFromAlpha) {
-            var imageColorFilter = new PIXI.ColorMatrixFilter2();
-            imageColorFilter.matrix = [1,0,0,0,
-                                       0,1,0,0,
-                                       0,0,1,0,
-                                       0,0,0,0];
-            imageColorFilter.shift = [0,0,0,1];
-            depthTextureSprite.filters = [imageColorFilter];
-          }
-          */
-
-          imageTextureDOC = new PIXI.DisplayObjectContainer();
-          imageTextureDOC.addChild(imageTextureSprite);
-
-          imageRender = new PIXI.RenderTexture(stageSize.width, stageSize.height);
-          imageRenderSprite = new PIXI.Sprite(imageRender);
-          imageRenderSprite.filters= [depthFilter];
-
-          imageRender.render(imageTextureDOC);
-
-          stage.addChild(imageRenderSprite);
+          stage.addChild(compoundSprite);
 
           //render on load events
           viewer.update = true;
