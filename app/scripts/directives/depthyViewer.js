@@ -76,6 +76,7 @@ angular.module('depthyApp')
           // free up mem...
           if (texture) {
             PIXI.Texture.removeTextureFromCache(texture.baseTexture.imageUrl);
+            texture.destroy(true);
             texture = null;
           }
           viewer[sizeKey] = null;
@@ -126,6 +127,7 @@ angular.module('depthyApp')
 
       function resetStage() {
         if (compoundSprite) {
+          console.log('Reset stage');
           stage.removeChild(compoundSprite);
           compoundSprite = null;
           viewer.update = true;
@@ -186,10 +188,11 @@ angular.module('depthyApp')
         // recreate stage on textures / stagesize change
         $scope.$watch('[viewer.stageSize, viewer.sourcesDirty, viewer.sourcesReady, viewer.depthBlurSize, viewer.depthFocus, sizeDirty]', function() {
           resetStage();
-
           viewer.ready = imageTexture && depthTexture && viewer.imageSize && viewer.depthSize && viewer.stageSize && viewer.sourcesReady;
 
           if (!viewer.ready) return;
+
+          console.log('Setup stage');
 
           var imageSize = viewer.imageSize,
               stageSize = viewer.stageSize,
@@ -204,7 +207,7 @@ angular.module('depthyApp')
           imageTextureSprite.scale = new PIXI.Point(stageScale * renderUpscale, stageScale * renderUpscale);
           // imageTextureSprite.alpha = 1;
 
-          if (true || viewer.depthFromAlpha) {
+          if (viewer.depthFromAlpha) {
             // discard alpha channel
             var imageColorFilter = new PIXI.ColorMatrixFilter2();
             imageColorFilter.matrix = [1.0, 0.0, 0.0, 0.0, 
@@ -219,8 +222,14 @@ angular.module('depthyApp')
           imageTextureDOC = new PIXI.DisplayObjectContainer();
           imageTextureDOC.addChild(imageTextureSprite);
 
+          if (imageRender) {
+            // pixi errors out on this...
+            // imageRender.resize(stageSize.width, stageSize.height);
+            imageRender.destroy(true);
+          }
           imageRender = new PIXI.RenderTexture(stageSize.width, stageSize.height);
-          imageRender.render(imageTextureDOC);
+          
+          imageRender.render(imageTextureDOC, null, true);
 
           // prepare depth render / filter
           depthTextureSprite = new PIXI.Sprite(depthTexture);
@@ -244,6 +253,9 @@ angular.module('depthyApp')
           depthTextureDOC = new PIXI.DisplayObjectContainer();
           depthTextureDOC.addChild(depthTextureSprite);
 
+          if (depthRender) {
+            depthRender.destroy(true);
+          }
           depthRender = new PIXI.RenderTexture(stageSize.width, stageSize.height);
 
           depthRender.render(depthTextureDOC);
@@ -359,7 +371,7 @@ angular.module('depthyApp')
         }
 
 
-        if (!viewer.update) {
+        if (!viewer.update || !imageTexture || !depthTexture) {
           return false;
         }
 
@@ -369,9 +381,6 @@ angular.module('depthyApp')
 
 
     },
-    link: function postLink() {
-
-    }
   };
 
 });
