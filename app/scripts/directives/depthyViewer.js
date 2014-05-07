@@ -139,7 +139,7 @@ angular.module('depthyApp')
                          0.0, 1.0, 0.0, 0.0, 
                          0.0, 0.0, 1.0, 0.0, 
                          0.0, 0.0, 0.0, 0.0];
-        filter.shift =  [0.0, 0.0, 0.0, 1.0];
+        filter.shift =  [0.0, 0.0, 0.0, 0.0];
         return filter;
       } );
 
@@ -412,7 +412,7 @@ angular.module('depthyApp')
       };
 
 
-      this.exportToPng = function(maxSize, toBlob) {
+      this.exportToPng = function(maxSize) {
         var deferred = $q.defer();
         console.log('Exporting to PNG');
         if (!viewer.ready) {
@@ -423,7 +423,7 @@ angular.module('depthyApp')
         var size = roundSize(fitIn(viewer.imageSize, maxSize || viewer.imageSize)),
             stage = new PIXI.Stage(),
             scale = size.width / viewer.imageSize.width,
-            renderer = new PIXI.WebGLRenderer(size.width, size.height, null, true, true);
+            renderer = new PIXI.WebGLRenderer(size.width, size.height, null, 'notMultiplied', true);
         console.log(size, scale);
         var imageSprite = new PIXI.Sprite(imageTexture);
         imageSprite.scale = new PIXI.Point(scale, scale);
@@ -433,25 +433,22 @@ angular.module('depthyApp')
           // imageTexture contains the alpha channel already
         } else {
           // discard alpha channel
-          imageSprite.filters = [getDiscardAlphaFilter()];
+          imageSprite.filters = [getDiscardAlphaFilter(renderer)];
 
           var depthSprite = new PIXI.Sprite(depthTexture);
           depthSprite.scale = new PIXI.Point(scale, scale);
-          depthSprite.filters = [getInvertedRGBToAlphaFilter()];
+          depthSprite.filters = [getInvertedRGBToAlphaFilter(renderer)];
 
           // copy alpha using custom blend mode
-          PIXI.blendModesWebGL[1000] = [renderer.gl.ZERO, renderer.gl.DST_ALPHA];
-          depthSprite.blendMode = 1000;
+          PIXI.blendModesWebGL['one.one'] = [renderer.gl.ONE, renderer.gl.ONE];
+          depthSprite.blendMode = 'one.one';
 
           stage.addChild(depthSprite);
         }
 
         renderer.render(stage);
-        if (toBlob) {
-          renderer.view.toBlob(function(f) {deferred.resolve(f);}, 'image/png');
-        } else {
-          deferred.resolve( renderer.view.toDataURL('image/png') );
-        }
+        deferred.resolve( renderer.view.toDataURL('image/png') );
+        
         deferred.promise.finally(function() {
           console.log('Destroy');
           renderer.destroy();

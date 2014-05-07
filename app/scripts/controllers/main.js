@@ -128,6 +128,15 @@ angular.module('depthyApp')
     });
   };
 
+  $scope.exportPngRun = function() {
+    depthy.showModal('export.png', {
+      templateUrl: 'views/export-png-modal.html',
+      controller: 'ExportPngModalCtrl',
+      windowClass: 'export-png-modal',
+    }).result.finally(function() {
+    });
+  };
+
   $scope.sharePngRun = function() {
     depthy.showModal('share.png', {
       templateUrl: 'views/share-png-modal.html',
