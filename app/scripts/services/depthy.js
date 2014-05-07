@@ -52,6 +52,10 @@ angular.module('depthyApp').provider('depthy', function depthy() {
         return this.hasImage() && this.hasDepthmap();
       },
 
+      getViewerCtrl: function() {
+        return angular.element('[depthy-viewer]').controller('depthyViewer');
+      },
+
       showModal: function(state, options) {
         // push state for back button
         state = state;

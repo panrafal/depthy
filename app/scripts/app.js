@@ -78,6 +78,12 @@ angular.module('depthyApp', [
   .state('export.gif.run', {
       url: '/run',
   })
+  .state('share', {
+      url: '/share',
+  })
+  .state('share.png', {
+      url: '/png',
+  })
   .state('howto', {
       url: '/howto',
   })

@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('depthyApp')
-.directive('depthyViewer', function ($window) {
+.directive('depthyViewer', function ($window, $q) {
   return {
     // template: '<canvas></canvas>',
     restrict: 'A',
@@ -82,6 +82,7 @@ angular.module('depthyApp')
           viewer[sizeKey] = null;
           if (url) {
             texture = PIXI.Texture.fromImage(url);
+            texture.baseTexture.premultipliedAlpha = false;
             if (texture.baseTexture.hasLoaded) {
               viewer[sizeKey] = texture.frame;
               $scope.sizeDirty++;
@@ -125,6 +126,51 @@ angular.module('depthyApp')
         return size;
       }
 
+      function roundSize(size) {
+        return {
+          width: Math.round(size.width),
+          height: Math.round(size.height)
+        };
+      }
+
+      var getDiscardAlphaFilter = _.memoize( function () {
+        var filter = new PIXI.ColorMatrixFilter2();
+        filter.matrix = [1.0, 0.0, 0.0, 0.0, 
+                         0.0, 1.0, 0.0, 0.0, 
+                         0.0, 0.0, 1.0, 0.0, 
+                         0.0, 0.0, 0.0, 0.0];
+        filter.shift =  [0.0, 0.0, 0.0, 1.0];
+        return filter;
+      } );
+
+      var getInvertedAlphaToRGBFilter = _.memoize( function () {
+        // move inverted alpha to rgb, set alpha to 1
+        var filter = new PIXI.ColorMatrixFilter2();
+        filter.matrix = [0.0, 0.0, 0.0,-1.0, 
+                         0.0, 0.0, 0.0,-1.0, 
+                         0.0, 0.0, 0.0,-1.0, 
+                         0.0, 0.0, 0.0, 0.0];
+        filter.shift =  [1.0, 1.0, 1.0, 1.0];
+        return filter;
+      } );
+
+      var getInvertedRGBToAlphaFilter = _.memoize( function () {
+        // move inverted alpha to rgb, set alpha to 1
+        var filter = new PIXI.ColorMatrixFilter2();
+        filter.matrix = [0.0, 0.0, 0.0, 0.0, 
+                         0.0, 0.0, 0.0, 0.0, 
+                         0.0, 0.0, 0.0, 0.0, 
+                        -1.0, 0.0, 0.0, 0.0];
+        filter.shift =  [0.0, 0.0, 0.0, 1.0];
+        return filter;
+      } );
+
+      var getDepthBlurFilter = _.memoize( function () {
+        return new PIXI.BlurFilter();
+      } );
+
+
+
       function resetStage() {
         if (compoundSprite) {
           console.log('Reset stage');
@@ -132,7 +178,6 @@ angular.module('depthyApp')
           compoundSprite = null;
           viewer.update = true;
         }
-
       }
 
       function setupStage(_stage, _renderer) {
@@ -207,23 +252,17 @@ angular.module('depthyApp')
           imageTextureSprite.scale = new PIXI.Point(stageScale * renderUpscale, stageScale * renderUpscale);
           // imageTextureSprite.alpha = 1;
 
-          if (viewer.depthFromAlpha) {
+          // always discard alpha, depthmap can turn into standard one, and this will stay the same...          
+          if (true || viewer.depthFromAlpha) {
             // discard alpha channel
-            var imageColorFilter = new PIXI.ColorMatrixFilter2();
-            imageColorFilter.matrix = [1.0, 0.0, 0.0, 0.0, 
-                                       0.0, 1.0, 0.0, 0.0, 
-                                       0.0, 0.0, 1.0, 0.0, 
-                                       0.0, 0.0, 0.0, 1.0];
-            imageColorFilter.shift =  [0.0, 0.0, 0.0, 1.0];
-            imageTextureSprite.filters = [imageColorFilter];
-            imageTexture.baseTexture.premultipliedAlpha = false;
+            imageTextureSprite.filters = [getDiscardAlphaFilter()];
           }
 
           imageTextureDOC = new PIXI.DisplayObjectContainer();
           imageTextureDOC.addChild(imageTextureSprite);
 
           if (imageRender) {
-            // pixi errors out on this...
+            // todo: pixi errors out on this... why?
             // imageRender.resize(stageSize.width, stageSize.height);
             imageRender.destroy(true);
           }
@@ -233,21 +272,15 @@ angular.module('depthyApp')
 
           // prepare depth render / filter
           depthTextureSprite = new PIXI.Sprite(depthTexture);
-          depthBlurFilter = new PIXI.BlurFilter();
+          depthBlurFilter = getDepthBlurFilter();
           depthBlurFilter.blur = depthBlurSize;
           depthTextureSprite.filters = [depthBlurFilter];
           depthTextureSprite.scale = new PIXI.Point(stageScale * renderUpscale, stageScale * renderUpscale);
 
           if (viewer.depthFromAlpha) {
             // move inverted alpha to rgb, set alpha to 1
-            var depthColorFilter = new PIXI.ColorMatrixFilter2();
-            depthColorFilter.matrix = [0.0, 0.0, 0.0,-1.0, 
-                                       0.0, 0.0, 0.0,-1.0, 
-                                       0.0, 0.0, 0.0,-1.0, 
-                                       0.0, 0.0, 0.0, 0.0];
-            depthColorFilter.shift =  [1.0, 1.0, 1.0, 1.0];
-            depthTextureSprite.filters = [depthColorFilter, depthBlurFilter];
-            depthTexture.baseTexture.premultipliedAlpha = false;
+            depthTextureSprite.filters.push(getInvertedAlphaToRGBFilter());
+            depthTextureSprite.filters = depthTextureSprite.filters;
           }
 
           depthTextureDOC = new PIXI.DisplayObjectContainer();
@@ -378,6 +411,54 @@ angular.module('depthyApp')
         viewer.update = false;
       };
 
+
+      this.exportToPng = function(maxSize, toBlob) {
+        var deferred = $q.defer();
+        console.log('Exporting to PNG');
+        if (!viewer.ready) {
+          deferred.reject('Not ready!');
+          return deferred.promise;
+        }
+
+        var size = roundSize(fitIn(viewer.imageSize, maxSize || viewer.imageSize)),
+            stage = new PIXI.Stage(),
+            scale = size.width / viewer.imageSize.width,
+            renderer = new PIXI.WebGLRenderer(size.width, size.height, null, true, true);
+        console.log(size, scale);
+        var imageSprite = new PIXI.Sprite(imageTexture);
+        imageSprite.scale = new PIXI.Point(scale, scale);
+        stage.addChild(imageSprite);
+
+        if (viewer.depthFromAlpha) {
+          // imageTexture contains the alpha channel already
+        } else {
+          // discard alpha channel
+          imageSprite.filters = [getDiscardAlphaFilter()];
+
+          var depthSprite = new PIXI.Sprite(depthTexture);
+          depthSprite.scale = new PIXI.Point(scale, scale);
+          depthSprite.filters = [getInvertedRGBToAlphaFilter()];
+
+          // copy alpha using custom blend mode
+          PIXI.blendModesWebGL[1000] = [renderer.gl.ZERO, renderer.gl.DST_ALPHA];
+          depthSprite.blendMode = 1000;
+
+          stage.addChild(depthSprite);
+        }
+
+        renderer.render(stage);
+        if (toBlob) {
+          renderer.view.toBlob(function(f) {deferred.resolve(f);}, 'image/png');
+        } else {
+          deferred.resolve( renderer.view.toDataURL('image/png') );
+        }
+        deferred.promise.finally(function() {
+          console.log('Destroy');
+          renderer.destroy();
+        });
+
+        return deferred.promise;
+      };
 
 
     },

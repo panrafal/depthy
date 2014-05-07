@@ -128,6 +128,17 @@ angular.module('depthyApp')
     });
   };
 
+  $scope.sharePngRun = function() {
+    depthy.showModal('share.png', {
+      templateUrl: 'views/share-png-modal.html',
+      controller: 'SharePngModalCtrl',
+      // backdrop: 'static',
+      // keyboard: false,
+      windowClass: 'share-png-modal',
+    }).result.finally(function() {
+    });
+  };
+
   $scope.$watch('(depthy.exportPopuped || depthy.exportActive) && depthy.exportSize', function(size) {
     if (size) {
       depthy.viewer.overrideStageSize = {width: size, height: size};
