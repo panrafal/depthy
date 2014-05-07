@@ -4,7 +4,31 @@
 </div>
 <div class="modal-body">
 
-  <img src="{{ imgUrl }}" />
+
+  <p class="text-danger" ng-if="uploadError">{{uploadError}}</p>
+  <div ng-if="!share && !uploadError">
+    <div class="progress progress-striped active">
+      <div class="progress-bar" role="progressbar" ng-style="{width: uploadProgress * 100 + '%'}">
+      </div>
+    </div>
+    <p class="text-muted">Uploading, please wait...</p>
+  </div>
+
+  <div ng-if="share">
+    This depthy image is now available at:<br/>
+    <p class="text-primary"><a href="{{share.url}}" target="_blank">{{share.url}}</a></p>
+    <p>
+      Copy this link and use it however you want or share it:<br/>
+      <i class="icon link-share icon-twitter" share-popup="twitter" share-options="share" ga="['send', 'event', 'png', 'share', 'twitter']"></i>
+      <i class="icon link-share icon-facebook" share-popup="facebook" share-options="share" ga="['send', 'event', 'png', 'share', 'facebook']"></i>
+      <i class="icon link-share icon-googleplus" share-popup="google" share-options="share" ga="['send', 'event', 'png', 'share', 'google']"></i>
+    </p>
+
+    <p>To gain good karma use <b>#depthy</b> in your shares, thanks!</p>
+    <p class="text-muted" ng-if="depthy.loaded.storeUrl">This image is hosted from <a href="{{depthy.loaded.storeUrl}}" target="_blank">imgur.com</a>.</p>
+  </div>
+
+  
 </div>
 <div class="modal-footer">
   <button class="btn btn-default" ng-click="$dismiss()">Close</button>

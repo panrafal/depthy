@@ -64,8 +64,8 @@ angular.module('depthyApp')
       data: {
         image: imageDataUri.substr('data:image/gif;base64,'.length),
         type: 'base64',
-        name: depthy.loadedName,
-        title: depthy.loadedName + ' #depthy',
+        name: depthy.loaded.name,
+        title: depthy.loaded.name + ' #depthy',
         description: 'Created using http://depthy.stamina.pl'
       },
       xhr: function() {
@@ -105,13 +105,12 @@ angular.module('depthyApp')
 
   };
 
-  $scope.$close = function() {
+  $modalInstance.result.finally(function() {
     console.log('close');
     if (exportPromise) exportPromise.abort();
     if (sharePromise) sharePromise.abort();
     if ($scope.imageUrl) URL.revokeObjectURL($scope.imageUrl);
-    $modalInstance.close();
-  };
+  });
 
 
 });

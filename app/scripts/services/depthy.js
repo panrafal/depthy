@@ -56,6 +56,7 @@ angular.module('depthyApp').provider('depthy', function depthy() {
         return angular.element('[depthy-viewer]').controller('depthyViewer');
       },
 
+
       showModal: function(state, options) {
         // push state for back button
         state = state;
@@ -105,6 +106,8 @@ angular.module('depthyApp').provider('depthy', function depthy() {
         depthy.loaded = {
           sample: name,
           name: name,
+          shareUrl: $state.href('sample', {id: name}, {absolute: true}),
+          thumb: 'samples/'+name+'-thumb.jpg',
         };
       },
 
@@ -132,14 +135,14 @@ angular.module('depthyApp').provider('depthy', function depthy() {
         return deferred.promise;
       },
 
-      loadUrlImage: function(url) {
+      loadUrlImage: function(url, loadedInfo) {
         if (depthy.loaded.url === url) return;
 
         this._resetSources();
-        depthy.loaded = {
+        depthy.loaded = angular.extend({
           url: url,
           parsed: true,
-        };
+        }, loadedInfo || {});
 
         var xhr = new XMLHttpRequest(),
             deferred = $q.defer(); 
@@ -154,18 +157,20 @@ angular.module('depthyApp').provider('depthy', function depthy() {
       },
 
 
-      loadUrlDirectImage: function(url, isPng) {
+      loadUrlDirectImage: function(url, isPng, loadedInfo) {
         if (depthy.loaded.url === url) return;
+
+        this._resetSources();
 
         this._changeSource('alternativeSource', false);
         this._changeSource('depthSource', isPng ? url : false);
         this._changeSource('imageSource', url);
         viewer.depthFromAlpha = isPng;
         viewer.sourcesReady = true;
-        depthy.loaded = {
+        depthy.loaded = angular.extend({
           url: url,
           parsed: false,
-        };
+        }, loadedInfo || {});
       },
 
       _changeSource: function(type, source) {
@@ -180,6 +185,11 @@ angular.module('depthyApp').provider('depthy', function depthy() {
         this._changeSource('alternativeSource', false);
         viewer.depthFromAlpha = false;
         viewer.sourcesReady = false;
+        this.markImageAsNew();
+      },
+
+      markImageAsNew: function() {
+        delete this.loaded.shareUrl;
       },
 
       _parseArrayBuffer: function(buffer, deferred) {
@@ -228,8 +238,6 @@ angular.module('depthyApp').provider('depthy', function depthy() {
         var reader = new FileReader(), 
             deferred = $q.defer(); 
 
-        depthy.loaded.changed = true;
-
         if (file.type === 'image/jpeg') {
           // look for depthmap
           reader.onload = function() {
@@ -258,7 +266,9 @@ angular.module('depthyApp').provider('depthy', function depthy() {
         } else {
           deferred.reject('Only JPEG and PNG files are supported!');
         }
-
+        deferred.promise.then(function() {
+          depthy.markImageAsNew();
+        });
         return deferred.promise;
 
       },

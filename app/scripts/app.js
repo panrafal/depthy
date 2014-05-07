@@ -45,8 +45,12 @@ angular.module('depthyApp', [
   })
   .state('imgur', {
       url: '/i/:id',
-      controller: ['$stateParams', 'depthy', function ($stateParams, depthy) {
-        depthy.loadUrlDirectImage('http://i.imgur.com/' + $stateParams.id + '.png', true);
+      controller: ['$stateParams', '$state', 'depthy', function ($stateParams, $state, depthy) {
+        depthy.loadUrlDirectImage('http://i.imgur.com/' + $stateParams.id + '.png', true, {
+          shareUrl: $state.href('imgur', {id: $stateParams.id}, {absolute: true}),
+          thumb: 'http://i.imgur.com/' + $stateParams.id + 'm.jpg',
+          storeUrl: 'http://imgur.com/' + $stateParams.id
+        });
       }]
   })
   .state('imgur2', {
