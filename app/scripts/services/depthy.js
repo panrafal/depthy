@@ -97,6 +97,7 @@ angular.module('depthyApp').provider('depthy', function depthy() {
 
       loadSampleImage: function(name) {
         if (depthy.loaded.sample === name) return;
+        this._resetSources();
         this._changeSource('alternativeSource', 'samples/'+name+'-alternative.jpg');
         this._changeSource('depthSource', 'samples/'+name+'-depth.jpg');
         this._changeSource('imageSource', 'samples/'+name+'-image.jpg');
@@ -114,6 +115,7 @@ angular.module('depthyApp').provider('depthy', function depthy() {
         this._resetSources();
         depthy.loaded = {
           local: true,
+          parsed: true,
           name: (file.name || '').replace(/\.(jpe?g|png)$/i, ''),
         };
 
@@ -136,7 +138,7 @@ angular.module('depthyApp').provider('depthy', function depthy() {
         this._resetSources();
         depthy.loaded = {
           url: url,
-          name: false,
+          parsed: true,
         };
 
         var xhr = new XMLHttpRequest(),
@@ -151,6 +153,20 @@ angular.module('depthyApp').provider('depthy', function depthy() {
         return deferred.promise;
       },
 
+
+      loadUrlDirectImage: function(url, isPng) {
+        if (depthy.loaded.url === url) return;
+
+        this._changeSource('alternativeSource', false);
+        this._changeSource('depthSource', isPng ? url : false);
+        this._changeSource('imageSource', url);
+        viewer.depthFromAlpha = isPng;
+        viewer.sourcesReady = true;
+        depthy.loaded = {
+          url: url,
+          parsed: false,
+        };
+      },
 
       _changeSource: function(type, source) {
         //todo: release blob url
@@ -203,6 +219,9 @@ angular.module('depthyApp').provider('depthy', function depthy() {
           viewer.sourcesDirty++;
           deferred.reject('JPG required!');
         }
+        deferred.promise.finally(function() {
+          $scope.$safeApply();
+        })
       },
 
       loadLocalDepthmap: function(file) {

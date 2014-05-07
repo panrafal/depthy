@@ -46,7 +46,13 @@ angular.module('depthyApp', [
   .state('imgur', {
       url: '/i/:id',
       controller: ['$stateParams', 'depthy', function ($stateParams, depthy) {
-        depthy.loadUrlImage('http://i.imgur.com/' + $stateParams.id);
+        depthy.loadUrlDirectImage('http://i.imgur.com/' + $stateParams.id + '.png', true);
+      }]
+  })
+  .state('imgur2', {
+      url: '/ii/:id',
+      controller: ['$stateParams', 'depthy', function ($stateParams, depthy) {
+        depthy.loadUrlImage('http://i.imgur.com/' + $stateParams.id + '.png');
       }]
   })
   // hollow state for locally loaded files
