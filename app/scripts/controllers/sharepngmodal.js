@@ -91,7 +91,7 @@ angular.module('depthyApp')
   function generateAndUpload(size, ratio, sizeLimit) {
     size = Math.round(size);
     console.group('Trying PNG size ' + size);
-    depthy.getViewerCtrl().exportToPng({width: size, height: size}).then(
+    depthy.getViewer().exportToPNG({width: size, height: size}).then(
       function(dataUrl) {
         console.log('PNG size: ', dataUrl.length);
         console.groupEnd();

@@ -6,11 +6,11 @@ angular.module('depthyApp')
     restrict: 'A',
     scope: true,
     controller: function($scope, $element, $attrs) {
-      var options, viewer;
+      var viewer,
+          options = $scope.$parent.$eval($attrs.depthyViewer);
 
       $scope.$parent.$watch($attrs.depthyViewer, function(newOptions) {
-        options = newOptions || {};
-        if (viewer) viewer.setOptions(options);
+        if (viewer && newOptions) viewer.setOptions(options);
       }, true);
 
       viewer = new DepthyViewer($element[0], options);

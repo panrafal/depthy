@@ -41,8 +41,8 @@ angular.module('depthyApp')
     if (files && files.length) {
       $state.go('file');
       depthy.loadLocalImage(files[0]).then(
-        function(withDepthmap) {
-          ga('send', 'event', 'image', 'parsed', withDepthmap ? 'depthmap' : 'no-depthmap');
+        function() {
+          ga('send', 'event', 'image', 'parsed', depthy.hasDepthmap() ? 'depthmap' : 'no-depthmap');
           depthy.leftpaneClose();
         },
         function(e) {
@@ -55,6 +55,9 @@ angular.module('depthyApp')
   });
 
 
+  $scope.$watch('depthy.useOriginalImage', function() {
+    depthy.refreshOpenedImage();
+  });
 
   $scope.zenModeToggle = function() {
     depthy.zenMode = !depthy.zenMode;

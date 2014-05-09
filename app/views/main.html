@@ -9,7 +9,7 @@
   <nav id="navbar" class="text-right">
     <logo ng-click="depthy.leftpaneToggle()"><span>depthy</span></logo>
     <button class="btn btn-default" ng-click="viewer.fit = viewer.fit === 'cover' ? 'contain' : 'cover'"><i class="icon" ng-class="viewer.fit === 'cover' ? 'icon-contract' : 'icon-expand'"></i></button>
-    <button class="btn btn-success" ng-click="selectFile($event)"><i class="icon" ng-class="depthy.isProcessing() ? 'icon-loading' : 'icon-open'"></i>Open</button>
+    <button class="btn btn-success" ng-click="selectFile($event)"><i class="icon" ng-class="depthy.isLoading() ? 'icon-loading' : 'icon-open'"></i>Open</button>
   </nav>
 
   <div id="leftpane">
@@ -25,7 +25,7 @@
           <span ng-if="!Modernizr.mobile"><br/>It works on your Android device too!</span>
         </p>
         <div class="file-select">
-          <div class="btn btn-lg btn-success" ng-click="selectFile($event)"><i class="icon" ng-class="depthy.isProcessing() ? 'icon-loading' : 'icon-open'"></i>Open Lens Blur photo</div>
+          <div class="btn btn-lg btn-success" ng-click="selectFile($event)"><i class="icon" ng-class="depthy.isLoading() ? 'icon-loading' : 'icon-open'"></i>Open Lens Blur photo</div>
         </div>
         <em class="text-muted" ng-if="!Modernizr.mobile">or drag&amp;drop it anywhere</em>
       </article>
@@ -58,11 +58,11 @@
       <div class="alert alert-info" ng-if="depthy.hasImage() && depthy.movearoundShow">
         <p>Move your {{Modernizr.devicemotion && Modernizr.mobile ? 'device' : 'cursor'}} around to see the effect</p>
       </div>
-      <div class="alert alert-info" ng-if="!depthy.isProcessing() && !depthy.hasImage()">
+      <div class="alert alert-info" ng-if="!depthy.isLoading() && !depthy.hasImage()">
         <p>No image loaded.</p>
         <p>Click <span class="btn btn-link btn-success" ng-click="selectFile($event)">open</span> to load one of Your photos, or choose one of the <span class="btn btn-link" ng-click="depthy.leftpaneOpen(true)">samples</span>.</p>
       </div>
-      <div class="alert alert-info" ng-if="!depthy.isProcessing() && depthy.hasImage() && !depthy.hasDepthmap()">
+      <div class="alert alert-info" ng-if="!depthy.isLoading() && depthy.hasImage() && !depthy.hasDepthmap()">
         <p>The loaded image does not contain depth information.</p>
         <p><span class="btn btn-link btn-success" ng-click="selectFile($event)">Open</span> another one shot with Google Camera's LensBlur, choose one of the <span class="btn btn-link" ng-click="depthy.leftpaneOpen(true)">samples</span>, or <span class="btn btn-link" ng-click="imageInfo()">load the depthmap</span> by hand.</p>
       </div>

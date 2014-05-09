@@ -28,6 +28,7 @@
     "isPng": false,
     "DepthReader": false,
     "DepthyViewer": false,
+    "Promise": false,
     "_": true,
     "requestAnimFrame": true
   }

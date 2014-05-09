@@ -4,11 +4,10 @@
   'use strict';
 
   // HELPER FUNCTIONS
-  var extend = ($ && $.extend) || (_ && _.extend) || (angular && angular.extend),
-      isNumber = ($ && $.isNumeric) || (_ && _.isNumber) || (angular && angular.isNumber),
-      isMobile = function() {return Modernizr.isMobile;},
-      defer = window.Deferred || ($ && $.Deferred),
-      when = (window.Deferred && root.Deferred.when) || ($ && $.when);
+  var extend = (root.$ && root.$.extend) || (root._ && root._.extend) || (root.angular && root.angular.extend),
+      isNumber = (root.$ && root.$.isNumeric) || (root._ && root._.isNumber) || (root.angular && root.angular.isNumber),
+      isMobile = function() {return root.Modernizr && root.Modernizr.isMobile;},
+      Promise = (root.Q && root.Q.Promise) || (root.RSVP && root.RSVP.Promise) || root.Promise;
 
   var defaultOptions = {
       // preferred viewport size {width, height}
@@ -18,7 +17,7 @@
       // allow 2x upscale
       retina: true,
       // maximum upscaling to fit in viewport (through canvas stretching)
-      upscale: 2,
+      upscale: 5,
 
       // animation options
       animate: false,
@@ -30,7 +29,7 @@
       depthBlurSize: 16,
       depthFocus: 0.5,
 
-      easeFactor: isMobile() ? 0.2 : 0.9,
+      easeFactor: isMobile() ? 0.2 : 0.4,
 
       orient: true,
 
@@ -40,14 +39,14 @@
     };
 
   var DepthyViewer = root.DepthyViewer = function(element, options) {
-    var //self = this,
+    var self = this,
         canvas, stage, renderer,
         image = {}, depth = {},
         sizeDirty = true, stageDirty = true, renderDirty = true, depthFilterDirty,
         discardAlphaFilter, invertedAlphaToRGBFilter, invertedRGBToAlphaFilter, depthBlurFilter,
         stageSize, stageSizeCPX,
         renderUpscale = 1.05,
-        readyDeferred,
+        readyResolver,
 
         imageTextureSprite, imageTextureContainer, imageRender,
         depthTextureSprite, depthTextureContainer, depthRender,
@@ -107,37 +106,33 @@
       initHover();
       initOrient();
       initRenderer();
-
+      
       if (renderer) requestAnimFrame( renderLoop );
 
     }
     
     function initHover() {
       var hoverElement = options.hoverElement || element;
-      if (typeof(hoverElement) === 'string') hoverElement = element.ownerDocument.querySelector();
+      if (typeof(hoverElement) === 'string') hoverElement = element.ownerDocument.querySelector(hoverElement);
       if (!hoverElement) {
         console.warn('Hover element %s not found!', options.hoverElement);
         return;
       }
 
-      // hoverElement.addEventListener('mousemove', onHover);
-      // hoverElement.addEventListener('touchmove', onHover);
+      hoverElement.addEventListener('mousemove', onHover, false);
+      hoverElement.addEventListener('touchmove', onHover, false);
     }
 
     function onHover(event) {
-      if (options.animate || !options.hover || !isReady()) return;
+      if (options.animate || !options.hover || !stageSize || !isReady()) return;
       // todo get rid off jQuery!
       var hoverElement = event.currentTarget,
-          elOffset = hoverElement.offset(),
-          elWidth = hoverElement.width(),
-          elHeight = hoverElement.height(),
-          stageSize = stageSize.height * 0.8,
+          size = Math.min(stageSizeCPX.height, stageSizeCPX.width) * 0.9,
           pointerEvent = event.touches ? event.touches[0] : event,
-          x = (pointerEvent.pageX - elOffset.left) / elWidth,
-          y = (pointerEvent.pageY - elOffset.top) / elHeight;
-
-      x = Math.max(-1, Math.min(1, (x * 2 - 1) * elWidth / stageSize));
-      y = Math.max(-1, Math.min(1, (y * 2 - 1) * elHeight / stageSize));
+          x = (pointerEvent.pageX - hoverElement.offsetLeft) / hoverElement.offsetWidth,
+          y = (pointerEvent.pageY - hoverElement.offsetTop) / hoverElement.offsetHeight;
+      x = Math.max(-1, Math.min(1, (x * 2 - 1) * hoverElement.offsetWidth / size));
+      y = Math.max(-1, Math.min(1, (y * 2 - 1) *  hoverElement.offsetHeight / size));
 
       depthOffset = {x: -x, y: -y};
       renderDirty = true;
@@ -267,8 +262,20 @@
       };
     }
 
+    function sizeFitScale(size, max, cover) {
+      if (cover) {
+        return max.width / max.height > size.width / size.height ?
+          max.width / size.width :
+          max.height / size.height;
+      } else {
+        return max.width / max.height > size.width / size.height ?
+          max.height / size.height :
+          max.width / size.width;
+      }
+    }
+
     function isReady() {
-      return renderer !== false && image.texture && image.size && depth.texture && depth.size;
+      return !!(renderer !== false && image.texture && image.size && depth.texture && depth.size);
     }
 
     // true when image and depth use the same texture...
@@ -279,38 +286,46 @@
 
 
     function changeTexture(old, source) {
+      if (old.url === source) return old;
       var current = {
         dirty: true
       };
-      if (source) {
-        current.texture = PIXI.Texture.fromImage(source);
-        current.texture.baseTexture.premultipliedAlpha = false;
-        if (current.texture.baseTexture.hasLoaded) {
-          current.size = current.texture.frame;
-          sizeDirty = true;
-        } else {
-          current.texture.addEventListener('update', function() {
-            if (!current.texture) return;
+      current.promise = new Promise(function(resolve, reject) {
+        if (source) {
+          current.url = source;
+          current.texture = PIXI.Texture.fromImage(source);
+          current.texture.baseTexture.premultipliedAlpha = false;
+          if (current.texture.baseTexture.hasLoaded) {
             current.size = current.texture.frame;
             sizeDirty = true;
-          });
-          current.texture.baseTexture.source.onerror = function(error) {
-            if (!current.texture) return;
-            console.error('Texture load failed', error);
-            current.error = true;
-            current.texture.destroy(true);
-            if (readyDeferred) readyDeferred.reject();
-            if (options.onError) options.onError();
-          };
+            resolve(current);
+          } else {
+            current.texture.addEventListener('update', function() {
+              if (!current.texture) return;
+              current.size = current.texture.frame;
+              sizeDirty = true;
+              resolve(current);
+            });
+            current.texture.baseTexture.source.onerror = function(error) {
+              if (!current.texture) return;
+              console.error('Texture load failed', error);
+              current.error = true;
+              current.texture.destroy(true);
+              delete current.texture;
+              reject(error);
+            };
+          }
+        } else {
+          resolve(current);
         }
-      }
-      // free up mem...
-      if (old) {
-        if (old.texture && !isTextureShared()) {
-          old.texture.destroy(true);
+        // free up mem...
+        if (old) {
+          if (old.texture && !isTextureShared()) {
+            old.texture.destroy(true);
+          }
+          old.texture = null;
         }
-        old.texture = null;
-      }
+      });
       return current;
     }
 
@@ -326,8 +341,13 @@
         if (options.fit === 'cover') {
           stageSize = sizeFit(stageSize, options.size, true);
           stageSize = sizeFit(stageSize, maxSize);
+          // 
+          if (stageSize.height > options.size.height) stageSize.height = options.size.height;
+          if (stageSize.width > options.size.width) stageSize.width = options.size.width;
         }
       }
+
+      // console.log('Image %dx%d Stage %dx%d View %dx%d', image.size.width, image.size.height, stageSize.width, stageSize.height, options.size.width, options.size.height);
 
       // remember target size
       stageSizeCPX = sizeRound(stageSize);
@@ -342,10 +362,12 @@
       stageSize = sizeFit(stageSize, image.size);
       stageSize = sizeRound(stageSize);
 
+      // console.log('Stage %dx%d StageCPX %dx%d', stageSize.width, stageSize.height, stageSizeCPX.width, stageSizeCPX.height);
+
       canvas.style.width = stageSizeCPX.width + 'px';
       canvas.style.height = stageSizeCPX.height + 'px';
       canvas.style.marginLeft = Math.round(stageSizeCPX.width / -2) + 'px';
-      canvas.style.marginTop = Math.round(stageSizeCPX.height / -2) - 2 + 'px';
+      canvas.style.marginTop = Math.round(stageSizeCPX.height / -2) + 'px';
 
       if (renderer && (renderer.width !== stageSize.width || renderer.height !== stageSize.height)) {
         renderer.resize(stageSize.width, stageSize.height);
@@ -356,11 +378,14 @@
     }
 
     function updateImageTexture() {
-      var scale = stageSize.width / image.size.width;
+      var scale = sizeFitScale(image.size, stageSize, true);
 
       // prepare image render
       imageTextureSprite = new PIXI.Sprite(image.texture);
       imageTextureSprite.scale = new PIXI.Point(scale * renderUpscale, scale * renderUpscale);
+
+      imageTextureSprite.anchor = {x: 0.5, y: 0.5};
+      imageTextureSprite.position = {x: stageSize.width / 2, y: stageSize.height / 2};
 
       // discard alpha channel
       imageTextureSprite.filters = [discardAlphaFilter];
@@ -386,12 +411,15 @@
     }
 
     function updateDepthTexture() {
-      var scale = stageSize.width / depth.size.width;
+      var scale = sizeFitScale(depth.size, stageSize, true);
 
       // prepare depth render / filter
       depthTextureSprite = new PIXI.Sprite(depth.texture);
       depthTextureSprite.filters = [depthBlurFilter];
       depthTextureSprite.scale = new PIXI.Point(scale * renderUpscale, scale * renderUpscale);
+
+      depthTextureSprite.anchor = {x: 0.5, y: 0.5};
+      depthTextureSprite.position = {x: stageSize.width / 2, y: stageSize.height / 2};
 
       if (depth.useAlpha) {
         // move inverted alpha to rgb, set alpha to 1
@@ -440,6 +468,10 @@
       depthFilter.scale = {
         x: (stageSize.width > stageSize.height ? 1 : stageSize.height / stageSize.width) * depthScale,
         y: (stageSize.width < stageSize.height ? 1 : stageSize.width / stageSize.height) * depthScale
+      };
+      depthFilter.offset = {
+        x : easedOffset.x || 0,
+        y : easedOffset.y || 0
       };
       depthFilter.focus = options.depthFocus;
 
@@ -500,9 +532,9 @@
       updateOffset();
       updateAnimation();
 
-      if (readyDeferred) {
-        readyDeferred.resolve();
-        readyDeferred = null;
+      if (readyResolver) {
+        readyResolver();
+        readyResolver = null;
       }
 
       if (renderDirty) renderer.render(stage);
@@ -559,21 +591,35 @@
       return sizeCopy(stageSizeCPX);
     };
 
-    this.getPromise = function() {
-      if (isReady()) {
-        return defer().resolve().promise();
+    /** Returns a promise resolved when the viewer is ready, or rejected when any of the images are missing or failed on load.
+        @param resolvedOnly TRUE - only wait for the isReady() to become true. Otherwise, the promise may be rejected
+               but will be reset every time you change any of the images.
+     */
+    this.getPromise = function(resolvedOnly) {
+      if (!resolvedOnly && (!this.hasImage() || !this.hasDepthmap() || this.getLoadError())) {
+        return Promise.reject();
       }
-      readyDeferred = defer();
-      return readyDeferred.promise();
+      if (isReady()) {
+        return Promise.resolve();
+      }
+      if (!readyResolver) {
+        var promise = new Promise(function(resolve) {
+          readyResolver = resolve;
+        });
+        readyResolver.promise = promise;
+      }
+      return resolvedOnly ? readyResolver.promise : Promise.all( [image.promise, depth.promise, readyResolver.promise] );
     };
 
     this.setImage = function(source) {
       image = changeTexture(image, source);
+      return image.promise;
     };
 
     this.setDepthmap = function(source, useAlpha) {
       depth = changeTexture(depth, source);
       depth.useAlpha = !!useAlpha;
+      return depth.promise;
     };
 
     this.render = render;
@@ -599,24 +645,15 @@
       depthOffset = offset;
     };
 
-    /** Exports image + depthmap as PNG file */
+    /** Exports image + depthmap as PNG file. Returns promise */
     this.exportToPNG = function(maxSize) {
-      var deferred = defer();
 
-      this.getPromise().then(
+      return this.getPromise().then(
         function() {
           var size = sizeRound(sizeFit(image.size, maxSize || image.size)),
               localstage = new PIXI.Stage(),
               scale = size.width / image.size.width,
               localrenderer = new PIXI.WebGLRenderer(size.width, size.height, null, 'notMultiplied', true);
-
-          deferred.promise().always(function() {
-            try {
-              localrenderer.destroy();
-            } catch(e) {
-              console.error('Render destroy error', e);
-            }
-          });
 
           var imageSprite = new PIXI.Sprite(image.texture);
           imageSprite.scale = new PIXI.Point(scale, scale);
@@ -636,17 +673,48 @@
           localstage.addChild(depthSprite);
 
           localrenderer.render(localstage);
-          deferred.resolve( localrenderer.view.toDataURL('image/png') );
-          
-        },
-        function() {
-          deferred.reject();
+          var dataUrl = localrenderer.view.toDataURL('image/png');
+
+          try {
+            localrenderer.destroy();
+          } catch(e) {
+            console.error('Render destroy error', e);
+          }
+          return dataUrl;
         }
       );
-
-      return deferred.promise();
     };
 
+
+    /** Exports depthmap as is, or converts it to JPG. Returns promise */
+    this.exportDepthmap = function() {
+
+      return this.getPromise().then(
+        function() {
+          if (!depth.useAlpha && depth.url) {
+            return depth.url;
+          } else {
+            var localstage = new PIXI.Stage(),
+                localrenderer = new PIXI.WebGLRenderer(depth.size.width, depth.size.height, null, false, true);
+
+            var depthSprite = new PIXI.Sprite(depth.texture);
+            if (depth.useAlpha) depthSprite.filters = [createInvertedAlphaToRGBFilter()];
+
+            localstage.addChild(depthSprite);
+
+            localrenderer.render(localstage);
+            var dataUrl = localrenderer.view.toDataURL('image/jpeg');
+
+            try {
+              localrenderer.destroy();
+            } catch(e) {
+              console.error('Render destroy error', e);
+            }
+            return dataUrl;
+          }
+        }
+      );
+    };
 
     this.isReady = isReady;
 

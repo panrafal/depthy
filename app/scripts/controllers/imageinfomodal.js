@@ -4,12 +4,15 @@ angular.module('depthyApp')
 .controller('ImageInfoModalCtrl', function ($scope, $modalInstance, ga, depthy, $timeout, StateModal) {
   $scope.info = {};
 
+  // wait for dom
   $timeout(function() {
-    if (depthy.viewer.depthSource) {
-      angular.element('[image-source="depth"]')[0].src = depthy.viewer.depthSource;
+    if (depthy.hasDepthmap()) {
+      depthy.getViewer().exportDepthmap().then(function(url) {
+        angular.element('[image-source="depth"]')[0].src = url;
+      });
     }
-    if (depthy.viewer.alternativeSource) {
-      angular.element('[image-source="alternative"]')[0].src = depthy.viewer.alternativeSource;
+    if (depthy.hasOriginalImage()) {
+      angular.element('[image-source="alternative"]')[0].src = depthy.opened.originalUrl;
     }
   });
 
