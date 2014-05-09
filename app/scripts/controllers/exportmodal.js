@@ -64,8 +64,8 @@ angular.module('depthyApp')
       data: {
         image: imageDataUri.substr('data:image/gif;base64,'.length),
         type: 'base64',
-        name: depthy.loaded.name,
-        title: depthy.loaded.name + ' #depthy',
+        name: depthy.opened.title,
+        title: depthy.opened.title + ' #depthy',
         description: 'Created using http://depthy.stamina.pl'
       },
       xhr: function() {
@@ -87,7 +87,7 @@ angular.module('depthyApp')
       $scope.shareUrl = 'https://imgur.com/' + id;
       $scope.share = {
         url: $scope.shareUrl,
-        title: depthy.loadedName + ' #depthy',
+        title: depthy.opened.title + ' #depthy',
         img: 'https://i.imgur.com/' + id + '.gif'
       };
       sharePromise = null;

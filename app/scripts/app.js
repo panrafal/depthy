@@ -102,8 +102,8 @@ angular.module('depthyApp', [
   })
   .state('howto.lensblur', {
       url: '/lensblur',
-      onEnter: ['depthy', function(depthy) {
-        depthy.showModal('howto.lensblur', {
+      onEnter: ['StateModal', function(StateModal) {
+        StateModal.showModal('howto.lensblur', {
           stateCurrent: true,
           templateUrl: 'views/howto-lensblur.html',
         });

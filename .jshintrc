@@ -27,6 +27,7 @@
     "isJpg": false,
     "isPng": false,
     "DepthReader": false,
+    "DepthyViewer": false,
     "_": true,
     "requestAnimFrame": true
   }

@@ -8,7 +8,7 @@
 >
   <nav id="navbar" class="text-right">
     <logo ng-click="depthy.leftpaneToggle()"><span>depthy</span></logo>
-    <button class="btn btn-default" ng-click="viewer.coverFit = !viewer.coverFit"><i class="icon" ng-class="viewer.coverFit ? 'icon-contract' : 'icon-expand'"></i></button>
+    <button class="btn btn-default" ng-click="viewer.fit = viewer.fit === 'cover' ? 'contain' : 'cover'"><i class="icon" ng-class="viewer.fit === 'cover' ? 'icon-contract' : 'icon-expand'"></i></button>
     <button class="btn btn-success" ng-click="selectFile($event)"><i class="icon" ng-class="depthy.isProcessing() ? 'icon-loading' : 'icon-open'"></i>Open</button>
   </nav>
 
@@ -68,14 +68,7 @@
       </div>
     </div>
     <div class="depthy-viewer" depthy-viewer="depthy.viewer" ng-click="zenModeToggle()">
-      <canvas pixi="stage" pixi-render="pixiRender" pixi-transparent="false" pixi-renderer="'webgl'" 
-        ng-style="{
-          width: v.stageCssSize.width + 'px', 
-          height: v.stageCssSize.height + 'px', 
-          'margin-left': v.stageCssSize.width / -2 + 'px', 
-          'margin-top': v.stageCssSize.height / -2 + 'px'}"
-      >
-      </canvas>
+      <canvas></canvas>
     </div>
     <div class="buttons-options">
 

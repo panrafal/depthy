@@ -16,8 +16,8 @@ angular.module('depthyApp')
       data: {
         image: imageDataUri.substr('data:image/png;base64,'.length),
         type: 'base64',
-        name: depthy.loaded.name,
-        title: depthy.loaded.name + ' #depthy',
+        name: depthy.opened.title,
+        title: depthy.opened.title + ' #depthy',
         description: 'View this image in 3D on http://depthy.stamina.pl'
       },
       xhr: function() {
@@ -40,12 +40,12 @@ angular.module('depthyApp')
         ga('send', 'event', 'png', 'upload-success');
         $scope.share = {
           url: $state.href('imgur', {id: id}, {absolute: true}),
-          title: depthy.loaded.name + ' #depthy',
+          title: depthy.opened.title + ' #depthy',
           img: 'https://i.imgur.com/' + id + '.jpg',
         };
-        depthy.loaded.shareUrl = $scope.share.url;
-        depthy.loaded.thumb = $scope.share.img;
-        depthy.loaded.storeUrl = 'https://imgur.com/' + id;
+        depthy.opened.shareUrl = $scope.share.url;
+        depthy.opened.thumb = $scope.share.img;
+        depthy.opened.storeUrl = 'https://imgur.com/' + id;
         uploadPromise = null;
 
         // update description
@@ -109,11 +109,11 @@ angular.module('depthyApp')
   }
 
 
-  if (depthy.loaded.shareUrl) {
+  if (depthy.opened.shareUrl) {
     $scope.share = {
-      url: depthy.loaded.shareUrl,
-      title: depthy.loaded.name + ' #depthy',
-      img: depthy.loaded.thumb
+      url: depthy.opened.shareUrl,
+      title: depthy.opened.title + ' #depthy',
+      img: depthy.opened.thumb
     };
   } else {
     // wait for DOM

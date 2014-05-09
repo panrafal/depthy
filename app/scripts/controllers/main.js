@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('depthyApp')
-.controller('MainCtrl', function ($rootScope, $window, $scope, $timeout, ga, depthy, $element, $modal, $state) {
+.controller('MainCtrl', function ($rootScope, $window, $scope, $timeout, ga, depthy, $element, $modal, $state, StateModal) {
 
   $rootScope.depthy = depthy;
   $rootScope.viewer = depthy.viewer; // shortcut
@@ -20,28 +20,9 @@ angular.module('depthyApp')
     }
   };
 
-  $scope.hasImage = function() {
-    return !!depthy.viewer.imageSource;
-  };
-
-  $scope.hasDepth = function() {
-    return !!depthy.viewer.depthSource;
-  };
-
   $scope.loadSample = function(name) {
     $state.go('sample', {id: name});
     depthy.leftpaneOpen(true);
-  };
-
-  $scope.getNextDepthScaleName = function() {
-    var scale = depthy.viewer.depthScale;
-    return scale > 1.05 ? 'Tranquilize' : scale < 0.95 ? 'Normalize' : 'Dramatize';
-  };
-
-  $scope.cycleDepthScale = function() {
-    var scale = depthy.viewer.depthScale;
-    scale = scale > 1.05 ? 0.5 : scale < 0.95 ? 1 : 2;
-    $scope.animateOption(depthy.viewer, {depthScale: scale});
   };
 
   $scope.animateOption = function(obj, option, duration) {
@@ -56,7 +37,6 @@ angular.module('depthyApp')
   };
 
 
-  // $scope.$on('fileselect', function(e, files) {
   $scope.$watch('compoundFiles', function(files) {
     if (files && files.length) {
       $state.go('file');
@@ -67,7 +47,7 @@ angular.module('depthyApp')
         },
         function(e) {
           ga('send', 'event', 'image', 'error', e);
-          depthy.showAlert(e);
+          StateModal.showAlert(e);
         }
       );
       // depthy.handleCompoundFile(files[0]);
@@ -76,17 +56,12 @@ angular.module('depthyApp')
 
 
 
-  $scope.toggleAnimatePopup = function() {
-    if (!depthy.animatePopuped) depthy.viewer.animate = true;
-    depthy.animatePopuped = !depthy.animatePopuped;
-  };
-
   $scope.zenModeToggle = function() {
     depthy.zenMode = !depthy.zenMode;
   };
 
   $scope.imageOptions = function() {
-    depthy.showModal('image.options', {
+    StateModal.showModal('image.options', {
       templateUrl: 'views/options-popup.html',
       windowClass: 'options-popup',
       scope: $scope
@@ -94,7 +69,7 @@ angular.module('depthyApp')
   };
 
   $scope.imageInfo = function() {
-    depthy.showModal('image.info', {
+    StateModal.showModal('image.info', {
       templateUrl: 'views/image-info-modal.html',
       windowClass: 'info-modal',
       controller: 'ImageInfoModalCtrl',
@@ -105,7 +80,7 @@ angular.module('depthyApp')
     var oldAnimate = depthy.viewer.animate;
     depthy.viewer.animate = true;
     depthy.exportPopuped = true;
-    depthy.showModal('export.gif.options', {
+    StateModal.showModal('export.gif.options', {
       templateUrl: 'views/export-popup.html',
       scope: $scope
     }).result.finally(function() {
@@ -116,12 +91,12 @@ angular.module('depthyApp')
 
   $scope.exportGifRun = function() {
     depthy.exportActive = true;
-    depthy.showModal('export.gif.run', {
+    StateModal.showModal('export.gif.run', {
       stateOptions: {location: 'replace'},
       templateUrl: 'views/export-modal.html',
       controller: 'ExportModalCtrl',
-      backdrop: 'static',
-      // keyboard: false,
+      // backdrop: 'static',
+      keyboard: false,
       windowClass: 'export-modal',
     }).result.finally(function() {
       depthy.exportActive = false;
@@ -129,7 +104,7 @@ angular.module('depthyApp')
   };
 
   $scope.exportPngRun = function() {
-    depthy.showModal('export.png', {
+    StateModal.showModal('export.png', {
       templateUrl: 'views/export-png-modal.html',
       controller: 'ExportPngModalCtrl',
       windowClass: 'export-png-modal',
@@ -138,7 +113,7 @@ angular.module('depthyApp')
   };
 
   $scope.sharePngRun = function() {
-    depthy.showModal('share.png', {
+    StateModal.showModal('share.png', {
       templateUrl: 'views/share-png-modal.html',
       controller: 'SharePngModalCtrl',
       // backdrop: 'static',
@@ -150,9 +125,12 @@ angular.module('depthyApp')
 
   $scope.$watch('(depthy.exportPopuped || depthy.exportActive) && depthy.exportSize', function(size) {
     if (size) {
-      depthy.viewer.overrideStageSize = {width: size, height: size};
+      depthy.viewer.size = {width: size, height: size};
+      $scope.oldFit = depthy.viewer.fit;
+      depthy.viewer.fit = false;
     } else {
-      depthy.viewer.overrideStageSize = null;
+      if ($scope.oldFit) depthy.viewer.fit = $scope.oldFit;
+      $($window).resize();
     }
   });
 
@@ -164,7 +142,7 @@ angular.module('depthyApp')
   });
 
   $($window).on('resize', function() {
-    depthy.viewer.viewportSize = {
+    depthy.viewer.size = {
       width: $window.innerWidth,
       height: $window.innerHeight,
     };

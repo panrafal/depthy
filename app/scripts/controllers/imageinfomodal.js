@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('depthyApp')
-.controller('ImageInfoModalCtrl', function ($scope, $modalInstance, ga, depthy, $timeout) {
+.controller('ImageInfoModalCtrl', function ($scope, $modalInstance, ga, depthy, $timeout, StateModal) {
   $scope.info = {};
 
   $timeout(function() {
@@ -26,7 +26,7 @@ angular.module('depthyApp')
         function(error) {
           $scope.isDepthmapProcessing = false;
           ga('send', 'event', 'depthmap', 'error', error);
-          depthy.showAlert(error, {stateOptions: {location: 'replace'}});
+          StateModal.showAlert(error, {stateOptions: {location: 'replace'}});
         }
       );
       // depthy.handleCompoundFile(files[0]);
