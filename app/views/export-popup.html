@@ -1,9 +1,8 @@
-<!-- <div class="popover-title">
+<button type="button" class="close" aria-hidden="true" ng-click="getActivePopup().reject()">&times;</button>
+<div class="popup-title">
   How do you want your GIF?
 </div>
- -->
- <button type="button" class="close" aria-hidden="true" ng-click="getActivePopup().reject()">&times;</button>
- <div class="popover-content scrollable">
+<div class="popup-content scrollable">
   <div class="option">
     <!-- <label>Size</label> -->
     <div class="btn-group">
@@ -24,7 +23,7 @@
   <div ng-include="'views/options-animation.html'"></div>
   <div ng-include="'views/options-movement.html'"></div>
 </div>
-<div class="popover-footer">
-  <button class="btn btn-success btn-lg" ng-click="etActivePopup().resolve(); exportGifRun()"><i class="icon icon-yes"></i>C'mon!</button>&nbsp;
+<div class="popup-footer">
+  <button class="btn btn-success btn-md" ng-click="etActivePopup().resolve(); exportGifRun()"><i class="icon icon-yes"></i>C'mon!</button>&nbsp;
   <!-- <button class="btn btn-default btn-sm" ng-click="etActivePopup().reject()">Nah...</button> -->
 </div>

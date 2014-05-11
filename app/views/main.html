@@ -84,12 +84,11 @@
 
     </div>
   </section>
-  <section id="popup" ng-show="!!getActivePopup()">
-    <div class="clicker" ng-click="getActivePopup().reject()">
-    </div>
+  <section id="popup">
+    <!-- <div class="clicker"  ng-show="!!getActivePopup()" ng-click="getActivePopup().reject()"></div> -->
     <div class="popup options-popup" ng-show="!!depthy.optionsPopuped" ng-include="'views/options-popup.html'">
     </div>
-    <div class="popup export-popup" ng-show="!!depthy.exportPopuped" ng-include="'views/export-popup.html'">
+    <div class="popup export-popup" ng-if="!!depthy.exportPopuped" ng-include="'views/export-popup.html'">
     </div>
   </section>
 

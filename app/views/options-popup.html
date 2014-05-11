@@ -1,5 +1,5 @@
 <button type="button" class="close" aria-hidden="true" ng-click="getActivePopup().reject()">&times;</button>
-<div class="popover-content scrollable">
+<div class="popup-content scrollable">
   <div class="option">
     <!-- <label>Size</label> -->
     <div class="btn-group">
@@ -7,7 +7,7 @@
       <div class="btn btn-default btn-sm" ng-model="viewer.animate" btn-radio="true">Hypnotize</div>
     </div>
   </div>
-  <div ng-include="viewer.animate ? 'views/options-animation.html' : null"></div>
+  <div ng-include="viewer.animate ? 'views/options-animation.html' : null" class="anim-expand"></div>
   <div ng-include="'views/options-movement.html'"></div>
   <div ng-include="'views/options-style.html'"></div>
 </div>

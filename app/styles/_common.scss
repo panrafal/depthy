@@ -105,6 +105,20 @@ p a {
 
 }
 
+.close {
+  opacity: 0.8;
+  color: $text-color;
+  text-shadow: none;
+  width: 1em;
+  height: 1em;
+  display: inline-block;
+  outline: 0!important;
+  &:hover {
+    opacity: 1;
+    color: $text-color;
+  }
+}
+
 // ------------------------------------------------------ components
 
 logo {
@@ -176,6 +190,7 @@ logo {
 
 .option {
   white-space: nowrap;
+  margin: 0.5em 0;
   label {
     // color: lighten($body-bg, 70%);
     font-weight: normal;
@@ -183,8 +198,14 @@ logo {
     margin: 5px 0 0 0;
     display: block;
   }
+  .btn-group {
+    display: table;
+    width: 100%;
+    .btn {
+      display: table-cell;
+      float: none;
+    }
+  }
 }
-
-
 
 

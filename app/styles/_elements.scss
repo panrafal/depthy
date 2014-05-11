@@ -203,8 +203,9 @@
       }
     }
 
-    .zen-mode & {
-      transform: translateY(100%) translateY(remify(20px));
+    .zen-mode &, &.ng-hide {
+      display: block!important;
+      transform: translateY(100%) translateY(remify(60px));
     }
 
   }
@@ -214,26 +215,58 @@
 // ------------------------------------------------------ POPUPS
 
 #popup {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  z-index: 20;
+  // position: absolute;
+  // width: 100%;
+  // height: 100%;
+  // z-index: 20;
 
-  .clicker {
+  .popup-clicker {
     position: absolute;
-    width: 100%;
-    height: 100%;
+    width: 100vw;
+    height: 100vh;
     background: transparent;
+    z-index: 20;
   }
   .popup {
+    z-index: 21;
     position: absolute;
-    width: 100%;
+    width: 100vw;
     max-width: remify(400px);
     text-align: center;
-    bottom: 0px;
-    background: $body-bg;
-    left: 50%;
+    bottom: remify(-30px);
+    background: fade-out($body-bg, 0.3);
+    box-shadow: inset 0px 0px 32px 2px $body-bg;
+    left: 50vw;
+    padding: remify(30px);
+    padding-bottom: remify(60px);
+
     transform: translateX(-50%);
+
+    @extend .anim-slideup-centered;
+    .zen-mode & {
+      transform: translate(-50%, 100%) translateY(remify(60px));
+    }
+
+    .close {
+      padding: remify(10px);
+      box-sizing: content-box;
+      position: absolute;
+      top: 0px;
+      right: 0px;
+    }
+
+    .popup-title {
+      @extend h4;
+      margin-top: remify(-10px);
+      margin-bottom: remify(20px);
+    }
+
+    .popup-footer {
+      margin-top: remify(20px);
+      margin-bottom: remify(-10px);
+    }
+
+
   }
 
 }
@@ -292,40 +325,6 @@
 
 }
 
-#viewer-- {
-
-
-
-  .popover {
-    .option {
-      margin: 0.5em 0;
-
-      .btn-group {
-        display: table;
-        width: 100%;
-        .btn {
-          display: table-cell;
-          float: none;
-        }
-      }
-    }
-  }
-
-  .button-animate {
-    .popover {
-      min-width: 250px;
-    }
-  }
-
-  .button-export {
-    margin-top: 1em;
-    .popover {
-      min-width: 250px;
-      transform: translate(-50%, -100%) translateY(55px);
-    }
-  }
-
-}
 
 footer {
   background: linear-gradient(to bottom, darken($body-bg, 14%) 0%,darken($body-bg, 10%) 2em);
