@@ -1,3 +1,4 @@
+<button type="button" class="close" aria-hidden="true" ng-click="getActivePopup().reject()">&times;</button>
 <div class="popover-content scrollable">
   <div class="option">
     <!-- <label>Size</label> -->
@@ -9,7 +10,4 @@
   <div ng-include="viewer.animate ? 'views/options-animation.html' : null"></div>
   <div ng-include="'views/options-movement.html'"></div>
   <div ng-include="'views/options-style.html'"></div>
-</div>
-<div class="popover-footer">
-  <button class="btn btn-default btn-sm" ng-click="$dismiss()">OK</button>
 </div>

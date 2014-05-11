@@ -26,6 +26,7 @@ angular.module('depthyApp').provider('depthy', function depthy() {
       viewer: viewer,
 
       exportPopuped: false,
+      optionsPopuped: false,
 
       exportSize: Modernizr.mobile ? 150 : 300,
       exportType: 'gif',

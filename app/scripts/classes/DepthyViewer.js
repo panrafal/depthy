@@ -1,5 +1,8 @@
+/*
+MIT Licensed
 
-
+Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
+*/
 (function(root){
   'use strict';
 
@@ -17,7 +20,7 @@
       // allow 2x upscale
       retina: true,
       // maximum upscaling to fit in viewport (through canvas stretching)
-      upscale: 5,
+      upscale: 4,
 
       // animation options
       animate: false,
@@ -39,7 +42,7 @@
     };
 
   var DepthyViewer = root.DepthyViewer = function(element, options) {
-    var self = this,
+    var //self = this,
         canvas, stage, renderer,
         image = {}, depth = {},
         sizeDirty = true, stageDirty = true, renderDirty = true, depthFilterDirty,
@@ -54,43 +57,6 @@
         depthFilter, compoundSprite,
 
         depthOffset = {x: 0, y: 0}, easedOffset = depthOffset;
-
-
-
-    /*
-    TO MOVE:
-
-      offset: {x: 0, y: 0},
-      update: 1,
-      ready: false,
-
-    MOVED:
-      alternativeSource: null,
-      imageSource: null,
-      depthSource: null,
-      useAlternativeImage: false,
-      depthFromAlpha: false,
-      sourcesReady: true,
-      sourcesDirty: null,
-      imageSize: null,
-      depthSize: null,
-      stageSize: null,
-      stageSizeCPX: null,
-      viewerSize: null,
-
-
-    CHANGED:
-
-      viewportSize: null,
-      coverFit: false,
-      overrideStageSize: null,
-
-      animateDuration: 2,
-      animatePosition: null,
-      animateScale: {x: 1, y: 0.5},
-      movementElement
-
-    */
 
     options = extend({}, defaultOptions, options || {});
 
@@ -244,11 +210,11 @@
     function sizeFit(size, max, cover) {
       var ratio = size.width / size.height;
       size = sizeCopy(size);
-      if (cover && size.height < max.height || size.height > max.height) {
+      if (cover && size.height < max.height || !cover && size.height > max.height) {
         size.height = max.height;
         size.width = size.height * ratio;
       }
-      if (cover && size.width < max.width || size.width > max.width) {
+      if (cover && size.width < max.width || !cover && size.width > max.width) {
         size.width = max.width;
         size.height = size.width / ratio;
       }
@@ -537,7 +503,10 @@
         readyResolver = null;
       }
 
-      if (renderDirty) renderer.render(stage);
+      if (renderDirty) {
+        renderer.render(stage);
+        renderDirty = false;
+      }
     }
 
     function renderLoop() {

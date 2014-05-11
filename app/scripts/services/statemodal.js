@@ -1,16 +1,17 @@
 'use strict';
 
 angular.module('depthyApp')
-.service('StateModal', function StateModal($rootScope, $modal, $state, $location, $window) {
+.service('StateModal', function StateModal($rootScope, $modal, $state, $location, $window, $q) {
 
-  this.showModal = function(state, viewer) {
-    // push state for back button
-    state = state;
-    if (state && $state.current.name !== state && !viewer.stateCurrent) $state.go(state, viewer.stateParams, viewer.stateOptions);
-    var modal, deregister;
-    modal = $modal.open(viewer || {});
+  /** Changes $state to show a modal...
+  Returns deffered which will go back in history if rejected, or replace the location if resolved.
+  Back buttons will reject the promise. */
+  this.stateDeferred = function(state, options) {
+    options = options || {};
+    if (state && $state.current.name !== state && !options.stateCurrent) $state.go(state, options.stateParams, options.stateOptions);
+    var deferred = $q.defer(), deregister;
 
-    modal.result.then(
+    deferred.promise.then(
       function() {
         if (deregister) deregister();
         if (state) $location.replace();
@@ -27,19 +28,41 @@ angular.module('depthyApp')
           deregister();
           deregister = null;
           state = false;
-          modal.close();
+          deferred.reject();
         }
       });
     }
+    return deferred;
+  };
+
+  this.showModal = function(state, options) {
+    var deferred = this.stateDeferred(state, options),
+        modal;
+
+    modal = $modal.open(options || {});
+
+    modal.result.then(
+      function() {
+        deferred.resolve();
+      },
+      function() {
+        deferred.reject();
+      }
+    );
+
+    deferred.promise.finally(function() {
+      modal.close();
+    });
+
     return modal;
   };
 
-  this.showAlert = function(message, viewer, state) {
+  this.showAlert = function(message, options, state) {
     return this.showModal(state || 'alert', angular.extend({
       templateUrl: 'views/alert-modal.html',
       windowClass: 'alert-modal',
       scope: angular.extend($rootScope.$new(), {message: message}),
-    }, viewer || {}));
+    }, options || {}));
   };
 
 

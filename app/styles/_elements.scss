@@ -211,12 +211,37 @@
 
 }
 
+// ------------------------------------------------------ POPUPS
+
+#popup {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 20;
+
+  .clicker {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+  }
+  .popup {
+    position: absolute;
+    width: 100%;
+    max-width: remify(400px);
+    text-align: center;
+    bottom: 0px;
+    background: $body-bg;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+}
 
 
 
 
-
-
+// ---------------------------------------------------------------------------  OLDIES
 
 #file {
   // background: #125267;

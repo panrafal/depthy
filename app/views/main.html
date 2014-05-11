@@ -44,12 +44,6 @@
   </div>
 
 
-<!--   <div id="error" class="ng-hide" ng-hide="!depthy.viewer.error">
-    <h2>{{depthy.viewer.error}}</h2>
-    <p>Make sure you only select photos made in the Lens Blur mode.</p>
-    <a class="btn btn-md btn-danger" ng-click="depthy.viewer.error = ''">Got it!</a>
-  </div>
- -->
   <section id="viewer">
     <div class="alerts">
       <div class="alert alert-danger" ng-if="!Modernizr.webgl">
@@ -70,7 +64,7 @@
     <div class="depthy-viewer" depthy-viewer="depthy.viewer" ng-click="zenModeToggle()">
       <canvas></canvas>
     </div>
-    <div class="buttons-options">
+    <div class="buttons-options" ng-show="!getActivePopup()">
 
       <div class="btn-group dropdown dropup">
         <button type="button" class="btn btn-primary dropdown-toggle" ng-disabled="!depthy.hasCompleteImage()">
@@ -88,6 +82,14 @@
       <button class="btn btn-primary" ng-click="imageOptions()" ga><i class="icon icon-settings"></i>Options</button>
 
 
+    </div>
+  </section>
+  <section id="popup" ng-show="!!getActivePopup()">
+    <div class="clicker" ng-click="getActivePopup().reject()">
+    </div>
+    <div class="popup options-popup" ng-show="!!depthy.optionsPopuped" ng-include="'views/options-popup.html'">
+    </div>
+    <div class="popup export-popup" ng-show="!!depthy.exportPopuped" ng-include="'views/export-popup.html'">
     </div>
   </section>
 

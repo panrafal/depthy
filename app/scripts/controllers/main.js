@@ -60,14 +60,18 @@ angular.module('depthyApp')
   });
 
   $scope.zenModeToggle = function() {
+    if (depthy.leftpaneOpened !== 'samples') depthy.leftpaneClose();
     depthy.zenMode = !depthy.zenMode;
   };
 
+  $scope.getActivePopup = function() {
+    return depthy.optionsPopuped || depthy.exportPopuped;
+  };
+
   $scope.imageOptions = function() {
-    StateModal.showModal('image.options', {
-      templateUrl: 'views/options-popup.html',
-      windowClass: 'options-popup',
-      scope: $scope
+    depthy.optionsPopuped = StateModal.stateDeferred('image.options');
+    depthy.optionsPopuped.promise.finally(function() {
+      depthy.optionsPopuped = false;
     });
   };
 
@@ -82,11 +86,9 @@ angular.module('depthyApp')
   $scope.exportGifOptions = function() {
     var oldAnimate = depthy.viewer.animate;
     depthy.viewer.animate = true;
-    depthy.exportPopuped = true;
-    StateModal.showModal('export.gif.options', {
-      templateUrl: 'views/export-popup.html',
-      scope: $scope
-    }).result.finally(function() {
+
+    depthy.exportPopuped = StateModal.stateDeferred('export.gif.options');
+    depthy.exportPopuped.promise.finally(function() {
       depthy.exportPopuped = false;
       depthy.viewer.animate = oldAnimate;
     });
