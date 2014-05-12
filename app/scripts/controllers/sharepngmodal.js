@@ -39,7 +39,7 @@ angular.module('depthyApp')
       if (response.data.type === 'image/png') {
         ga('send', 'event', 'png', 'upload-success');
         $scope.share = {
-          url: $state.href('imgur', {id: id}, {absolute: true}),
+          url: depthy.rootShareUrl + $state.href('imgur', {id: id}),
           title: depthy.opened.title + ' #depthy',
           img: 'https://i.imgur.com/' + id + '.jpg',
         };

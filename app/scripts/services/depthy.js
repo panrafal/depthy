@@ -26,6 +26,8 @@ angular.module('depthyApp').provider('depthy', function depthy() {
 
       imgurId: 'b4ca5b16efb904b',
 
+      rootShareUrl: 'http://depthy.me/',
+
       // true - opened fully, 'samples' opened on samples
       leftpaneOpened: false,
 
@@ -133,7 +135,7 @@ angular.module('depthyApp').provider('depthy', function depthy() {
         var opened = this.setOpened({
           sample: name,
           title: name,
-          shareUrl: $state.href('sample', {id: name}, {absolute: true}),
+          shareUrl: depthy.rootShareUrl + $state.href('sample', {id: name}),
           thumb: 'samples/'+name+'-thumb.jpg',
           imageUrl: 'samples/'+name+'-image.jpg',
           depthUrl: 'samples/'+name+'-depth.jpg',
