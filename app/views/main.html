@@ -8,8 +8,8 @@
 >
   <nav id="navbar" class="text-right">
     <logo ng-click="depthy.leftpaneToggle()"><span>depthy</span></logo>
-    <button class="btn btn-default" ng-click="viewer.fit = viewer.fit === 'cover' ? 'contain' : 'cover'"><i class="icon" ng-class="viewer.fit === 'cover' ? 'icon-contract' : 'icon-expand'"></i></button>
-    <button class="btn btn-success" ng-click="selectFile($event)"><i class="icon" ng-class="depthy.isLoading() ? 'icon-loading' : 'icon-open'"></i>Open</button>
+    <button class="btn btn-ctrl btn-default" ng-click="viewer.fit = viewer.fit === 'cover' ? 'contain' : 'cover'" title="{{viewer.fit === 'cover' ? 'Contract' : 'Expand'}}"><i class="icon" ng-class="viewer.fit === 'cover' ? 'icon-contract' : 'icon-expand'"></i></button>
+    <button class="btn btn-ctrl btn-success" ng-click="selectFile($event)" title="Open"><i class="icon" ng-class="depthy.isLoading() ? 'icon-loading' : 'icon-open'"></i></button>
   </nav>
 
   <div id="leftpane">
@@ -67,8 +67,8 @@
     <div class="buttons-options" ng-show="!getActivePopup()">
 
       <div class="btn-group dropdown dropup">
-        <button type="button" class="btn btn-primary dropdown-toggle" ng-disabled="!depthy.hasCompleteImage()">
-          <i class="icon icon-share"></i><span>Share</span>
+        <button type="button" class="btn btn-ctrl btn-default dropdown-toggle" ng-disabled="!depthy.hasCompleteImage()" title="Share">
+          <i class="icon icon-share"></i>
         </button>
         <ul class="dropdown-menu" role="menu">
           <li><a ng-click="exportGifOptions()">Export GIF</a></li>
@@ -76,10 +76,8 @@
           <li><a ng-click="sharePngRun()">Share</a></li>
         </ul>
       </div>
-
-      <button class="btn btn-primary" ng-click="imageInfo()" ga><i class="icon icon-image"></i>Info</button>
-
-      <button class="btn btn-primary" ng-click="imageOptions()" ga><i class="icon icon-settings"></i>Options</button>
+      <button class="btn btn-ctrl btn-default" ng-click="imageInfo()" title="Info" ga><i class="icon icon-image"></i></button>
+      <button class="btn btn-ctrl btn-default" ng-click="imageOptions()" title="Options" ga><i class="icon icon-settings"></i></button>
 
 
     </div>

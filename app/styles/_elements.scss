@@ -196,20 +196,16 @@
     left: remify(20px);
     right: remify(0px);
     text-align:center;
-    bottom: remify(20px);
+    bottom: remify(40px);
     z-index: 20;
     transition: all 0.5s ease-in-out;
 
-    &>button {
-      width: 90px;
+    >.btn-ctrl {
+      margin-left: remify(20px);
     }
-    .button-group {
-      button {
-        width: 90px - 34px;
-      }
-      button + button {
-        width: 34px;
-      }
+
+    >.btn-group {
+      margin-right: 2px;
     }
 
     .zen-mode &, &.ng-hide {

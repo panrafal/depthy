@@ -60,11 +60,15 @@ p a {
 
 // ------------------------------------------------------ elements
 .btn {
+
+  border-bottom-width: 2px;
+
+
   &:focus, &:active {
     outline: 0!important;
   }
   &.active {
-    box-shadow: inset 0px 0px 8px rgba(0,0,0,0.2);
+    // box-shadow: inset 0px 0px 8px rgba(0,0,0,0.2);
   }
   i.icon {
     margin-right: 0.5em;
@@ -78,6 +82,34 @@ p a {
   &.btn-icon {
     .icon {margin: 0;}
   }
+
+  &.btn-default {
+    border-color: $btn-default-color;
+    background: fade-out($btn-default-bg, 0.9);
+    &:hover, &.active {
+      background: $btn-default-color;
+      color: $btn-default-bg;
+    }
+  }
+
+
+  &.btn-ctrl {
+    // width: remify(45px);
+    // height: remify(45px);
+    // line-height: remify(45px);
+    // padding: 0px;
+    // border-radius: remify(40px);
+    i.icon {
+      margin: 0px;
+      // font-size: 24px;
+    }
+
+    &:after {
+      // content: attr(title);
+    }
+
+  }
+
 }
 
 .link-icon {

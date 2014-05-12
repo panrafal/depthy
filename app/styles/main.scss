@@ -1,9 +1,10 @@
 $icon-font-path: "/bower_components/bootstrap-sass-official/vendor/assets/fonts/bootstrap/";
 
-$brand-primary: #2BBFF0; //#0165BD; 
-$brand-danger: #F83A2D;
-$brand-success: #47A447;
-$brand-warning: #F8D920;
+// http://colorschemedesigner.com/#00428sOsOFfFf
+$brand-primary: #185C94; //#0165BD; 
+$brand-danger: #E61717;
+$brand-success: #12B812;
+$brand-warning: #E68F17;
 $brand-info: #5bc0de;
 
 $body-bg: #000;
@@ -20,8 +21,8 @@ $well-bg: rgba(0,0,0,0.2);
 
 $state-warning-text: $brand-warning;
 
-$btn-default-color: #fff;
-$btn-default-bg: lighten($body-bg, 20%);
+$btn-default-color: $text-color;
+$btn-default-bg: $body-bg;
 $btn-default-border: lighten($body-bg, 22%);
 
 $popover-bg: $body-bg;

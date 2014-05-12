@@ -3,6 +3,8 @@
 @import "bootstrap-sass-official/vendor/assets/stylesheets/bootstrap/variables";
 @import "bootstrap-sass-official/vendor/assets/stylesheets/bootstrap/mixins";
 
+@import "_bootstrap-mixins";
+
 // Reset
 @import "bootstrap-sass-official/vendor/assets/stylesheets/bootstrap/normalize";
 @import "bootstrap-sass-official/vendor/assets/stylesheets/bootstrap/print";
