@@ -1,12 +1,21 @@
 
 
-#main {
+#app {
   position: fixed;
   left: 0px;
   top: 0px;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
 }
+
+#main {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 100%;
+  height: 100%;
+}
+
 
 // ------------------------------------------------------ NAVBAR
 #navbar {
@@ -40,7 +49,7 @@
   top: remify($navbar-height);
   width: remify($leftpane-width);
   bottom: 0px;
-  max-width: 100vw;
+  max-width: 100%;
   z-index: 50;
   background: $leftpane-bg;
 
@@ -222,21 +231,23 @@
 
   .popup-clicker {
     position: absolute;
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
     background: transparent;
     z-index: 20;
   }
   .popup {
     z-index: 21;
     position: absolute;
-    width: 100vw;
+    width: 100%;
     max-width: remify(400px);
     text-align: center;
     bottom: remify(-30px);
     background: fade-out($body-bg, 0.3);
-    box-shadow: inset 0px 0px 32px 2px $body-bg;
-    left: 50vw;
+    // box-shadow: inset 0px 0px 32px 2px $body-bg;
+    background-image: linear-gradient(to bottom, fade-out($body-bg, 0.1),fade-out($body-bg, 1) remify(100px));
+
+    left: 50%;
     padding: remify(30px);
     padding-bottom: remify(60px);
 
