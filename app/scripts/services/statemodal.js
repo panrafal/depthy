@@ -14,11 +14,11 @@ angular.module('depthyApp')
     deferred.promise.then(
       function() {
         if (deregister) deregister();
-        if (state) $location.replace();
+        if (state && $state.current.name === state) $location.replace();
       },
       function() {
         if (deregister) deregister();
-        if (state) $window.history.back();
+        if (state && $state.current.name === state) $window.history.back();
       }
     );
 

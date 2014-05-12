@@ -1,7 +1,7 @@
 <div id="main" ng-controller="MainCtrl" 
   ng-class="{
-    'leftpane-opened': depthy.leftpaneOpened === true, 
-    'leftpane-samples': depthy.leftpaneOpened === 'samples', 
+    'leftpane-opened': depthy.isLeftpaneOpened() === true, 
+    'leftpane-samples': depthy.isLeftpaneOpened() === 'samples', 
     'zen-mode': depthy.zenMode}"
   ng-swipe-right="depthy.leftpaneOpen()"
   ng-swipe-left="depthy.leftpaneClose()"
@@ -61,7 +61,7 @@
         <p><span class="btn btn-link btn-success" ng-click="selectFile($event)">Open</span> another one shot with Google Camera's LensBlur, choose one of the <span class="btn btn-link" ng-click="depthy.leftpaneOpen(true)">samples</span>, or <span class="btn btn-link" ng-click="imageInfo()">load the depthmap</span> by hand.</p>
       </div>
     </div>
-    <div class="depthy-viewer" depthy-viewer="depthy.viewer" ng-click="zenModeToggle()">
+    <div class="depthy-viewer" depthy-viewer="depthy.viewer" ng-click="depthy.zenModeToggle()">
       <canvas></canvas>
     </div>
     <div class="buttons-options" ng-show="!getActivePopup()">

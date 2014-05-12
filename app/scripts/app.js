@@ -28,86 +28,95 @@ angular.module('depthyApp', [
 
   $stateProvider
   .state('index', {
-      url: '/',
-      onEnter: ['depthy', '$state', function (depthy, $state) {
-        if (!$state.current.name) {
-          // first timer
-          depthy.leftpaneOpen();
-          depthy.loadSampleImage('flowers');
-        }
-      }]
+    url: '/',
+    onEnter: ['depthy', '$state', function (depthy, $state) {
+      if (!$state.current.name) {
+        // first timer
+        depthy.leftpaneOpen();
+        depthy.loadSampleImage('flowers');
+      }
+    }]
   })
   .state('sample', {
-      url: '/sample/:id',
-      controller: ['$stateParams', 'depthy', function ($stateParams, depthy) {
-        depthy.loadSampleImage($stateParams.id);
-      }]
+    url: '/sample/:id',
+    controller: ['$stateParams', 'depthy', function ($stateParams, depthy) {
+      depthy.loadSampleImage($stateParams.id);
+    }]
   })
   .state('imgur', {
-      url: '/i/:id',
-      controller: ['$stateParams', '$state', 'depthy', function ($stateParams, $state, depthy) {
-        depthy.loadUrlDirectImage('http://i.imgur.com/' + $stateParams.id + '.png', true, {
-          shareUrl: $state.href('imgur', {id: $stateParams.id}, {absolute: true}),
-          thumb: 'http://i.imgur.com/' + $stateParams.id + 'm.jpg',
-          storeUrl: 'http://imgur.com/' + $stateParams.id
-        });
-      }]
+    url: '/i/:id',
+    controller: ['$stateParams', '$state', 'depthy', function ($stateParams, $state, depthy) {
+      depthy.loadUrlDirectImage('http://i.imgur.com/' + $stateParams.id + '.png', true, {
+        shareUrl: $state.href('imgur', {id: $stateParams.id}, {absolute: true}),
+        thumb: 'http://i.imgur.com/' + $stateParams.id + 'm.jpg',
+        storeUrl: 'http://imgur.com/' + $stateParams.id
+      });
+    }]
   })
   .state('imgur2', {
-      url: '/ii/:id',
-      controller: ['$stateParams', 'depthy', function ($stateParams, depthy) {
-        depthy.loadUrlImage('http://i.imgur.com/' + $stateParams.id + '.png');
-      }]
+    url: '/ii/:id',
+    controller: ['$stateParams', 'depthy', function ($stateParams, depthy) {
+      depthy.loadUrlImage('http://i.imgur.com/' + $stateParams.id + '.png');
+    }]
   })
   // hollow state for locally loaded files
   .state('file', {
-      url: '/file',
+    url: '/file',
   })
   // hollow states for back button on alerts
   .state('alert', {
-      url: '/alert',
+    url: '/alert',
   })
   .state('image', {
-      url: '/image',
+    url: '/image',
   })
   .state('image.options', {
-      url: '/options',
+    url: '/options',
   })
   .state('image.info', {
-      url: '/info',
+    url: '/info',
   })
   .state('export', {
-      url: '/export',
+    url: '/export',
   })
   .state('export.png', {
-      url: '/png',
+    url: '/png',
   })
   .state('export.gif', {
-      url: '/gif',
+    url: '/gif',
   })
   .state('export.gif.options', {
-      url: '/options',
+    url: '/options',
   })
   .state('export.gif.run', {
-      url: '/run',
+    url: '/run',
   })
   .state('share', {
-      url: '/share',
+    url: '/share',
   })
   .state('share.png', {
-      url: '/png',
+    url: '/png',
+  })
+  .state('pane', {
+    url: '/pane',
+    onEnter: ['depthy', function(depthy) {
+      depthy.leftpaneOpen();
+    }],
+    // onExit: ['depthy', function(depthy) {
+    //   depthy.leftpaneClose();
+    // }]
   })
   .state('howto', {
-      url: '/howto',
+    url: '/howto',
   })
   .state('howto.lensblur', {
-      url: '/lensblur',
-      onEnter: ['StateModal', function(StateModal) {
-        StateModal.showModal('howto.lensblur', {
-          stateCurrent: true,
-          templateUrl: 'views/howto-lensblur.html',
-        });
-      }]
+    url: '/lensblur',
+    onEnter: ['StateModal', function(StateModal) {
+      StateModal.showModal('howto.lensblur', {
+        stateCurrent: true,
+        templateUrl: 'views/howto-lensblur.html',
+      });
+    }]
   })
   ;
 })

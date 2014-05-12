@@ -59,11 +59,6 @@ angular.module('depthyApp')
     depthy.refreshOpenedImage();
   });
 
-  $scope.zenModeToggle = function() {
-    if (depthy.leftpaneOpened !== 'samples') depthy.leftpaneClose();
-    depthy.zenMode = !depthy.zenMode;
-  };
-
   $scope.getActivePopup = function() {
     return depthy.optionsPopuped || depthy.exportPopuped;
   };

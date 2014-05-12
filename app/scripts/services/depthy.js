@@ -5,22 +5,15 @@ angular.module('depthyApp').provider('depthy', function depthy() {
   // global settings object, synchronized with the remote profile, only simple values!
   var viewer = angular.extend({}, DepthyViewer.defaultOptions);
 
-  this.$get = function(ga, $timeout, $rootScope, $document, $window, $q, $modal, $state) {
+  this.$get = function(ga, $timeout, $rootScope, $document, $window, $q, $modal, $state, StateModal) {
     viewer.hoverElement = 'body';
-
-    function onViewerResolved(e) {
-      $rootScope.$safeApply();
-      console.log('onViewerResolved: ' + depthy.isLoading(), depthy.getViewer().isReady(), e);
-    }
-    function onViewerRejected(e) {
-      $rootScope.$safeApply();
-      console.log('onViewerRejected: ' + depthy.isLoading(), depthy.getViewer().isReady(), e);
-    }
 
     function onFinallyOpened() {
       depthy.opened.loading = false;
       console.log('onFinallyOpened');
     }
+
+    var leftpaneDeferred;
 
     var depthy = {
       viewer: viewer,
@@ -354,21 +347,51 @@ angular.module('depthyApp').provider('depthy', function depthy() {
         return promise;
       },
 
+      isLeftpaneOpened: function() {
+        return this.leftpaneOpened;
+      },
+
       leftpaneToggle: function() {
-        depthy.leftpaneOpened = depthy.leftpaneOpened !== true;
+        if (depthy.leftpaneOpened) {
+          depthy.leftpaneClose();
+        } else {
+          depthy.leftpaneOpen();
+        }
       },
 
       leftpaneOpen: function(samples) {
+        if (!samples && depthy.leftpaneOpen !== true && !leftpaneDeferred) {
+          leftpaneDeferred = StateModal.stateDeferred('pane');
+          leftpaneDeferred.promise.finally(function() {
+            if (depthy.leftpaneOpened === true) depthy.leftpaneOpened = false;
+            leftpaneDeferred = null;
+          });
+        }
         depthy.leftpaneOpened = samples ? 'samples' : true;
+        depthy.zenMode = false;
       },
 
       leftpaneClose: function() {
+        if (leftpaneDeferred) {
+          if (depthy.leftpaneOpened === true) {
+            leftpaneDeferred.reject();
+          }
+          leftpaneDeferred = null;
+        }
         depthy.leftpaneOpened = false;
       },
 
+      zenModeToggle: function() {
+        if (depthy.leftpaneOpened !== 'samples') depthy.leftpaneClose();
+        depthy.zenMode = !depthy.zenMode;
+      },
 
     };
     depthy.setOpened();
+
+    $rootScope.$on('$stateChangeSuccess', function() {
+      depthy.zenMode = false;
+    });
 
     return depthy;
   };
