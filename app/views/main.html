@@ -2,14 +2,15 @@
   ng-class="{
     'leftpane-opened': depthy.isLeftpaneOpened() === true, 
     'leftpane-samples': depthy.isLeftpaneOpened() === 'samples', 
-    'zen-mode': depthy.zenMode}"
+    'zen-mode': depthy.zenMode,
+    'depthy-ready': depthy.isReady(),
+    'depthy-loading': depthy.isLoading()}"
   ng-swipe-right="depthy.leftpaneOpen()"
   ng-swipe-left="depthy.leftpaneClose()"
 >
   <nav id="navbar" class="text-right">
     <logo ng-click="depthy.leftpaneToggle()"><span>depthy</span></logo>
-    <button class="btn btn-ctrl btn-default" ng-click="viewer.fit = viewer.fit === 'cover' ? 'contain' : 'cover'" title="{{viewer.fit === 'cover' ? 'Contract' : 'Expand'}}"><i class="icon" ng-class="viewer.fit === 'cover' ? 'icon-contract' : 'icon-expand'"></i></button>
-    <button class="btn btn-ctrl btn-success" ng-click="selectFile($event)" title="Open"><i class="icon" ng-class="depthy.isLoading() ? 'icon-loading' : 'icon-open'"></i></button>
+    <!-- <button class="btn btn-ctrl btn-success" ng-click="selectFile($event)" title="Open"><i class="icon" ng-class="depthy.isLoading() ? 'icon-loading' : 'icon-open'"></i></button> -->
   </nav>
 
   <div id="leftpane">
@@ -61,8 +62,9 @@
         <p><span class="btn btn-link btn-success" ng-click="selectFile($event)">Open</span> another one shot with Google Camera's LensBlur, choose one of the <span class="btn btn-link" ng-click="depthy.leftpaneOpen(true)">samples</span>, or <span class="btn btn-link" ng-click="imageInfo()">load the depthmap</span> by hand.</p>
       </div>
     </div>
-    <div class="depthy-viewer" depthy-viewer="depthy.viewer" ng-click="depthy.zenModeToggle()">
+    <div class="depthy-viewer" depthy-viewer="depthy.viewer" ng-click="depthy.zenModeToggle()" >
       <canvas></canvas>
+      <div class="icon icon-loading anim-fade" ng-show="depthy.isLoading()"></div>
     </div>
     <div class="buttons-options" ng-show="!getActivePopup()">
 
@@ -76,8 +78,8 @@
           <li><a ng-click="sharePngRun()">Share</a></li>
         </ul>
       </div>
-      <button class="btn btn-ctrl btn-default" ng-click="imageInfo()" title="Info" ga><i class="icon icon-image"></i></button>
-      <button class="btn btn-ctrl btn-default" ng-click="imageOptions()" title="Options" ga><i class="icon icon-settings"></i></button>
+      <button class="btn btn-ctrl btn-default" ng-click="imageInfo()" ng-disabled="depthy.isLoading()" title="Info" ga><i class="icon icon-image"></i></button>
+      <button class="btn btn-ctrl btn-default" ng-click="imageOptions()" ng-disabled="!depthy.isReady()" title="Options" ga><i class="icon icon-settings"></i></button>
 
 
     </div>

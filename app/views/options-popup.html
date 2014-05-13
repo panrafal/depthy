@@ -3,10 +3,12 @@
   <div class="option">
     <!-- <label>Size</label> -->
     <div class="btn-group">
-      <div class="btn btn-default btn-sm" ng-model="viewer.animate" btn-radio="false">Self-control</div>
-      <div class="btn btn-default btn-sm" ng-model="viewer.animate" btn-radio="true">Hypnotize</div>
+      <div class="btn btn-default" ng-model="viewer.fit" btn-checkbox  btn-checkbox-true="'cover'" btn-checkbox-false="'contain'"><i class="icon icon-checkbox"></i>Expand</div>
+      <div class="btn btn-default" ng-model="viewer.animate" btn-checkbox><i class="icon icon-checkbox"></i>Hypnotize</div>
+      <div class="btn btn-default" ng-model="depthy.useOriginalImage" ng-if="depthy.hasOriginalImage()"btn-checkbox><i class="icon icon-checkbox"></i>Sharpen</div>
     </div>
   </div>
+
   <div ng-include="viewer.animate ? 'views/options-animation.html' : null" class="anim-expand"></div>
   <div ng-include="'views/options-movement.html'"></div>
   <div ng-include="'views/options-style.html'"></div>

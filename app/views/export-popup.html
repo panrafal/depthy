@@ -6,17 +6,17 @@
   <div class="option">
     <!-- <label>Size</label> -->
     <div class="btn-group">
-      <div class="btn btn-default btn-sm" ng-model="depthy.exportSize" btn-radio="150">Small</div>
-      <div class="btn btn-default btn-sm" ng-model="depthy.exportSize" btn-radio="300">Standard</div>
-      <div class="btn btn-default btn-sm" ng-model="depthy.exportSize" btn-radio="500">Large</div>
+      <div class="btn btn-default" ng-model="depthy.exportSize" btn-radio="150">Small</div>
+      <div class="btn btn-default" ng-model="depthy.exportSize" btn-radio="300">Standard</div>
+      <div class="btn btn-default" ng-model="depthy.exportSize" btn-radio="500">Large</div>
     </div>
   </div>
   <!--
   <div class="option">
     <label>Type</label>
     <div class="btn-group">
-      <button type="button" class="btn btn-primary btn-sm" ng-model="depthy.exportType" btn-radio="'gif'">GIF</button>
-      <button type="button" class="btn btn-primary btn-sm" ng-model="depthy.exportType" btn-radio="'webm'">WebM</button>
+      <button type="button" class="btn btn-primary" ng-model="depthy.exportType" btn-radio="'gif'">GIF</button>
+      <button type="button" class="btn btn-primary" ng-model="depthy.exportType" btn-radio="'webm'">WebM</button>
     </div>
   </div>
   -->
@@ -25,5 +25,5 @@
 </div>
 <div class="popup-footer">
   <button class="btn btn-success btn-md" ng-click="etActivePopup().resolve(); exportGifRun()"><i class="icon icon-yes"></i>C'mon!</button>&nbsp;
-  <!-- <button class="btn btn-default btn-sm" ng-click="etActivePopup().reject()">Nah...</button> -->
+  <!-- <button class="btn btn-default" ng-click="etActivePopup().reject()">Nah...</button> -->
 </div>

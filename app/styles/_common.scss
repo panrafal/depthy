@@ -43,6 +43,16 @@ p a {
   text-decoration: underline;
 }
 
+// ------------------------------------------------------ states
+
+.ng-hide-visibility {
+  visibility: visible;
+  &.ng-hide {
+    display: block!important;
+    visibility: hidden;
+  }
+}
+
 // ------------------------------------------------------ icons
 
 .icon-rotate-90 {
@@ -68,7 +78,7 @@ p a {
     outline: 0!important;
   }
   &.active {
-    // box-shadow: inset 0px 0px 8px rgba(0,0,0,0.2);
+    box-shadow: none; //inset 0px 0px 8px rgba(0,0,0,0.2);
   }
   i.icon {
     margin-right: 0.5em;
@@ -85,13 +95,21 @@ p a {
 
   &.btn-default {
     border-color: $btn-default-color;
-    background: fade-out($btn-default-bg, 0.9);
+    background: transparent;// fade-out($btn-default-bg, 0.9);
     &:hover, &.active {
       background: $btn-default-color;
       color: $btn-default-bg;
     }
   }
 
+  i.icon-checkbox {
+    @extend .icon-no;
+  }
+  &.active {
+    i.icon-checkbox {
+      @extend.icon-yes;
+    }
+  }
 
   &.btn-ctrl {
     // width: remify(45px);
@@ -110,6 +128,12 @@ p a {
 
   }
 
+}
+
+.btn-group {
+  &>.btn:not(:first-child) {
+    border-left: 0;
+  }
 }
 
 .link-icon {

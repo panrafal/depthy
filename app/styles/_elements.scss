@@ -176,6 +176,19 @@
     width: 100%;
     height: 100%;
     z-index: 1;
+
+    .icon-loading {
+      font-size: 32px;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 1em;
+      line-height: 1em;
+      text-align: center;
+      margin-left: -0.5em;
+      margin-top: -0.5em;
+      z-index: 2;
+    }
   }
 
   canvas {
@@ -186,6 +199,12 @@
     pointer-events: none;
     box-shadow: 1px 1px 1px rgba(0,0,0,0.5);
 
+    transition: all 0.2s ease-in-out;
+    opacity: 0;
+    .depthy-ready & {
+      opacity: 1;
+    }
+
     html.no-webgl & {
       display: none;
     }
@@ -193,19 +212,22 @@
 
   .buttons-options {
     position: absolute;
-    left: remify(20px);
-    right: remify(0px);
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: remify(30px) 0;
     text-align:center;
-    bottom: remify(40px);
     z-index: 20;
     transition: all 0.5s ease-in-out;
+
+    background: linear-gradient(to bottom, fade-out($body-bg, 1),fade-out($body-bg, 0.8) 70%,fade-out($body-bg, 0.7) 100%);
 
     >.btn-ctrl {
       margin-left: remify(20px);
     }
 
     >.btn-group {
-      margin-right: 2px;
+      margin-right: 3px;
     }
 
     .zen-mode &, &.ng-hide {

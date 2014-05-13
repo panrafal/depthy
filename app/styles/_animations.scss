@@ -1,17 +1,16 @@
 
 .anim-fade {
-  transition: all 0.2s ease-in;
+  transition: all 0.2s ease-in-out;
 
-  &.ng-hide-remove, &.ng-enter {
+  &.ng-hide-remove, &.ng-enter,
+  &.ng-hide-active, &.ng-leave-active,
+  &.ng-hide {
     opacity: 0;
   }
   &.ng-hide-remove-active, &.ng-enter-active {
     opacity: 1;
   }
 
-  &.ng-hide-active, &.ng-leave-active {
-    opacity: 0;
-  }    
 }
 
 .anim-slideup-centered {
