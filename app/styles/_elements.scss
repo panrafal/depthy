@@ -191,6 +191,16 @@
       margin-left: -0.5em;
       margin-top: -0.5em;
       z-index: 2;
+
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.2s ease;
+
+      .depthy-loading & {
+        transition: all 0.2s 0.2s ease;
+        opacity: 1;
+        visibility: visible;
+      }
     }
   }
 
