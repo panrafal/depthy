@@ -108,6 +108,9 @@ angular.module('depthyApp', [
   .state('share', {
     url: '/share',
   })
+  .state('share.options', {
+    url: '/options',
+  })
   .state('share.png', {
     url: '/png',
   })

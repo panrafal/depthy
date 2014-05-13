@@ -25,29 +25,66 @@
   right: 0px;
   height: remify($navbar-height);
   z-index: 40;
-  background: $navbar-bg;
   transition: all 0.5s ease-in-out;
   
   @extend .accelerate;
 
-  logo {
+
+  &:before {
+    content: '';
     position: absolute;
     left: 0px;
+    right: 0px;
+    top: 0px;
+    height: remify(60px);
+    pointer-events: none;
+    background: linear-gradient(to top, fade-out($body-bg, 1),fade-out($body-bg, 0.7) 70%,fade-out($body-bg, 0.6) 100%);
+  }
+
+  logo {
+    position: absolute;
+    left: 20px;
+    top: 10px;
     font-size: remify($navbar-height);
     cursor: pointer;
+    transition: all 0.5s ease-in-out;
+
+    .leftpane-samples & {
+      transform: translateX(remify($samples-width)) translateX(-10px);
+    }
+
   }
 
   .zen-mode & {
-    transform: translateY(-100%);
+    transform: translateY(-100%) translateY(-40px);
   }
 
+}
+
+#hamburger {
+  cursor: pointer;
+  font-size: 32px;
+  position: fixed;
+  left: -16px;
+  top: 0px;
+  z-index: 60;
+  width: 2em;
+
+  transition: all 0.5s ease-in-out;
+
+  .leftpane-opened &, .leftpane-samples & {
+    transform: translateX(10px);
+  }
+  .zen-mode & {
+    transform: translateX(-100%);
+  }
 }
 
 // ------------------------------------------------------ LEFTPANE
 #leftpane {
   position: absolute;
   left: 0px;
-  top: remify($navbar-height);
+  top: 0px; //remify($navbar-height);
   width: remify($leftpane-width);
   bottom: 0px;
   max-width: 100%;
@@ -64,7 +101,7 @@
   }
 
   .leftpane-samples & {
-    transform: translateX(- percentage(1 - $samples-width / $leftpane-width));
+    transform: translateX(-100%) translateX(remify($samples-width));
   }
 
   .zen-mode & {
@@ -138,7 +175,7 @@
   position: absolute;
   height: 100%;
   right: 0px;
-  width: percentage($samples-width / $leftpane-width);
+  width: remify($samples-width);
   background: $samples-bg;
 
   img {
@@ -233,9 +270,9 @@
     z-index: 20;
     transition: all 0.5s ease-in-out;
 
-    background: linear-gradient(to bottom, fade-out($body-bg, 1),fade-out($body-bg, 0.8) 70%,fade-out($body-bg, 0.7) 100%);
+    background: linear-gradient(to bottom, fade-out($body-bg, 1),fade-out($body-bg, 0.7) 70%,fade-out($body-bg, 0.6) 100%);
 
-    >.btn-ctrl {
+    >.btn-ctrl:not(:first-child) {
       margin-left: remify(20px);
     }
 
@@ -275,10 +312,10 @@
     width: 100%;
     height: 100%;
     background: transparent;
-    z-index: 20;
+    z-index: 60;
   }
   .popup {
-    z-index: 21;
+    z-index: 61;
     position: absolute;
     width: 100%;
     max-width: remify(400px);

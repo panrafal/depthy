@@ -3,10 +3,12 @@
 angular.module('depthyApp').provider('depthy', function depthy() {
 
   // global settings object, synchronized with the remote profile, only simple values!
-  var viewer = angular.extend({}, DepthyViewer.defaultOptions);
+  var viewer = angular.extend({}, DepthyViewer.defaultOptions, {
+    hoverElement: 'body',
+    fit: Modernizr.mobile ? 'cover' : 'contain',
+  });
 
   this.$get = function(ga, $timeout, $rootScope, $document, $window, $q, $modal, $state, StateModal) {
-    viewer.hoverElement = 'body';
 
     function onFinallyOpened() {
       depthy.opened.loading = false;
@@ -17,9 +19,6 @@ angular.module('depthyApp').provider('depthy', function depthy() {
 
     var depthy = {
       viewer: viewer,
-
-      exportPopuped: false,
-      optionsPopuped: false,
 
       exportSize: Modernizr.mobile ? 150 : 300,
       exportType: 'gif',

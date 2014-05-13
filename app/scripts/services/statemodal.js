@@ -11,6 +11,7 @@ angular.module('depthyApp')
     if (state && $state.current.name !== state && !options.stateCurrent) $state.go(state, options.stateParams, options.stateOptions);
     var deferred = $q.defer(), deregister;
 
+    deferred.state = state;
     deferred.promise.then(
       function() {
         if (deregister) deregister();

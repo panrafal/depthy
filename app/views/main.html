@@ -8,8 +8,9 @@
   ng-swipe-right="depthy.leftpaneOpen()"
   ng-swipe-left="depthy.leftpaneClose()"
 >
+  <div id="hamburger" class="icon icon-navicon" ng-click="depthy.leftpaneToggle()"></div>
   <nav id="navbar" class="text-right">
-    <logo ng-click="depthy.leftpaneToggle()"><span>depthy</span></logo>
+    <logo class="white" ng-click="depthy.leftpaneToggle()"><span>depthy</span></logo>
     <!-- <button class="btn btn-ctrl btn-success" ng-click="selectFile($event)" title="Open"><i class="icon" ng-class="depthy.isLoading() ? 'icon-loading' : 'icon-open'"></i></button> -->
   </nav>
 
@@ -57,34 +58,27 @@
       <div class="panel panel-warning" ng-include="(!depthy.isLoading() && depthy.hasImage() && !depthy.hasDepthmap()) ? 'views/alert-nodepth.html' : null"></div>
 
     </div>
+
     <div class="depthy-viewer" depthy-viewer="depthy.viewer" ng-click="depthy.zenModeToggle()" >
       <canvas></canvas>
       <div class="icon icon-loading"></div>
     </div>
-    <div class="buttons-options" ng-show="!getActivePopup()">
 
-      <div class="btn-group dropdown dropup">
-        <button type="button" class="btn btn-ctrl btn-default dropdown-toggle" ng-disabled="!depthy.hasCompleteImage()" title="Share">
-          <i class="icon icon-share"></i>
-        </button>
-        <ul class="dropdown-menu" role="menu">
-          <li><a ng-click="exportGifOptions()">Export GIF</a></li>
-          <li><a ng-click="exportPngRun()">Export PNG</a></li>
-          <li><a ng-click="sharePngRun()">Share</a></li>
-        </ul>
-      </div>
+    <div class="buttons-options" ng-show="!getActivePopup()">
+      <button class="btn btn-ctrl btn-default" ng-click="shareOptions()" ng-disabled="!depthy.hasCompleteImage() || !depthy.isReady()" title="Share"><i class="icon icon-share"></i></button>
       <button class="btn btn-ctrl btn-default" ng-click="imageInfo()" ng-disabled="depthy.isLoading()" title="Info" ga><i class="icon icon-image"></i></button>
       <button class="btn btn-ctrl btn-default" ng-click="imageOptions()" ng-disabled="!depthy.isReady()" title="Options" ga><i class="icon icon-settings"></i></button>
-
-
     </div>
   </section>
   <section id="popup">
     <!-- <div class="clicker"  ng-show="!!getActivePopup()" ng-click="getActivePopup().reject()"></div> -->
-    <div class="popup options-popup" ng-show="!!depthy.optionsPopuped" ng-include="'views/options-popup.html'">
+    <div class="popup options-popup" ng-show="activePopup.state === 'image.options'" ng-include="'views/options-popup.html'">
     </div>
-    <div class="popup export-popup" ng-if="!!depthy.exportPopuped" ng-include="'views/export-popup.html'">
+    <div class="popup export-popup" ng-if="activePopup.state === 'export.gif.options'" ng-include="'views/export-popup.html'">
     </div>
+    <div class="popup share-popup" ng-show="activePopup.state === 'share.options'" ng-include="'views/share-popup.html'">
+    </div>
+
   </section>
 
 </div>
