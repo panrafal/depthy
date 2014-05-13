@@ -27,7 +27,8 @@
   z-index: 40;
   background: $navbar-bg;
   transition: all 0.5s ease-in-out;
-  backface-visibility: hidden;
+  
+  @extend .accelerate;
 
   logo {
     position: absolute;
@@ -54,11 +55,12 @@
   background: $leftpane-bg;
 
   transition: all 0.5s ease-in-out;
-  transform: translateX(-100%);
-  backface-visibility: hidden;
+  transform: translate3d(-100%, 0, 0);
+
+  @extend .accelerate;
 
   .leftpane-opened & {
-    transform: translateX(0%);
+    transform: translate3d(0, 0, 0);
   }
 
   .leftpane-samples & {
@@ -155,6 +157,7 @@
   right: 0px;
   top: 0px;
   bottom: 0px;
+  transition: all 0.5s ease-in-out;
 
   .alerts {
     position: absolute;
@@ -237,6 +240,16 @@
 
   }
 
+
+  .leftpane-samples & {
+    transform: translateX(remify($samples-width / 2));
+  }
+  
+  @media #{$media-desktop} {
+    .leftpane-opened & {
+      transform: translateX(remify($leftpane-width / 2));
+    }
+  }
 }
 
 // ------------------------------------------------------ POPUPS

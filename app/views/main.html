@@ -19,19 +19,17 @@
         <logo><span>depthy</span></logo>
         <p class="lead">Poke around with awesome photos<br/>made with <a href="https://play.google.com/store/apps/details?id=com.google.android.GoogleCamera" target="_blank">Google Camera</a>'s Lens Blur.</p>
       </header>
-      <article>
+      <article class="text-center">
         <p>
-          Make a photo using Lens Blur mode and load it using the button below.<br/>
-          Photos are processed on your device - no uploading!
-          <span ng-if="!Modernizr.mobile"><br/>It works on your Android device too!</span>
+          Make a photo using <a href="https://play.google.com/store/apps/details?id=com.google.android.GoogleCamera" target="_blank">LensBlur</a> mode, or create it yourself and see it come to life!<br/>
+          Everything is processed right on your device.
         </p>
         <div class="file-select">
-          <div class="btn btn-lg btn-success" ng-click="selectFile($event)"><i class="icon" ng-class="depthy.isLoading() ? 'icon-loading' : 'icon-open'"></i>Open Lens Blur photo</div>
+          <div class="btn btn-lg btn-success" ng-click="selectFile($event)"><i class="icon" ng-class="depthy.isLoading() ? 'icon-loading' : 'icon-open'"></i>Open photo</div>
         </div>
-        <em class="text-muted" ng-if="!Modernizr.mobile">or drag&amp;drop it anywhere</em>
       </article>
       <footer>
-        Depthy 0.1.1 created by <a href="http://www.stamina.pl/">Rafał Lindemann</a>.<br/>
+        Depthy 0.2 created by <a href="http://www.stamina.pl/">Rafał Lindemann</a>.<br/>
         Ideas? Issues? Code? It's open sourced on <a href="https://github.com/panrafal/depthy">GitHub</a>!
       </footer>
     </section>
@@ -47,20 +45,17 @@
 
   <section id="viewer">
     <div class="alerts">
-      <div class="alert alert-danger" ng-if="!Modernizr.webgl">
-        <p>Your browser does not support WebGL...</p>
-      </div>
-      <div class="alert alert-info" ng-if="depthy.hasImage() && depthy.movearoundShow">
+
+      <div class="panel panel-danger" ng-include="!Modernizr.webgl ? 'views/alert-webgl.html' : null"></div>
+
+      <div class="alert alert-info" ng-if="depthy.isReady() && depthy.movearoundShow" ng-click="depthy.movearoundShow = false">
         <p>Move your {{Modernizr.devicemotion && Modernizr.mobile ? 'device' : 'cursor'}} around to see the effect</p>
       </div>
-      <div class="alert alert-info" ng-if="!depthy.isLoading() && !depthy.hasImage()">
-        <p>No image loaded.</p>
-        <p>Click <span class="btn btn-link btn-success" ng-click="selectFile($event)">open</span> to load one of Your photos, or choose one of the <span class="btn btn-link" ng-click="depthy.leftpaneOpen(true)">samples</span>.</p>
-      </div>
-      <div class="alert alert-info" ng-if="!depthy.isLoading() && depthy.hasImage() && !depthy.hasDepthmap()">
-        <p>The loaded image does not contain depth information.</p>
-        <p><span class="btn btn-link btn-success" ng-click="selectFile($event)">Open</span> another one shot with Google Camera's LensBlur, choose one of the <span class="btn btn-link" ng-click="depthy.leftpaneOpen(true)">samples</span>, or <span class="btn btn-link" ng-click="imageInfo()">load the depthmap</span> by hand.</p>
-      </div>
+
+      <div class="panel panel-warning" ng-include="(Modernizr.webgl && !depthy.isLoading() && !depthy.hasImage()) ? 'views/alert-noimage.html' : null"></div>
+
+      <div class="panel panel-warning" ng-include="(!depthy.isLoading() && depthy.hasImage() && !depthy.hasDepthmap()) ? 'views/alert-nodepth.html' : null"></div>
+
     </div>
     <div class="depthy-viewer" depthy-viewer="depthy.viewer" ng-click="depthy.zenModeToggle()" >
       <canvas></canvas>

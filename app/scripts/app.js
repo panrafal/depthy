@@ -99,6 +99,7 @@ angular.module('depthyApp', [
   })
   .state('pane', {
     url: '/pane',
+    hollow: true,
     onEnter: ['depthy', function(depthy) {
       depthy.leftpaneOpen();
     }],
@@ -125,7 +126,7 @@ angular.module('depthyApp', [
   var stateChangeStart = $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState) {
     stateChangeStart();
     console.log(event, toState, toParams, fromState);
-    if (!toState.controller && !toState.onEnter && !toState.template && !toState.templateUrl) {
+    if (toState.hollow || !toState.controller && !toState.onEnter && !toState.template && !toState.templateUrl) {
       console.warn('Hollow state %s', toState.name);
       event.preventDefault();
       $state.go('index');

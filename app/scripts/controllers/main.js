@@ -47,7 +47,7 @@ angular.module('depthyApp')
         },
         function(e) {
           ga('send', 'event', 'image', 'error', e);
-          StateModal.showAlert(e);
+          depthy.leftpaneClose();
         }
       );
       // depthy.handleCompoundFile(files[0]);

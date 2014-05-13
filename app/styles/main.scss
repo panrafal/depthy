@@ -17,22 +17,41 @@ $font-family-sans-serif: 'Roboto Condensed', Helvetica, Arial, sans-serif;
 $headings-font-family: $font-family-sans-serif;
 $headings-font-weight: 700;
 
+// $border-radius-base: 0px;
+
+// states 
+$state-warning-text: $brand-warning;
+$state-danger-bg: $brand-danger;
+$state-danger-text: $text-color;
+$state-warning-bg: $brand-warning;
+$state-warning-text: $text-color;
+
+// wells
 $well-bg: rgba(0,0,0,0.2);
 
-$state-warning-text: $brand-warning;
-
+// buttons
 $btn-default-color: $text-color;
 $btn-default-bg: $body-bg;
 $btn-default-border: lighten($body-bg, 22%);
 
+// popovers
 $popover-bg: $body-bg;
 $popover-arrow-color: $body-bg;
 $popover-arrow-width: 6px;
 $popover-max-width: 400px;
 
+// modals
 $modal-content-bg: $body-bg;
 $modal-header-border-color: lighten($body-bg, 10%);
-// $border-radius-base: 0px;
+
+// panels
+$panel-bg: $body-bg;
+$panel-default-text: $text-color;
+
+// code
+$code-color: inherit;
+$code-bg: fade-out($text-color, 0.8);
+
 
 @import "_bootstrap.scss";
 @import "_icomoon.scss";
@@ -43,18 +62,23 @@ $navbar-bg: $body-bg;
 $leftpane-bg: $body-bg;
 $leftpane-width: 450px;
 
-$samples-width: 75px;
+$samples-width: 70px;
 $samples-bg: $body-bg;
 
 $facebook-color: #3B5998;
 $google-color: #D74635;
 $twitter-color: #00C3F8;
 
-$media-small: "(max-width: #{$screen-xs-max})";
+
+$media-tiny: "(max-width: #{$screen-xs-max})";
 $media-small: "(min-width: #{$screen-sm-min}) and (max-width: #{$screen-sm-max})";
 $media-medium: "(min-width: #{$screen-md-min}) and (max-width: #{$screen-md-max})";
 $media-large: "(min-width: #{$screen-lg-min})";
-$media-dekstop: "(min-width: #{$screen-md-min})";
+
+$media-phone: $media-tiny;
+$media-tablet: $media-small;
+$media-mobile: "(max-width: #{$screen-sm-max})";
+$media-desktop: "(min-width: #{$screen-desktop})";
 
 
 @import "_mixins.scss";

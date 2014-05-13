@@ -89,7 +89,7 @@ angular.module('depthyApp').provider('depthy', function depthy() {
         return this.getViewer().isReady();
       },
       isLoading: function() {
-        return !!this.opened.loading;
+        return !!this.opened.loading && Modernizr.webgl;
       },
       hasImage: function() {
         return this.getViewer().hasImage();
@@ -104,7 +104,7 @@ angular.module('depthyApp').provider('depthy', function depthy() {
         return this.hasImage() && this.hasDepthmap();
       },
       getLoadError: function() {
-        return this.opened.error || this.getViewer().getLoadError();
+        return this.opened.error;
       },
 
       getViewerCtrl: function() {
@@ -130,7 +130,7 @@ angular.module('depthyApp').provider('depthy', function depthy() {
 
       loadSampleImage: function(name) {
         if (depthy.opened.sample === name && !depthy.opened.modified) return;
-        this.setOpened({
+        var opened = this.setOpened({
           sample: name,
           title: name,
           shareUrl: $state.href('sample', {id: name}, {absolute: true}),
@@ -140,7 +140,11 @@ angular.module('depthyApp').provider('depthy', function depthy() {
           originalUrl: 'samples/'+name+'-alternative.jpg',
         });
         depthy.getViewer().setDepthmap(depthy.opened.depthUrl);
-        return depthy.refreshOpenedImage().finally(onFinallyOpened);
+        return depthy.refreshOpenedImage()
+          .finally(onFinallyOpened)
+          .catch(function() {
+            depthy.opened.error = 'Sample not found!';
+          });
       },
 
       loadLocalImage: function(file) {
@@ -154,7 +158,7 @@ angular.module('depthyApp').provider('depthy', function depthy() {
         var deferred = $q.defer();
 
         if (file.type !== 'image/jpeg' && file.type !== 'image/png') {
-          deferred.reject('Only JPEG and PNG files are supported!');
+          deferred.reject('Only JPEG and PNG, please!');
         } else {
           var reader = new FileReader();
           reader.onload = function() {
@@ -165,7 +169,10 @@ angular.module('depthyApp').provider('depthy', function depthy() {
 
         return deferred.promise.then(function(data) {
           return depthy._loadFromArrayBuffer(data);
-        }).finally(onFinallyOpened);
+        }).finally(onFinallyOpened)
+          .catch(function(err) {
+            depthy.opened.error = err;
+          });
 
       },
 
@@ -192,7 +199,10 @@ angular.module('depthyApp').provider('depthy', function depthy() {
 
         return deferred.promise.then(function(data) {
           return depthy._loadFromArrayBuffer(data);
-        }).finally(onFinallyOpened);
+        }).finally(onFinallyOpened)
+        .catch(function(err) {
+          depthy.opened.error = angular.isString(err) ? err : 'Image not found!';
+        });
 
       },
 
@@ -207,7 +217,10 @@ angular.module('depthyApp').provider('depthy', function depthy() {
         }, openedInfo || {}));
 
         this.getViewer().setDepthmap(this.opened.depthUrl, isPng);
-        return this.refreshOpenedImage().finally(onFinallyOpened);
+        return this.refreshOpenedImage().finally(onFinallyOpened)
+          .catch(function(err) {
+            depthy.opened.error = angular.isString(err) ? err : 'Image not found!';
+          });
       },
 
       _loadFromArrayBuffer: function(buffer) {
