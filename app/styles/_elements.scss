@@ -139,35 +139,25 @@
   .notice {
     opacity: 0.5;
   }
-  .file-select {
+  .button-open {
     margin-top: 2em;
-    position: relative;
-    .btn-success {
-      position: relative;
-      z-index: 2;
-      transition: all 0.5s ease;
-    }
-    .progress {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      margin: 0;
-      width: 14em;
-      transform: translate(-50%, -50%);
-      z-index: 1;
-      opacity: 0;
-      transition: all 0.5s ease;
-    }
-    &.processing {
-      .btn-success {
-        opacity: 0;
-        visibility: hidden;
-      }
-      .progress {
-        opacity: 1;
-      }
+  }
+
+  footer {
+    color: fade-out($text-color, 0.6);
+    text-align: center;
+    margin-top: 4em;
+    font-size: 0.9em;
+    a {
+      color: inherit;
+      text-decoration: underline;
+      &:hover {
+        color: fade-out(#fff, 0.4);
+      }    
     }
   }
+
+
 
   &:after {
     content: '';
@@ -410,75 +400,7 @@
 }
 
 
-
-
-// ---------------------------------------------------------------------------  OLDIES
-
-#file {
-  // background: #125267;
-  background: linear-gradient(to bottom, darken($body-bg, 12%) 0%,darken($body-bg, 8%) 2em);
-  border-top: 1px solid lighten($body-bg, 0%);
-  text-align: center;
-  padding: 2em 0em;
-  position: relative;
-  // min-height: 80vh;
-
-
-
-  .images {
-    // line-height: 80vh;
-    // padding: 1em 0;
-    position: relative;
-    white-space: nowrap;
-    overflow-x: auto;
-    overflow-y: hidden;
-    padding: 1em 0;
-
-    html.touch & {
-      overflow-x: scroll;
-      -webkit-overflow-scrolling: touch;
-    }
-
-
-
-    .image {
-      display: inline-block;
-      position: relative;
-      margin: 0em 1em;
-      img {
-        max-width: 70vw;
-        max-height: 80vh;
-        // max-width: 100%;
-        width: auto;
-        height: auto;
-        box-shadow: 2px 2px 2px rgba(0,0,0,0.5);
-      }
-
-      &+.image {
-      }
-    }
-
-  }
-
-
-}
-
-
-footer {
-  background: linear-gradient(to bottom, darken($body-bg, 14%) 0%,darken($body-bg, 10%) 2em);
-  border-top: 1px solid lighten($body-bg, 0%);
-  color: fade-out(#fff, 0.6);
-  text-align: center;
-  padding: 1em;
-  font-size: 0.9em;
-  a {
-    color: inherit;
-    text-decoration: underline;
-    &:hover {
-      color: fade-out(#fff, 0.4);
-    }    
-  }
-}
+// ------------------------------------------------------ MODAL
 
 .export-modal {
   .progress {
@@ -497,3 +419,5 @@ footer {
     }
   }
 }
+
+
