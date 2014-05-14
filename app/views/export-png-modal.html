@@ -3,13 +3,17 @@
   <h4 class="modal-title"><i class="icon icon-back" ng-click="$dismiss()"></i>Your PNG is ready!</h4>
 </div>
 <div class="modal-body">
-  <div class="thumbnail center-block">
-    <img image-source="export-png-modal" />
+  <div class="text-center">
+    <div class="thumbnail">
+      <img image-source="export-png-modal" />
+    </div>
   </div>
   <p class="text-muted text-center">
     {{Modernizr.mobile ? 'Press and hold the image' : 'Right-click the image'}} to save it.
   </p>
-  <p>You can edit this image in any software supporting PNG files, and open it later in <b>Depthy</b> to see the effects. Remember, that transparent means far-away, and opaque means near.</p>
+  <p>You can edit this image in any software supporting PNG files, and open it later in <b>Depthy</b> to see the effects.
+  </p>
+  <p>Remember: transparent means far-away, and opaque means near.</p>
 </div>
 <div class="modal-footer">
   <button class="btn btn-default" ng-click="$dismiss()">Close</button>

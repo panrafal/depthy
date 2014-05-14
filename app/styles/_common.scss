@@ -306,6 +306,7 @@ logo {
   margin-bottom: 10px;
   img {
     background: $thumbnail-matte;
+    max-height: 60%;
   }
   h3, h4, h5 {
     background: $brand-primary;
