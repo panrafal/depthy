@@ -49,8 +49,8 @@
     cursor: pointer;
     transition: all 0.5s ease-in-out;
 
-    .leftpane-samples & {
-      transform: translateX(remify($samples-width)) translateX(-10px);
+    .leftpane-gallery & {
+      transform: translateX(remify($gallery-width)) translateX(-5px);
     }
 
   }
@@ -72,7 +72,7 @@
 
   transition: all 0.5s ease-in-out;
 
-  .leftpane-opened &, .leftpane-samples & {
+  .leftpane-opened &, .leftpane-gallery & {
     transform: translateX(10px);
   }
   .zen-mode & {
@@ -96,16 +96,17 @@
 
   @extend .accelerate;
 
+
   .leftpane-opened & {
     transform: translate3d(0, 0, 0);
   }
 
-  .leftpane-samples & {
-    transform: translateX(-100%) translateX(remify($samples-width));
+  .leftpane-gallery & {
+    transform: translateX(-100%) translateX(remify($gallery-width));
   }
 
   .zen-mode & {
-    transform: translateX(-100%);
+    transform: translateX(-100%) translateX(-20px);
   }
 
 }
@@ -115,7 +116,7 @@
   position: absolute;
   height: 100%;
   left: 0px;
-  right: percentage($samples-width / $leftpane-width);
+  right: percentage($gallery-width / $leftpane-width);
 
   padding: 2em;
 
@@ -168,22 +169,66 @@
     }
   }
 
+  &:after {
+    content: '';
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    right: 0px;
+    width: remify($gallery-width);
+    background: linear-gradient(to left, fade-out($body-bg, 1),fade-out($body-bg, 0.85) 90%,fade-out($body-bg, 0.6) 100%);
+    transition: all 0.5s ease-in-out;
+    transform: translateX(0);
+    z-index: 1;
+    pointer-events: none;
+
+    .leftpane-opened & {
+      transform: translateX(100%);      
+    }
+  }
+
+
 }
 
 // ------------------------------------------------------ SAMPLES
-#samples {
+#gallery {
   position: absolute;
   height: 100%;
   right: 0px;
-  width: remify($samples-width);
-  background: $samples-bg;
+  width: remify($gallery-width);
+  background: $gallery-bg;
 
-  img {
-    cursor:pointer;
-    max-width: 100%;
-    box-shadow: 1px 1px 1px rgba(0,0,0,0.5);
-    margin-bottom: 0.3em;
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
   }
+  li {
+    cursor:pointer;
+    width: remify($gallery-width);
+    height: remify($gallery-width);
+    background-position: 50% 50%;
+    background-size: cover;
+  }
+
+  
+  &:after {
+    content: '';
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    right: 0px;
+    width: remify(10px);
+    background: linear-gradient(to left, fade-out($body-bg, 1),fade-out($body-bg, 0.9) 90%,fade-out($body-bg, 0.6) 100%);
+    transition: all 0.5s ease-in-out;
+    transform: translateX(0);
+
+    .leftpane-opened &, .leftpane-gallery & {
+      transform: translateX(100%);      
+    }
+  }
+  
+
 }
 
 // ------------------------------------------------------ VIEWER
@@ -288,8 +333,8 @@
   }
 
 
-  .leftpane-samples & {
-    transform: translateX(remify($samples-width / 2));
+  .leftpane-gallery & {
+    transform: translateX(remify($gallery-width / 2));
   }
   
   @media #{$media-desktop} {

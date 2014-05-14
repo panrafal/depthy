@@ -27,7 +27,7 @@ angular.module('depthyApp').provider('depthy', function depthy() {
 
       rootShareUrl: 'http://depthy.me/',
 
-      // true - opened fully, 'samples' opened on samples
+      // true - opened fully, 'gallery' opened on gallery
       leftpaneOpened: false,
 
       movearoundShow: false,
@@ -37,6 +37,14 @@ angular.module('depthyApp').provider('depthy', function depthy() {
       opened: {},
 
       useOriginalImage: false,
+
+      samples: {
+        flowers: 'flowers',
+        hut: 'hut',
+        shelf: 'shelf',
+        mango: 'mango',
+        tunnel: 'tunnel',
+      },
 
       // used internally
       setOpened: function(opts) {
@@ -373,15 +381,15 @@ angular.module('depthyApp').provider('depthy', function depthy() {
         }
       },
 
-      leftpaneOpen: function(samples) {
-        if (!samples && depthy.leftpaneOpen !== true && !leftpaneDeferred) {
+      leftpaneOpen: function(gallery) {
+        if (!gallery && depthy.leftpaneOpen !== true && !leftpaneDeferred) {
           leftpaneDeferred = StateModal.stateDeferred('pane');
           leftpaneDeferred.promise.finally(function() {
             if (depthy.leftpaneOpened === true) depthy.leftpaneOpened = false;
             leftpaneDeferred = null;
           });
         }
-        depthy.leftpaneOpened = samples ? 'samples' : true;
+        depthy.leftpaneOpened = gallery ? 'gallery' : true;
         depthy.zenMode = false;
       },
 
@@ -396,7 +404,7 @@ angular.module('depthyApp').provider('depthy', function depthy() {
       },
 
       zenModeToggle: function() {
-        if (depthy.leftpaneOpened !== 'samples') depthy.leftpaneClose();
+        if (depthy.leftpaneOpened !== 'gallery') depthy.leftpaneClose();
         depthy.zenMode = !depthy.zenMode;
       },
 

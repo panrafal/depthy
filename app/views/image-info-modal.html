@@ -1,7 +1,8 @@
+<span fileselect="info.depthFiles">
 <div class="modal-header">
   <h4 class="modal-title"><i class="icon icon-back" ng-click="$dismiss()"></i>Image properties</h4>
 </div>
-<div class="modal-body" fileselect="info.depthFiles" >
+<div class="modal-body" >
   <div class="thumbnails-set">
     <div class="thumbnail" ng-if="depthy.hasDepthmap()">
       <img image-source="depth">
@@ -21,4 +22,4 @@
   <button class="btn btn-success" ng-click="selectFile($event)"><i class="icon" ng-class="isDepthmapProcessing ? 'icon-loading' : 'icon-open'"></i>{{depthy.hasDepthmap() ? 'Change' : 'Open' }} depthmap</button>
   <button class="btn btn-default" ng-click="$dismiss()">Close</button>
 </div>
-
+</span>

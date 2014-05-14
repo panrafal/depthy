@@ -1,7 +1,7 @@
 <div id="main" ng-controller="MainCtrl" 
   ng-class="{
     'leftpane-opened': depthy.isLeftpaneOpened() === true, 
-    'leftpane-samples': depthy.isLeftpaneOpened() === 'samples', 
+    'leftpane-gallery': depthy.isLeftpaneOpened() === 'gallery', 
     'zen-mode': depthy.zenMode,
     'depthy-ready': depthy.isReady(),
     'depthy-loading': depthy.isLoading()}"
@@ -10,7 +10,7 @@
 >
   <div id="hamburger" class="icon icon-navicon-bold" ng-click="depthy.leftpaneToggle()"></div>
   <nav id="navbar" class="text-right">
-    <logo class="white" ng-click="depthy.leftpaneToggle()"><span>depthy</span></logo>
+    <logo class="white" ng-click="depthy.leftpaneOpen()"><span>depthy</span></logo>
     <!-- <button class="btn btn-ctrl btn-success" ng-click="selectFile($event)" title="Open"><i class="icon" ng-class="depthy.isLoading() ? 'icon-loading' : 'icon-open'"></i></button> -->
   </nav>
 
@@ -34,12 +34,10 @@
         Ideas? Issues? Code? It's open sourced on <a href="https://github.com/panrafal/depthy">GitHub</a>!
       </footer>
     </section>
-    <section id="samples">
-      <img src="samples/flowers-thumb.jpg" ng-click="loadSample('flowers')">
-      <img src="samples/hut-thumb.jpg"  ng-click="loadSample('hut')">
-      <img src="samples/shelf-thumb.jpg"  ng-click="loadSample('shelf')">
-      <img src="samples/mango-thumb.jpg"  ng-click="loadSample('mango')">
-      <img src="samples/tunnel-thumb.jpg"  ng-click="loadSample('tunnel')">
+    <section id="gallery">
+      <ul>
+        <li class="" ng-repeat="(id, title) in depthy.samples" ng-style="{'background-image':'url(samples/'+id+'-thumb.jpg)'}" ng-click="loadSample(id)"></li>
+      </ul>
     </section>
   </div>
 
