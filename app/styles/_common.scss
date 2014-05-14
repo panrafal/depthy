@@ -24,7 +24,7 @@ a, a:hover {
   color: inherit;
 }
 
-h1, h2, h3, h4 {
+h1, h2, h3, h4, h5 {
   margin: 0;
   text-transform: uppercase;
   color: $headings-color;
@@ -61,6 +61,15 @@ p a {
 
 
 // ------------------------------------------------------ icons
+.icon {
+  vertical-align: middle;
+  // pixel perfect
+  font-size: 16px;
+  display: inline-block;
+  margin-top: -2px;
+  &:before {
+  }
+}
 
 .icon-rotate-90 {
   &:before {
@@ -70,7 +79,7 @@ p a {
 }
 
 .icon-loading {
-  @extend .icon-loop2;
+  @extend .icon-loop;
   animation: 1s icon-rotate linear infinite;
 }
 
@@ -92,12 +101,6 @@ p a {
   }
   i.icon {
     margin-right: 0.5em;
-    vertical-align: middle;
-    // pixel perfect
-    font-size: 16px;
-    display: inline-block;
-    &:before {
-    }
   }
   &.btn-icon {
     .icon {margin: 0;}
@@ -267,6 +270,17 @@ logo {
   padding: 8px 14px;
 }
 
+
+.modal {
+}
+.modal-header {
+  .icon-back {
+    padding-right: 0.5em;
+    cursor: pointer;
+  }
+}
+
+
 .option {
   white-space: nowrap;
   margin: 0.5em 0;
@@ -287,4 +301,24 @@ logo {
   }
 }
 
+.thumbnail {
+  display: inline-block;
+  margin-bottom: 10px;
+  img {
+    background: $thumbnail-matte;
+  }
+  h3, h4, h5 {
+    background: $brand-primary;
+    color: $text-color;
+    padding: $panel-heading-padding;    
+  }
+}
 
+.thumbnails-set {
+  text-align: center;
+  .thumbnail {
+    display: inline-block;
+    max-width: 40%;
+    margin: 4px;
+  }
+}

@@ -43,7 +43,7 @@
 
   logo {
     position: absolute;
-    left: 20px;
+    left: 14px;
     top: 10px;
     font-size: remify($navbar-height);
     cursor: pointer;
@@ -63,10 +63,10 @@
 
 #hamburger {
   cursor: pointer;
-  font-size: 32px;
+  font-size: 16px;
   position: fixed;
-  left: -16px;
-  top: 0px;
+  left: -10px;
+  top: 12px;
   z-index: 60;
   width: 2em;
 

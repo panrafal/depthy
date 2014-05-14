@@ -1,20 +1,19 @@
 <div class="modal-header">
-  <h4 class="modal-title">Extracted images</h4>
+  <h4 class="modal-title"><i class="icon icon-back" ng-click="$dismiss()"></i>Image properties</h4>
 </div>
 <div class="modal-body" fileselect="info.depthFiles" >
-  <ul class="images">
-    <li ng-if="depthy.hasDepthmap()">
-      <h4>Depthmap</h4>
+  <div class="thumbnails-set">
+    <div class="thumbnail" ng-if="depthy.hasDepthmap()">
       <img image-source="depth">
-    </li>
-    <li ng-if="depthy.hasOriginalImage()">
-      <h4>Original image</h4>
+      <h4>Depthmap</h4>
+    </div>
+    <div class="thumbnail" ng-if="depthy.hasOriginalImage()">
       <img image-source="alternative">
-    </li>
-  </ul>
+      <h4>Original</h4>
+    </div>
+  </div>
   <p class="text-muted text-center" ng-if="depthy.hasDepthmap() || depthy.hasAlternativeImage()">
     {{Modernizr.mobile ? 'Press and hold the images' : 'Right-click the images'}} to save them.
-    
   </p>
   <p>You can now create and edit depthmaps in a program of your choice! They just should be monochromatic and of the same size as the original image. The darker the spot, the closer it is.</p>
 </div>

@@ -8,7 +8,7 @@
   ng-swipe-right="depthy.leftpaneOpen()"
   ng-swipe-left="depthy.leftpaneClose()"
 >
-  <div id="hamburger" class="icon icon-navicon" ng-click="depthy.leftpaneToggle()"></div>
+  <div id="hamburger" class="icon icon-navicon-bold" ng-click="depthy.leftpaneToggle()"></div>
   <nav id="navbar" class="text-right">
     <logo class="white" ng-click="depthy.leftpaneToggle()"><span>depthy</span></logo>
     <!-- <button class="btn btn-ctrl btn-success" ng-click="selectFile($event)" title="Open"><i class="icon" ng-class="depthy.isLoading() ? 'icon-loading' : 'icon-open'"></i></button> -->
@@ -53,7 +53,7 @@
         <p>Move your {{Modernizr.devicemotion && Modernizr.mobile ? 'device' : 'cursor'}} around to see the effect</p>
       </div>
 
-      <div class="panel panel-warning" ng-include="(Modernizr.webgl && !depthy.isLoading() && !depthy.hasImage()) ? 'views/alert-noimage.html' : null"></div>
+      <div class="panel panel-danger" ng-include="(Modernizr.webgl && !depthy.isLoading() && !depthy.hasImage()) ? 'views/alert-noimage.html' : null"></div>
 
       <div class="panel panel-warning" ng-include="(Modernizr.webgl && !depthy.isLoading() && depthy.hasImage() && !depthy.hasDepthmap()) ? 'views/alert-nodepth.html' : null"></div>
 

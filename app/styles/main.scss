@@ -10,7 +10,8 @@ $brand-info: #5bc0de;
 $body-bg: #000;
 $text-color: #eee;
 $headings-color: $brand-primary;
-$text-muted: #88a0a8;
+$border-color: fade-out($text-color, 0.5);
+$text-muted: darken($text-color, 40%);
 
 $font-family-sans-serif: 'Roboto Condensed', Helvetica, Arial, sans-serif;
 
@@ -52,6 +53,10 @@ $panel-default-text: $text-color;
 $code-color: inherit;
 $code-bg: fade-out($text-color, 0.8);
 
+// thumbnails
+$thumbnail-border: $border-color;
+$thumbnail-bg: $body-bg;
+$thumbnail-matte: #444;
 
 @import "_bootstrap.scss";
 @import "_icomoon.scss";

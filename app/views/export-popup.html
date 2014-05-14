@@ -24,6 +24,9 @@
   <div ng-include="'views/options-movement.html'"></div>
 </div>
 <div class="popup-footer">
-  <button class="btn btn-success btn-md" ng-click="etActivePopup().resolve(); exportGifRun()"><i class="icon icon-yes"></i>C'mon!</button>&nbsp;
+  <div class="btn-group btn-group-justified">
+    <div class="btn btn-success " ng-click="etActivePopup().resolve(); exportGifRun()"><!--<i class="icon icon-yes"></i>-->Do it!</div>
+    <div class="btn btn-default " ng-click="activePopup.reject()">Later?</div>
+  </div>
   <!-- <button class="btn btn-default" ng-click="etActivePopup().reject()">Nah...</button> -->
 </div>
