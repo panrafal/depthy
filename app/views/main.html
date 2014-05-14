@@ -55,7 +55,7 @@
 
       <div class="panel panel-warning" ng-include="(Modernizr.webgl && !depthy.isLoading() && !depthy.hasImage()) ? 'views/alert-noimage.html' : null"></div>
 
-      <div class="panel panel-warning" ng-include="(!depthy.isLoading() && depthy.hasImage() && !depthy.hasDepthmap()) ? 'views/alert-nodepth.html' : null"></div>
+      <div class="panel panel-warning" ng-include="(Modernizr.webgl && !depthy.isLoading() && depthy.hasImage() && !depthy.hasDepthmap()) ? 'views/alert-nodepth.html' : null"></div>
 
     </div>
 
@@ -64,10 +64,10 @@
       <div class="icon icon-loading"></div>
     </div>
 
-    <div class="buttons-options" ng-show="!getActivePopup()">
+    <div class="buttons-options" ng-show="!activePopup">
       <button class="btn btn-ctrl btn-default" ng-click="shareOptions()" ng-disabled="!depthy.hasCompleteImage() || !depthy.isReady()" title="Share"><i class="icon icon-share"></i></button>
-      <button class="btn btn-ctrl btn-default" ng-click="imageInfo()" ng-disabled="depthy.isLoading()" title="Info" ga><i class="icon icon-image"></i></button>
-      <button class="btn btn-ctrl btn-default" ng-click="imageOptions()" ng-disabled="!depthy.isReady()" title="Options" ga><i class="icon icon-settings"></i></button>
+      <button class="btn btn-ctrl btn-default" ng-click="imageInfo()" ng-disabled="!depthy.hasImage() || depthy.isLoading()" title="Info" ga><i class="icon icon-image"></i></button>
+      <button class="btn btn-ctrl btn-default" ng-click="imageOptions()" ng-disabled="!depthy.hasCompleteImage() || !depthy.isReady()" title="Options" ga><i class="icon icon-settings"></i></button>
     </div>
   </section>
   <section id="popup">

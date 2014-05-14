@@ -297,6 +297,10 @@
       transform: translateX(remify($leftpane-width / 2));
     }
   }
+
+  .zen-mode & {
+    transform: translateX(0);
+  }
 }
 
 // ------------------------------------------------------ POPUPS

@@ -241,7 +241,7 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
     }
 
     function isReady() {
-      return !!(renderer !== false && image.texture && image.size && depth.texture && depth.size);
+      return !!(renderer !== false && image.texture && image.size && (!depth.texture || depth.size));
     }
 
     // true when image and depth use the same texture...
@@ -249,6 +249,13 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
       return image.texture && depth.texture && image.texture === depth.texture;
     }
 
+    function hasImage() {
+      return !!image.texture;
+    };
+
+    function hasDepthmap() {
+      return !!depth.texture;
+    };
 
 
     function changeTexture(old, source) {
@@ -282,6 +289,7 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
             };
           }
         } else {
+          console.log('Empty texture!');
           resolve(current);
         }
         // free up mem...
@@ -359,14 +367,14 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
       imageTextureContainer = new PIXI.DisplayObjectContainer();
       imageTextureContainer.addChild(imageTextureSprite);
 
-      if (imageRender) {
+      if (imageRender && (imageRender.width !== stageSize.width || imageRender.height !== stageSize.height)) {
         // todo: pixi errors out on this... why?
         // imageRender.resize(stageSize.width, stageSize.height);
         imageRender.destroy(true);
+        imageRender = null;
       }
-      imageRender = new PIXI.RenderTexture(stageSize.width, stageSize.height);
+      imageRender = imageRender || new PIXI.RenderTexture(stageSize.width, stageSize.height);
       
-
       image.dirty = false;
       image.renderDirty = stageDirty = true;
     }
@@ -377,29 +385,36 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
     }
 
     function updateDepthTexture() {
-      var scale = sizeFitScale(depth.size, stageSize, true);
-
-      // prepare depth render / filter
-      depthTextureSprite = new PIXI.Sprite(depth.texture);
-      depthTextureSprite.filters = [depthBlurFilter];
-      depthTextureSprite.scale = new PIXI.Point(scale * renderUpscale, scale * renderUpscale);
-
-      depthTextureSprite.anchor = {x: 0.5, y: 0.5};
-      depthTextureSprite.position = {x: stageSize.width / 2, y: stageSize.height / 2};
-
-      if (depth.useAlpha) {
-        // move inverted alpha to rgb, set alpha to 1
-        depthTextureSprite.filters.push(invertedAlphaToRGBFilter);
-        depthTextureSprite.filters = depthTextureSprite.filters;
-      }
+      var scale = depth.size ? sizeFitScale(depth.size, stageSize, true) : 1;
 
       depthTextureContainer = new PIXI.DisplayObjectContainer();
-      depthTextureContainer.addChild(depthTextureSprite);
 
-      if (depthRender) {
-        depthRender.destroy(true);
+      if (hasDepthmap()) {
+        // prepare depth render / filter
+        depthTextureSprite = new PIXI.Sprite(depth.texture);
+        depthTextureSprite.filters = [depthBlurFilter];
+        depthTextureSprite.scale = new PIXI.Point(scale * renderUpscale, scale * renderUpscale);
+        depthTextureSprite.renderable = !!depth.texture;
+
+        depthTextureSprite.anchor = {x: 0.5, y: 0.5};
+        depthTextureSprite.position = {x: stageSize.width / 2, y: stageSize.height / 2};
+
+        if (depth.useAlpha) {
+          // move inverted alpha to rgb, set alpha to 1
+          depthTextureSprite.filters.push(invertedAlphaToRGBFilter);
+          depthTextureSprite.filters = depthTextureSprite.filters;
+        }
+        depthTextureContainer.addChild(depthTextureSprite);
+      } else {
+        depthTextureSprite = null;
       }
-      depthRender = new PIXI.RenderTexture(stageSize.width, stageSize.height);
+
+
+      if (depthRender && (depthRender.width !== stageSize.width || depthRender.height !== stageSize.height)) {
+        depthRender.destroy(true);
+        depthRender = null;
+      }
+      depthRender = depthRender || new PIXI.RenderTexture(stageSize.width, stageSize.height);
 
       depth.dirty = false;
       depth.renderDirty = stageDirty = true;
@@ -495,8 +510,10 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
       if (stageDirty) updateStage();
       if (depthFilterDirty) updateDepthFilter();
 
-      updateOffset();
-      updateAnimation();
+      if (hasDepthmap()) {
+        updateOffset();
+        updateAnimation();
+      }
 
       if (readyResolver) {
         readyResolver();
@@ -565,7 +582,7 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
                but will be reset every time you change any of the images.
      */
     this.getPromise = function(resolvedOnly) {
-      if (!resolvedOnly && (!this.hasImage() || !this.hasDepthmap() || this.getLoadError())) {
+      if (!resolvedOnly && (!this.hasImage() || this.getLoadError())) {
         return Promise.reject();
       }
       if (isReady()) {
@@ -598,13 +615,9 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
       this.setDepthmap();
     };
 
-    this.hasImage = function() {
-      return !!image.texture;
-    };
+    this.hasImage = hasImage;
 
-    this.hasDepthmap = function() {
-      return !!depth.texture;
-    };
+    this.hasDepthmap = hasDepthmap;
 
     this.getLoadError = function() {
       return image.error || depth.error;
@@ -619,6 +632,8 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
 
       return this.getPromise().then(
         function() {
+          if (!hasDepthmap()) return false;
+
           var size = sizeRound(sizeFit(image.size, maxSize || image.size)),
               localstage = new PIXI.Stage(),
               scale = size.width / image.size.width,
@@ -660,7 +675,9 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
 
       return this.getPromise().then(
         function() {
-          if (!depth.useAlpha && depth.url) {
+          if (!hasDepthmap()) {
+            return false;
+          } else if (!depth.useAlpha && depth.url) {
             return depth.url;
           } else {
             var localstage = new PIXI.Stage(),

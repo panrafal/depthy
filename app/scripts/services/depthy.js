@@ -12,7 +12,7 @@ angular.module('depthyApp').provider('depthy', function depthy() {
 
     function onFinallyOpened() {
       depthy.opened.loading = false;
-      console.log('onFinallyOpened');
+      console.log('onFinallyOpened!', depthy.isReady());
     }
 
     var leftpaneDeferred;
