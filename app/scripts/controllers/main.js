@@ -88,7 +88,7 @@ angular.module('depthyApp')
   $scope.exportGifOptions = function() {
     var oldAnimate = depthy.viewer.animate;
     depthy.viewer.animate = true;
-
+    
     $scope.openPopup('export.gif.options').promise.finally(function() {
       depthy.viewer.animate = oldAnimate;
     })

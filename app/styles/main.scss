@@ -6,11 +6,21 @@ $brand-danger: #E61717;
 $brand-success: #12B812;
 $brand-warning: #E68F17;
 $brand-info: #5bc0de;
+$brand-neutral: desaturate($brand-primary, 100%);
+
+$contrast: 15%;
+
+$brand-primary-dark: darken($brand-primary, $contrast); //#0165BD; 
+$brand-danger-dark: darken($brand-danger, $contrast);
+$brand-success-dark: darken($brand-success, $contrast);
+$brand-warning-dark: darken($brand-warning, $contrast);
+$brand-info-dark: darken($brand-info, $contrast);
+$brand-neutral-dark: darken($brand-neutral, $contrast);
 
 $body-bg: #000;
 $text-color: #eee;
 $headings-color: $brand-primary;
-$border-color: fade-out($text-color, 0.5);
+$text-color-dark: #444;
 $text-muted: darken($text-color, 40%);
 
 $font-family-sans-serif: 'Roboto Condensed', Helvetica, Arial, sans-serif;
@@ -18,7 +28,11 @@ $font-family-sans-serif: 'Roboto Condensed', Helvetica, Arial, sans-serif;
 $headings-font-family: $font-family-sans-serif;
 $headings-font-weight: 700;
 
-// $border-radius-base: 0px;
+$border-color: fade-out($text-color, 0.8);
+$border-width: 2px;
+$border-radius-base: 0px;
+$border-radius-large: 0px;
+$border-radius-small: 0px;
 
 // states 
 $state-warning-text: $brand-warning;
@@ -47,6 +61,12 @@ $modal-header-border-color: lighten($body-bg, 10%);
 
 // panels
 $panel-bg: $body-bg;
+$panel-header-bg: $brand-primary;
+$panel-header-border: $brand-primary-dark;
+$panel-header-color: $text-color;
+$panel-footer-bg: $brand-neutral-dark;
+$panel-footer-border: $brand-neutral-dark;
+$panel-footer-color: $text-color;
 $panel-default-text: $text-color;
 
 // code
@@ -56,7 +76,8 @@ $code-bg: fade-out($text-color, 0.8);
 // thumbnails
 $thumbnail-border: $border-color;
 $thumbnail-bg: $body-bg;
-$thumbnail-matte: #444;
+$thumbnail-matte: $text-color;
+$thumbnail-padding: 1px;
 
 @import "_bootstrap.scss";
 @import "_icomoon.scss";

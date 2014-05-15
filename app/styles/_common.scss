@@ -108,8 +108,12 @@ p a {
 
   &.btn-default {
     border-color: $btn-default-color;
-    background: transparent;// fade-out($btn-default-bg, 0.9);
-    &:hover, &.active {
+    background: transparent; //fade-out($btn-default-bg, 0.9);
+    &:hover {
+      // background: fade-out($btn-default-color, 0.5);
+      color: #fff;
+    }
+    &.active {
       background: $btn-default-color;
       color: $btn-default-bg;
     }
@@ -271,15 +275,24 @@ logo {
 }
 
 
-.modal {
-}
+// modal
 .modal-header {
+  background: $panel-header-bg;
+  color: $text-color;
+  border-bottom:$border-width solid $panel-header-border;
+  .modal-title {
+    color: inherit;
+  }
   .icon-back {
     padding-right: 0.5em;
     cursor: pointer;
   }
 }
-
+.modal-footer {
+  background: $panel-footer-bg;
+  color: $panel-footer-color;
+  // border-bottom:$border-width solid $panel-footer-border;
+}
 
 .option {
   white-space: nowrap;
@@ -301,9 +314,11 @@ logo {
   }
 }
 
+// thumbnail
 .thumbnail {
   display: inline-block;
   margin-bottom: 10px;
+  border-width: $border-width;
   img {
     background: $thumbnail-matte;
     max-height: 60%;
