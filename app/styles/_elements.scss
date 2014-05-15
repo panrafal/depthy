@@ -338,67 +338,6 @@
   }
 }
 
-// ------------------------------------------------------ POPUPS
-
-#popup {
-  // position: absolute;
-  // width: 100%;
-  // height: 100%;
-  // z-index: 20;
-
-  .popup-clicker {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background: transparent;
-    z-index: 60;
-  }
-  .popup {
-    z-index: 61;
-    position: absolute;
-    width: 100%;
-    max-width: remify(400px);
-    text-align: center;
-    bottom: remify(-30px);
-    background: fade-out($body-bg, 0.3);
-    // box-shadow: inset 0px 0px 32px 2px $body-bg;
-    background-image: linear-gradient(to bottom, fade-out($body-bg, 0.1),fade-out($body-bg, 1) remify(100px));
-
-    left: 50%;
-    padding: remify(30px);
-    padding-bottom: remify(60px);
-
-    transform: translateX(-50%);
-
-    @extend .anim-slideup-centered;
-    .zen-mode & {
-      transform: translate(-50%, 100%) translateY(remify(60px));
-    }
-
-    .close {
-      padding: remify(10px);
-      box-sizing: content-box;
-      position: absolute;
-      top: 0px;
-      right: 0px;
-    }
-
-    .popup-title {
-      @extend h4;
-      margin-top: remify(-10px);
-      margin-bottom: remify(20px);
-    }
-
-    .popup-footer {
-      margin-top: remify(20px);
-      margin-bottom: remify(-10px);
-    }
-
-
-  }
-
-}
-
 
 // ------------------------------------------------------ MODAL
 

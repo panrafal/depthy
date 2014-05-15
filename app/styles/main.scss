@@ -6,7 +6,7 @@ $brand-danger: #E61717;
 $brand-success: #12B812;
 $brand-warning: #E68F17;
 $brand-info: #5bc0de;
-$brand-neutral: desaturate($brand-primary, 100%);
+$brand-neutral: #666;
 
 $contrast: 15%;
 
@@ -15,21 +15,32 @@ $brand-danger-dark: darken($brand-danger, $contrast);
 $brand-success-dark: darken($brand-success, $contrast);
 $brand-warning-dark: darken($brand-warning, $contrast);
 $brand-info-dark: darken($brand-info, $contrast);
-$brand-neutral-dark: darken($brand-neutral, $contrast);
+$brand-neutral-dark: #222;
+
+$brand-neutral-vdark: #111;
+
+$brand-neutral-bright: #888;
+
 
 $body-bg: #000;
 $text-color: #eee;
 $headings-color: $brand-primary;
 $text-color-dark: #444;
-$text-muted: darken($text-color, 40%);
+$text-muted: $brand-neutral;
 
 $font-family-sans-serif: 'Roboto Condensed', Helvetica, Arial, sans-serif;
 
 $headings-font-family: $font-family-sans-serif;
 $headings-font-weight: 700;
 
-$border-color: fade-out($text-color, 0.8);
-$border-width: 2px;
+$padding-base-vertical: 10px;
+$padding-base-horizontal: 12px;
+$padding-large-vertical: 14px;
+$padding-large-horizontal: 30px;
+
+
+$border-color: $brand-neutral-dark;
+$border-width: 4px;
 $border-radius-base: 0px;
 $border-radius-large: 0px;
 $border-radius-small: 0px;
@@ -65,7 +76,7 @@ $panel-header-bg: $brand-primary;
 $panel-header-border: $brand-primary-dark;
 $panel-header-color: $text-color;
 $panel-footer-bg: $brand-neutral-dark;
-$panel-footer-border: $brand-neutral-dark;
+$panel-footer-border: $brand-neutral-vdark;
 $panel-footer-color: $text-color;
 $panel-default-text: $text-color;
 
@@ -103,7 +114,7 @@ $media-large: "(min-width: #{$screen-lg-min})";
 
 $media-phone: $media-tiny;
 $media-tablet: $media-small;
-$media-mobile: "(max-width: #{$screen-sm-max})";
+$media-mobile: "(max-width: #{$screen-xs-max})";
 $media-desktop: "(min-width: #{$screen-desktop})";
 
 

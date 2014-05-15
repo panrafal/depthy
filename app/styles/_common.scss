@@ -87,7 +87,24 @@ p a {
   backface-visibility: hidden;
 }
 
+.margin {
+  margin-top: $padding-base-vertical;
+  margin-bottom: $padding-base-vertical;
+}
+.margin-top {
+  margin-top: $padding-base-vertical;
+}
+.margin-lg {
+  margin-top: $padding-large-vertical;
+  margin-bottom: $padding-large-vertical;
+}
+.margin-top-lg {
+  margin-top: $padding-large-vertical;
+}
+
 // ------------------------------------------------------ elements
+
+// buttons
 .btn {
 
   border-bottom-width: 2px;
@@ -108,14 +125,14 @@ p a {
 
   &.btn-default {
     border-color: $btn-default-color;
-    background: transparent; //fade-out($btn-default-bg, 0.9);
+    background: fade-out($btn-default-bg, 0.5);
     &:hover {
-      // background: fade-out($btn-default-color, 0.5);
+      // background: fade-out($btn-default-bg, 0.5);
       color: #fff;
     }
     &.active {
-      background: $btn-default-color;
-      color: $btn-default-bg;
+      // background: $btn-default-color;
+      // color: $btn-default-bg;
     }
   }
 
@@ -128,7 +145,7 @@ p a {
     }
   }
 
-  &.btn-ctrl {
+  &.btn-control {
     // width: remify(45px);
     // height: remify(45px);
     // line-height: remify(45px);
@@ -153,6 +170,19 @@ p a {
   }
 }
 
+.btn-group-unjustified {
+  @extend .btn-group-justified;
+  table-layout: auto;
+  >.btn {
+    width: auto;
+    &.long {
+      width: 60%;
+    }
+  }
+}
+
+
+// links
 .link-icon {
   font-size: 16px;
   cursor: pointer;
@@ -242,44 +272,16 @@ logo {
 }
 
 
-.alert {
-  max-width: 700px;
-  margin: 0 auto 2em auto;
-  background: transparent;
-  font-weight: bold;
-  border: none;        
-  text-align: center;
-}
-
-
-.popup-group {
-  position: relative;
-  .popover {
-    display: block;
-    &.top {
-      top: 0px;
-      left: 50%;
-      transform: translate(-50%, -100%) translateY(-2px);
-    }
-  }
-}
-
-.popover {
-  text-align: center;
-}
-.popover-content {
-
-}
-.popover-footer {
-  padding: 8px 14px;
-}
-
-
 // modal
+.modal {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
 .modal-header {
   background: $panel-header-bg;
   color: $text-color;
   border-bottom:$border-width solid $panel-header-border;
+  padding: $padding-large-vertical $padding-large-vertical;
   .modal-title {
     color: inherit;
   }
@@ -288,15 +290,137 @@ logo {
     cursor: pointer;
   }
 }
+.modal-body {
+  padding: $padding-large-vertical $padding-large-horizontal;
+  overflow-y: auto;
+  overflow-scrolling: touch;
+}
 .modal-footer {
   background: $panel-footer-bg;
   color: $panel-footer-color;
+  padding: 0;
+  border: 0;
+  .btn {
+    @extend .btn-lg;
+    + .btn {
+      margin-left: -2px;
+    }
+  }
   // border-bottom:$border-width solid $panel-footer-border;
 }
+.modal-content {
+  box-shadow: 0 0 32px #000;
 
+}
+@media #{$media-mobile} {
+
+  .modal-backdrop {
+    display: none!important;
+  }
+  .modal {
+    overflow: hidden;
+  }
+  .modal-dialog {
+    height: 100%;
+    margin: 0 -1px;
+  }
+  .modal-content {
+    height: 100%;
+    box-shadow: none;
+  }
+  .modal.fade .modal-dialog {
+    transform: translateX(100%);
+    opacity: 1;
+  }
+  .modal.fade.in .modal-dialog {
+    transform: translateX(0%);
+  }
+  .modal-header {
+
+  }
+  .modal-body {
+    position: absolute;
+    width: 100%;
+    top: 56px;
+    bottom: 0px;
+  }
+  .modal-footer {
+    display: none;
+    position: absolute;
+    width: 100%;
+    bottom: 0px;
+  }
+}
+
+// popups
+.popup-clicker {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  z-index: 60;
+}
+.popup {
+  z-index: 61;
+  position: absolute;
+  width: 100%;
+  max-width: remify(400px);
+  text-align: center;
+  bottom: 0;
+  background: fade-out($body-bg, 0.3);
+  background-image: linear-gradient(to bottom, fade-out($body-bg, 0.1),fade-out($body-bg, 1) remify(100px));
+
+  left: 50%;
+  padding: $padding-large-vertical;
+
+  transform: translateX(-50%);
+
+  @extend .anim-slideup-centered;
+  .zen-mode & {
+    transform: translate(-50%, 100%) translateY(remify(60px));
+  }
+
+  .close {
+    padding: remify(10px);
+    box-sizing: content-box;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+  }
+
+  .popup-header {
+    @extend h4;
+    color: $text-color;
+    // font-size: 1rem;
+    background: transparent;// $brand-neutral-dark;
+    padding: $padding-large-vertical;
+    margin-top: -$padding-large-vertical;
+    margin-bottom: $padding-base-vertical;
+  }
+
+  .popup-footer {
+    margin-top: $padding-base-vertical;
+    margin-bottom: 0;
+  }
+
+  .btn-block, .option {
+    margin: $padding-small-vertical 0;
+
+    &:first-child {
+      margin-top: 0;
+    }
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+}
+
+
+// options
 .option {
   white-space: nowrap;
-  margin: 0.5em 0;
+
   label {
     // color: lighten($body-bg, 70%);
     font-weight: normal;
@@ -304,14 +428,19 @@ logo {
     margin: 5px 0 0 0;
     display: block;
   }
-  .btn-group {
-    display: table;
-    width: 100%;
-    .btn {
-      display: table-cell;
-      float: none;
+
+  .btn-default {
+    // background: transparent; //fade-out($btn-default-bg, 0.9);
+    color: $brand-neutral-bright;
+    &:hover {
+      // background: fade-out($btn-default-color, 0.5);
+      // color: $te;
+    }
+    &.active {
+      color: #fff;
     }
   }
+
 }
 
 // thumbnail
@@ -321,10 +450,11 @@ logo {
   border-width: $border-width;
   img {
     background: $thumbnail-matte;
-    max-height: 60%;
+    max-height: 70%;
   }
   h3, h4, h5 {
-    background: $brand-primary;
+    font-size: 1rem;
+    background: $brand-neutral-dark;
     color: $text-color;
     padding: $panel-heading-padding;    
   }
@@ -334,7 +464,7 @@ logo {
   text-align: center;
   .thumbnail {
     display: inline-block;
-    max-width: 40%;
+    max-width: 48%;
     margin: 4px;
   }
 }

@@ -16,10 +16,13 @@
   <p class="text-muted text-center" ng-if="depthy.hasDepthmap() || depthy.hasAlternativeImage()">
     {{Modernizr.mobile ? 'Press and hold the images' : 'Right-click the images'}} to save them.
   </p>
-  <p>You can now create and edit depthmaps in a program of your choice! They just should be monochromatic and of the same size as the original image. The darker the spot, the closer it is.</p>
+  <p class="text-center margin-top-lg">
+    <button class="btn btn-success" ng-click="selectFile($event)"><i class="icon" ng-class="isDepthmapProcessing ? 'icon-loading' : 'icon-open'"></i>{{depthy.hasDepthmap() ? 'Change' : 'Open' }} depthmap</button>
+  </p>
+  <p class="text-center">You can now create and edit depthmaps in a program of your choice! They just should be monochromatic and of the same size as the original image. The darker the spot, the closer it is.</p>
 </div>
 <div class="modal-footer">
-  <button class="btn btn-success" ng-click="selectFile($event)"><i class="icon" ng-class="isDepthmapProcessing ? 'icon-loading' : 'icon-open'"></i>{{depthy.hasDepthmap() ? 'Change' : 'Open' }} depthmap</button>
+  <!-- <button class="btn btn-success" ng-click="selectFile($event)"><i class="icon" ng-class="isDepthmapProcessing ? 'icon-loading' : 'icon-open'"></i>{{depthy.hasDepthmap() ? 'Change' : 'Open' }} depthmap</button> -->
   <button class="btn btn-default" ng-click="$dismiss()">Close</button>
 </div>
 </span>
