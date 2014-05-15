@@ -125,7 +125,7 @@ p a {
 
   &.btn-default {
     border-color: $btn-default-color;
-    background: fade-out($btn-default-bg, 0.5);
+    background: $brand-neutral-vdark;
     &:hover {
       // background: fade-out($btn-default-bg, 0.5);
       color: #fff;
@@ -145,22 +145,6 @@ p a {
     }
   }
 
-  &.btn-control {
-    // width: remify(45px);
-    // height: remify(45px);
-    // line-height: remify(45px);
-    // padding: 0px;
-    // border-radius: remify(40px);
-    i.icon {
-      margin: 0px;
-      // font-size: 24px;
-    }
-
-    &:after {
-      // content: attr(title);
-    }
-
-  }
 
 }
 
@@ -321,7 +305,7 @@ logo {
     overflow: hidden;
   }
   .modal-dialog {
-    height: 100%;
+    height: 100.5%;
     margin: 0 -1px;
   }
   .modal-content {
@@ -367,11 +351,11 @@ logo {
   max-width: remify(400px);
   text-align: center;
   bottom: 0;
-  background: fade-out($body-bg, 0.3);
-  background-image: linear-gradient(to bottom, fade-out($body-bg, 0.1),fade-out($body-bg, 1) remify(100px));
+  background: $body-bg;
+  // background-image: linear-gradient(to bottom, fade-out($body-bg, 0.1),fade-out($body-bg, 1) remify(100px));
 
   left: 50%;
-  padding: $padding-large-vertical;
+  padding: $padding-base-vertical;
 
   transform: translateX(-50%);
 
@@ -393,10 +377,10 @@ logo {
     color: $text-color;
     // font-size: 1rem;
     background: transparent;// $brand-neutral-dark;
-    padding: $padding-large-vertical;
-    margin-top: -$padding-large-vertical;
+    padding: $padding-base-vertical;
+    margin-top: -$padding-base-vertical;
     margin-bottom: $padding-base-vertical;
-  }
+  } 
 
   .popup-footer {
     margin-top: $padding-base-vertical;
@@ -464,7 +448,7 @@ logo {
   text-align: center;
   .thumbnail {
     display: inline-block;
-    max-width: 48%;
+    max-width: 47%;
     margin: 4px;
   }
 }

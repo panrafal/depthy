@@ -307,13 +307,20 @@
 
     background: linear-gradient(to bottom, fade-out($body-bg, 1),fade-out($body-bg, 0.7) 70%,fade-out($body-bg, 0.6) 100%);
 
-    >.btn-ctrl:not(:first-child) {
-      margin-left: remify(20px);
+    .btn {
+      i.icon {
+        margin: 0px;
+      }
+      // margin: 0 $padding-small-horizontal;
+      padding: $padding-large-vertical $padding-large-horizontal;
+      // background: transparent;
+      text-shadow: 1px 1px 0px fade-out(#000, 0.8);
+      &:after {
+        // content: attr(title);
+      }
+
     }
 
-    >.btn-group {
-      margin-right: 3px;
-    }
 
     .zen-mode &, &.ng-hide {
       display: block!important;

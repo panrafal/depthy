@@ -61,9 +61,11 @@
     </div>
 
     <div class="buttons-options" ng-show="!activePopup">
-      <button class="btn btn-control btn-default" ng-click="shareOptions()" ng-disabled="!depthy.hasCompleteImage() || !depthy.isReady()" title="Share"><i class="icon icon-share"></i></button>
-      <button class="btn btn-control btn-default" ng-click="imageOptions()" ng-disabled="!depthy.hasCompleteImage() || !depthy.isReady()" title="Options" ga><i class="icon icon-settings"></i></button>
-      <button class="btn btn-control btn-default" ng-click="imageInfo()" ng-disabled="!Modernizr.webgl || !depthy.hasImage() || depthy.isLoading()" title="Info" ga><i class="icon icon-image"></i></button>
+      <div class="btn-group">
+        <button class="btn btn-default" ng-click="shareOptions()" ng-disabled="!depthy.hasCompleteImage() || !depthy.isReady()" title="Share"><i class="icon icon-share"></i></button>
+        <button class="btn btn-default" ng-click="imageOptions()" ng-disabled="!depthy.hasCompleteImage() || !depthy.isReady()" title="Options" ga><i class="icon icon-settings"></i></button>
+        <button class="btn btn-default" ng-click="imageInfo()" ng-disabled="!Modernizr.webgl || !depthy.hasImage() || depthy.isLoading()" title="Info" ga><i class="icon icon-image"></i></button>
+      </div>
     </div>
   </section>
   <section id="popup">
