@@ -48,7 +48,7 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
         sizeDirty = true, stageDirty = true, renderDirty = true, depthFilterDirty,
         discardAlphaFilter, invertedAlphaToRGBFilter, invertedRGBToAlphaFilter, depthBlurFilter,
         stageSize, stageSizeCPX,
-        renderUpscale = 1.05,
+        // renderUpscale = 1.05,
         readyResolver,
 
         imageTextureSprite, imageTextureContainer, imageRender,
@@ -356,7 +356,7 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
 
       // prepare image render
       imageTextureSprite = new PIXI.Sprite(image.texture);
-      imageTextureSprite.scale = new PIXI.Point(scale * renderUpscale, scale * renderUpscale);
+      imageTextureSprite.scale = new PIXI.Point(scale, scale);
 
       imageTextureSprite.anchor = {x: 0.5, y: 0.5};
       imageTextureSprite.position = {x: stageSize.width / 2, y: stageSize.height / 2};
@@ -393,7 +393,7 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
         // prepare depth render / filter
         depthTextureSprite = new PIXI.Sprite(depth.texture);
         depthTextureSprite.filters = [depthBlurFilter];
-        depthTextureSprite.scale = new PIXI.Point(scale * renderUpscale, scale * renderUpscale);
+        depthTextureSprite.scale = new PIXI.Point(scale, scale);
         depthTextureSprite.renderable = !!depth.texture;
 
         depthTextureSprite.anchor = {x: 0.5, y: 0.5};
