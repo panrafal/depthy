@@ -23,7 +23,7 @@ angular.module('depthyApp').provider('depthy', function depthy() {
       exportSize: Modernizr.mobile ? 150 : 300,
       exportType: 'gif',
 
-      imgurId: 'b4ca5b16efb904b--',
+      imgurId: 'b4ca5b16efb904b',
 
       rootShareUrl: 'http://depthy.me/',
 

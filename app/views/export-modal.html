@@ -35,16 +35,19 @@
       <!-- <p class="text-muted">or</p> -->
       <div ng-switch="shareUrl" class="export-share">
         <div class="anim-expand long" ng-switch-when="">
-          <p class="text-danger anim-expand" ng-if="shareError">{{shareError}}</p>
-          <button class="btn btn-success btn-lg col-sm-6 col-xs-8 center-block" ng-click="share()"><i class="icon icon-upload"></i>Share it!</button><br/>
+          <button class="btn btn-success btn-lg col-sm-6 col-xs-8 center-block margin-bottom-lg" ng-click="share()"><i class="icon icon-upload"></i>Share it!</button>
 
-          <div class="alert alert-info alert-icon margin-top-xl" class="anim-expand">
+          <div class="alert alert-danger alert-icon text-left anim-expand" ng-if="shareError">
+            <i class="icon icon-error"></i>
+            {{shareError}}
+          </div>
+          <div class="alert alert-info alert-icon text-left" class="anim-expand">
             <i class="icon icon-cloud"></i>
-            Your GIF will be uploaded to <a href="http://imgur.com" target="_blank">Imgur.com</a>.<br/>It will remain relatively private until you share it too much and it will go viral.
+            Your GIF will be uploaded to <a href="http://imgur.com" target="_blank">Imgur.com</a>.<br/>It will remain relatively private until you share it too much and it goes viral.
           </div>
 
         </div>
-        <div class="anim-expand" ng-switch-when="sharing">
+        <div class="margin-xl anim-expand" ng-switch-when="sharing">
           <div class="progress progress-md progress-striped active">
             <div class="progress-bar" role="progressbar" ng-style="{width: shareProgress * 100 + '%'}">
             </div>
@@ -52,7 +55,7 @@
           <p class="text-muted">Uploading, please wait...</p>
         </div>
         <div class="anim-expand" ng-switch-default>
-          <p>Your GIF is now uploaded to:</p>
+          <!-- <p>Your GIF is now uploaded to:</p> -->
           <div class="alert alert-success alert-lg alert-icon">
             <i class="icon icon-link"></i>
             <a href="{{shareUrl}}" target="_blank">{{shareUrl}}</a>
@@ -66,10 +69,10 @@
         </div>
       </div>
     </div>
-    <p>
-      Want some good karma?<br/>
-      Use <b class="text-primary">#depthy</b> in your shares, thanks!
-    </p>
+    <div class="alert alert-info alert-icon text-left">
+      <i class="icon icon-heart"></i>
+      Want some good karma? Use <b class="text-primary">#depthy</b> in your shares, thanks!
+    </div>
   </div>
   
 </div>

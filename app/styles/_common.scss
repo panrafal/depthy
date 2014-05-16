@@ -112,6 +112,9 @@ p a {
 .margin-top-lg {
   margin-top: $padding-large-vertical * 2 !important;
 }
+.margin-bottom-lg {
+  margin-bottom: $padding-large-vertical * 2 !important;
+}
 
 .margin-xl {
   margin-top: $padding-large-vertical * 4 !important;
@@ -395,7 +398,7 @@ logo {
   border-width: $border-width;
   img {
     background: $thumbnail-matte;
-    max-height: 90%;
+    max-height: 90vh;
   }
   h3, h4, h5 {
     font-size: 1rem;
