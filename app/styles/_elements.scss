@@ -348,22 +348,6 @@
 
 // ------------------------------------------------------ MODAL
 
-.export-modal {
-  .progress {
-    width: 50%;
-    margin: 0.5em auto;
-  }
-  .export-progress {
-    margin: 3em auto;
-  }
-  .export-image {
-    &>img {
-      max-width: 80vw;
-      max-height: 50vh;
-      margin-bottom: 1em;
-      box-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-    }
-  }
-}
+
 
 

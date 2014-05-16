@@ -4,11 +4,11 @@
 </div>
 <div class="modal-body" >
   <div class="thumbnails-set">
-    <div class="thumbnail" ng-class="{empty: !depthy.hasDepthmap()}">
+    <div class="thumbnail" ng-class="{empty: !depthy.hasDepthmap(), loading: loading}">
       <img image-source="depth">
       <button class="btn btn-success btn-block" ng-click="selectFile($event)"><i class="icon" ng-class="isDepthmapProcessing ? 'icon-loading' : 'icon-open'"></i>{{depthy.hasDepthmap() ? 'Change' : 'Open' }} depthmap</button>
     </div>
-    <div class="thumbnail" ng-if="depthy.hasOriginalImage()">
+    <div class="thumbnail" ng-if="depthy.hasOriginalImage()" ng-class="{loading: loading}">
       <img image-source="alternative">
       <button class="btn btn-default btn-block" disabled>Original image</button>
     </div>

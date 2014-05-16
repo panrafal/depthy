@@ -1,24 +1,23 @@
 <div class="modal-header">
   <!-- <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button> -->
-  <h4 class="modal-title"><i class="icon icon-back" ng-click="$dismiss()"></i>{{imageReady ? 'Here is your GIF!' : 'Generating your GIF'}}</h4>
+  <h4 class="modal-title"><i class="icon icon-back" ng-click="$dismiss()"></i>{{imageReady ? 'Here is your GIF!' : 'Please wait...'}}</h4>
 </div>
 <div class="modal-body">
   
-  <div class="export-progress" ng-if="!imageReady">
-    <div class="progress progress-striped active">
-      <div class="progress-bar" role="progressbar" ng-style="{width: exportProgress * 100 + '%'}">
-      </div>
+  <div class="export-progress margin-xl anim-expand long" ng-hide="imageReady">
+    <div class="progress progress-md progress-striped active">
+      <div class="progress-bar" role="progressbar" ng-style="{width: exportProgress * 100 + '%'}"></div>
     </div>
-    <p class="text-muted text-center" ng-if="Modernizr.mobile">Generating GIFs on a mobile is a tedious task. If it takes too long, choose a 
-    smaller size or make it shorter...</p>
+    <div class="text-muted text-center margin" ng-if="Modernizr.mobile">Generating GIFs on a mobile is a tedious task. If it takes too long, choose a 
+    smaller size or make it shorter...</div>
   </div>
 
-  <div class="text-center export-image" ng-show="imageReady">
+  <div class="text-center export-image anim-expand verylong ng-hide" ng-show="imageReady">
     <div class="thumbnail center-block">
       <img src="" title="Size is {{imageSize / 1024 / 1024 | number: 2}}MB" />
     </div>
     <p>Your GIF weights {{imageSize / 1024 / 1024 | number: 2}}MB and is ready to take! {{Modernizr.mobile ? 'Press and hold the image' : 'Right-click the image'}} to save it.</p>
-    <p ng-if="Modernizr.android && Modernizr.chrome && imageSize > 1000000" class="text-center text-warning">
+    <p ng-if="Modernizr.android && Modernizr.chrome && imageSize > 1000000" class="text-center text-warning anim-expand">
       Due to the bug in Chrome the option to save the GIF can be unavailable. You'll have to make it smaller or share it.
     </p>
     <p ng-if="imageOverLimit" class="text-center text-warning">
@@ -26,37 +25,36 @@
       You'll have to do it on your own, or make it smaller...
     </p>
     <div ng-if="!imageOverLimit">
-      <p><em class="text-muted">or</em></p>
+      <!-- <p class="text-muted">or</p> -->
       <div ng-switch="shareUrl" class="export-share">
-        <div ng-switch-when="">
-          <p class="text-danger" ng-if="shareError">{{shareError}}</p>
+        <div class="anim-expand long" ng-switch-when="">
+          <p class="text-danger anim-expand" ng-if="shareError">{{shareError}}</p>
           <p>
             <button class="btn btn-success btn-lg" ng-click="share()"><i class="icon icon-upload"></i>Share it!</button><br/>
           </p>
           <p class="text-muted disclaimer">
-            <em>Your photo will be uploaded to <a href="http://imgur.com" target="_blank">Imgur.com</a>.<br/>It will remain relatively private until you share it too much and it will go viral.</em>
+            Your photo will be uploaded to <a href="http://imgur.com" target="_blank">Imgur.com</a>.<br/>It will remain relatively private until you share it too much and it will go viral.
           </p>
         </div>
-        <div ng-switch-when="sharing">
-          <div class="progress progress-striped active">
+        <div class="anim-expand" ng-switch-when="sharing">
+          <div class="progress progress-md progress-striped active">
             <div class="progress-bar" role="progressbar" ng-style="{width: shareProgress * 100 + '%'}">
             </div>
           </div>
           <p class="text-muted">Uploading, please wait...</p>
         </div>
-        <div ng-switch-default>
+        <div class="anim-expand" ng-switch-default>
           Your GIF is now uploaded to:<br/>
           <p class="text-primary"><a href="{{shareUrl}}" target="_blank">{{shareUrl}}</a></p>
-          <p>
-            Copy this link and use it however you want or share it:<br/>
-            <i class="icon link-share icon-twitter" share-popup="twitter" share-options="share" ga="['send', 'event', 'gif', 'share', 'twitter']"></i>
-            <i class="icon link-share icon-facebook" share-popup="facebook" share-options="share" ga="['send', 'event', 'gif', 'share', 'facebook']"></i>
-            <i class="icon link-share icon-googleplus" share-popup="google" share-options="share" ga="['send', 'event', 'gif', 'share', 'google']"></i>
-          </p>
+          <div class="btn-group btn-group-shares margin-lg">
+            <div class="btn btn-icon btn-twitter" share-popup="twitter" share-options="share" ga="['send', 'event', 'png', 'share', 'twitter']"><i class="icon icon-lg icon-twitter"></i></div>
+            <div class="btn btn-icon btn-facebook" share-popup="facebook" share-options="share" ga="['send', 'event', 'png', 'share', 'facebook']"><i class="icon icon-lg icon-facebook"></i></div>
+            <div class="btn btn-icon btn-google" share-popup="google" share-options="share" ga="['send', 'event', 'png', 'share', 'google']"><i class="icon icon-lg icon-googleplus"></i></div>
+          </div>
         </div>
       </div>
     </div>
-    <p>To gain good karma use <b>#depthy</b> in your shares, thanks!</p>
+    <p>To gain good karma use <b class="text-primary">#depthy</b> in your shares, thanks!</p>
   </div>
   
 </div>

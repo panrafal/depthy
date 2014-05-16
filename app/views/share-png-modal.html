@@ -1,12 +1,12 @@
 <div class="modal-header">
   <!-- <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button> -->
-  <h4 class="modal-title"><i class="icon icon-back" ng-click="$dismiss()"></i>Sharing is caring!</h4>
+  <h4 class="modal-title" ng-click="$dismiss()"><i class="icon icon-back"></i>Sharing is caring!</h4>
 </div>
-<div class="modal-body">
+<div class="modal-body text-center">
 
 
-  <p class="text-danger" ng-if="uploadError">{{uploadError}}</p>
-  <div ng-if="!share && !uploadError">
+  <p class="alert alert-danger" ng-if="uploadError" class="anim-expand"><i class="icon icon-error"></i>{{uploadError}}</p>
+  <div ng-if="!share && !uploadError" class="anim-expand">
     <div class="progress progress-striped active">
       <div class="progress-bar" role="progressbar" ng-style="{width: uploadProgress * 100 + '%'}">
       </div>
@@ -14,18 +14,20 @@
     <p class="text-muted">Uploading, please wait...</p>
   </div>
 
-  <div ng-if="share">
-    This depthy image is now available at:<br/>
-    <p class="text-primary"><a href="{{share.url}}">{{share.url}}</a></p>
-    <p>
-      Copy this link and use it however you want or share it:<br/>
-      <i class="icon link-share icon-twitter" share-popup="twitter" share-options="share" ga="['send', 'event', 'png', 'share', 'twitter']"></i>
-      <i class="icon link-share icon-facebook" share-popup="facebook" share-options="share" ga="['send', 'event', 'png', 'share', 'facebook']"></i>
-      <i class="icon link-share icon-googleplus" share-popup="google" share-options="share" ga="['send', 'event', 'png', 'share', 'google']"></i>
-    </p>
+  <div ng-if="share" class="anim-expand long">
+    <p>Copy this link and use it however you want:</p>
+    <div class="alert alert-primary alert-lg">
+      <a href="{{share.url}}">{{share.url}}</a>
+    </div>
+    <div class="btn-group btn-group-shares margin-lg">
+      <div class="btn btn-icon btn-twitter" share-popup="twitter" share-options="share" ga="['send', 'event', 'png', 'share', 'twitter']"><i class="icon icon-lg icon-twitter"></i></div>
+      <div class="btn btn-icon btn-facebook" share-popup="facebook" share-options="share" ga="['send', 'event', 'png', 'share', 'facebook']"><i class="icon icon-lg icon-facebook"></i></div>
+      <div class="btn btn-icon btn-google" share-popup="google" share-options="share" ga="['send', 'event', 'png', 'share', 'google']"><i class="icon icon-lg icon-googleplus"></i></div>
+    </div>
 
-    <p>To gain good karma use <b>#depthy</b> in your shares, thanks!</p>
-    <p class="text-muted" ng-if="depthy.loaded.storeUrl">This image is hosted from <a href="{{depthy.loaded.storeUrl}}" target="_blank">imgur.com</a>.</p>
+    <p>To gain good karma use <b class="text-primary">#depthy</b> in your shares, thanks!</p>
+
+    <p class="text-muted" ng-if="depthy.loaded.store.url" class="anim-expand">This image is hosted on <a href="{{depthy.loaded.store.url}}" target="_blank">{{depthy.loaded.store.name}}</a>.</p>
   </div>
 
   

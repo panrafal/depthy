@@ -59,7 +59,15 @@ p a {
 @include text-emphasis-variant('.text-warning', $brand-warning);
 @include text-emphasis-variant('.text-danger', $brand-danger);
 
-
+.btn-facebook {
+  @include button-variant($text-color, $facebook-color, $facebook-color);
+}
+.btn-google {
+  @include button-variant($text-color, $google-color, $google-color);
+}
+.btn-twitter {
+  @include button-variant($text-color, $twitter-color, $twitter-color);
+}
 // ------------------------------------------------------ icons
 .icon {
   vertical-align: middle;
@@ -68,6 +76,9 @@ p a {
   display: inline-block;
   margin-top: -2px;
   &:before {
+  }
+  &.icon-lg {
+    font-size: 32px;
   }
 }
 
@@ -101,6 +112,26 @@ p a {
 .margin-top-lg {
   margin-top: $padding-large-vertical;
 }
+
+.margin-xl {
+  margin-top: $padding-large-vertical * 4;
+  margin-bottom: $padding-large-vertical * 4;
+}
+.margin-top-xl {
+  margin-top: $padding-large-vertical * 4;
+}
+
+.margin-top-none {
+  margin-top: 0;
+}
+.margin-bottom-none {
+  margin-top: 0;
+}
+
+.center-block {
+  float: none;
+}
+
 
 // ------------------------------------------------------ elements
 
@@ -168,6 +199,11 @@ p a {
   }
 }
 
+.btn-group-shares {
+  .btn + .btn {
+    margin-left: $border-width;
+  }
+}
 
 // links
 .link-icon {
@@ -445,7 +481,7 @@ logo {
   border-width: $border-width;
   img {
     background: $thumbnail-matte;
-    max-height: 70%;
+    // max-height: 90%;
   }
   h3, h4, h5 {
     font-size: 1rem;
@@ -454,10 +490,9 @@ logo {
     padding: $panel-heading-padding;    
   }
 
-  &.empty {
+  &.empty, &.loading {
     img {display: none;}
     &:before {
-      content: 'NO IMAGE';
       color: $brand-neutral-dark;
       text-align: center;
       display: block;
@@ -466,6 +501,15 @@ logo {
       padding: $padding-large-horizontal * 2 $padding-base-horizontal * 2;
     }
   }
+  &.empty:before {
+    content: 'NO IMAGE';
+  }
+  &.loading:before {
+    content: 'loading';
+    @extend .icon;
+    @extend .icon-loading;
+  }
+
 }
 
 .thumbnails-set {
@@ -475,10 +519,12 @@ logo {
     display: inline-block;
     max-width: 47%;
     margin: 4px;
-    &.empty {
+    &.empty, &.loading {
       width: 47%;
-
     }
+  }
+  .modal-body & {
+    margin: 0px (-$padding-large-horizontal);
   }
 }
 
@@ -488,4 +534,26 @@ logo {
 
 .alert {
   border-width: $border-width;
+}
+.alert-lg {
+  font-size: $font-size-large;
+  padding: $padding-large-vertical $padding-large-horizontal;
+}
+
+
+// progress
+
+.progress {
+  padding: 0;
+}
+.progress-md {
+  display: block;
+  width: 50%;
+  margin: 0 auto;
+  @media #{$media-phone} {
+    width: 100%;
+  }
+}
+.progress-bar {
+  transition: width 0.1s ease;
 }

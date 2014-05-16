@@ -38,6 +38,8 @@ angular.module('depthyApp').provider('depthy', function depthy() {
 
       useOriginalImage: false,
 
+      modalWait: 700,
+
       samples: {
         flowers: 'flowers',
         hut: 'hut',

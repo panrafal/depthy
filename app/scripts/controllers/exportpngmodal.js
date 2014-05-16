@@ -2,14 +2,19 @@
 
 angular.module('depthyApp')
 .controller('ExportPngModalCtrl', function ($scope, $sce, $timeout, depthy) {
-  // wait for DOM
+  $scope.loading = true;
+  // wait for animation
   $timeout(function() {
     depthy.getViewer().exportToPNG(null).then(
       function(url) {
-        angular.element('[image-source="export-png-modal"]')[0].src = url;
-        // console.log(url);
-        // $scope.imgUrl = $sce.trustAsResourceUrl(url);
+        
+        var img = angular.element('[image-source="export-png-modal"]')[0];
+        img.onload = function() {
+          $scope.loading = false;
+          $scope.$safeApply();
+        }
+        img.src = url;
       }
     );
-  });
+  }, depthy.modalWait);
 });

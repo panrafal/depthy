@@ -32,35 +32,45 @@
 }
 
 .anim-expand {
-  transition: all 0.4s ease-in-out;
-  overflow:hidden;
-  max-height: 150px;
+  transition: all 0.3s ease-in-out;
 
-  &.long {
-    transition-duration: 0.6s;
-    max-height: 300px;
+  &.ng-animate {
+    visibility: visible;
+    max-height: 150px;
+    overflow:hidden;
+
+    &.long {
+      transition-duration: 0.3s;
+      max-height: 300px;
+    }
+    &.verylong {
+      transition-duration: 0.4s;
+      max-height: 600px;
+    }
+    &.short {
+      transition-duration: 0.2s;
+      max-height: 50px;
+    } 
+    
+    &.ng-hide-remove:not(.ng-hide-remove-active), 
+    &.ng-enter:not(.ng-enter-active),
+    &.ng-hide-active,
+    &.ng-leave-active,
+    &.ng-hide {
+      overflow:hidden;
+      display: block!important;
+      visibility: hidden;
+      max-height: 0px;
+      margin-top: 0px;
+      margin-bottom: 0px;
+      padding-top: 0px;
+      padding-bottom: 0px;
+    }
+    // &.ng-hide-remove-active, &.ng-enter-active {
+    //     max-height: 100px;
+    // }
+
   }
-  &.short {
-    transition-duration: 0.2s;
-    max-height: 50px;
-  } 
-
-  &.ng-hide-remove:not(.ng-hide-remove-active), 
-  &.ng-enter:not(.ng-enter-active),
-  &.ng-hide-active,
-  &.ng-leave-active,
-  &.ng-hide {
-    display: block!important;
-    max-height: 0px;
-    margin-top: 0px;
-    margin-bottom: 0px;
-    padding-top: 0px;
-    padding-bottom: 0px;
-  }
-  // &.ng-hide-remove-active, &.ng-enter-active {
-  //     max-height: 100px;
-  // }
-
  
 }
 

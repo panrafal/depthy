@@ -1,3 +1,5 @@
+// Buttons 
+
 @mixin button-variant($color, $background, $border) {
   color: $color;
   background-color: $background;
@@ -39,5 +41,22 @@
   .badge {
     color: $background;
     background-color: $color;
+  }
+}
+
+
+
+// Alerts
+
+@mixin alert-variant($background, $border, $text-color) {
+  background-color: fade-out($background, 0.8);
+  border-color: $border;
+  color: $text-color;
+
+  hr {
+    border-top-color: darken($border, 5%);
+  }
+  .alert-link {
+    color: darken($text-color, 10%);
   }
 }

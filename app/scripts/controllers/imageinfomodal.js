@@ -3,18 +3,29 @@
 angular.module('depthyApp')
 .controller('ImageInfoModalCtrl', function ($scope, $modalInstance, ga, depthy, $timeout, StateModal) {
   $scope.info = {};
+  $scope.loading = 2;
 
   // wait for dom
   $timeout(function() {
     if (depthy.hasDepthmap()) {
       depthy.getViewer().exportDepthmap().then(function(url) {
-        angular.element('[image-source="depth"]')[0].src = url;
+        var img = angular.element('[image-source="depth"]')[0];
+        img.onload = function() {
+          --$scope.loading;
+          $scope.$safeApply();
+        }
+        img.src = url;
       });
-    }
+    } else --$scope.loading;
     if (depthy.hasOriginalImage()) {
-      angular.element('[image-source="alternative"]')[0].src = depthy.opened.originalUrl;
-    }
-  });
+      var img = angular.element('[image-source="alternative"]')[0];
+      img.onload = function() {
+        --$scope.loading;
+        $scope.$safeApply();
+      }
+      img.src = depthy.opened.originalUrl;
+    } else --$scope.loading;
+  }, depthy.modalWait);
 
   $scope.isDepthmapProcessing = false;
   $scope.$watch('info.depthFiles', function(files) {
