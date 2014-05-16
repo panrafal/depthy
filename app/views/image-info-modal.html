@@ -4,22 +4,22 @@
 </div>
 <div class="modal-body" >
   <div class="thumbnails-set">
-    <div class="thumbnail" ng-if="depthy.hasDepthmap()">
+    <div class="thumbnail" ng-class="{empty: !depthy.hasDepthmap()}">
       <img image-source="depth">
-      <h4>Depthmap</h4>
+      <button class="btn btn-success btn-block" ng-click="selectFile($event)"><i class="icon" ng-class="isDepthmapProcessing ? 'icon-loading' : 'icon-open'"></i>{{depthy.hasDepthmap() ? 'Change' : 'Open' }} depthmap</button>
     </div>
     <div class="thumbnail" ng-if="depthy.hasOriginalImage()">
       <img image-source="alternative">
-      <h4>Original</h4>
+      <button class="btn btn-default btn-block" disabled>Original image</button>
     </div>
   </div>
   <p class="text-muted text-center" ng-if="depthy.hasDepthmap() || depthy.hasAlternativeImage()">
     {{Modernizr.mobile ? 'Press and hold the images' : 'Right-click the images'}} to save them.
   </p>
   <p class="text-center margin-top-lg">
-    <button class="btn btn-success" ng-click="selectFile($event)"><i class="icon" ng-class="isDepthmapProcessing ? 'icon-loading' : 'icon-open'"></i>{{depthy.hasDepthmap() ? 'Change' : 'Open' }} depthmap</button>
+    
   </p>
-  <p class="text-center">You can now create and edit depthmaps in a program of your choice! They just should be monochromatic and of the same size as the original image. The darker the spot, the closer it is.</p>
+  <div class="">You can now create and edit depthmaps in a program of your choice! They just should be monochromatic and of the same size as the original image. The darker the spot, the closer it is.</div>
 </div>
 <div class="modal-footer">
   <!-- <button class="btn btn-success" ng-click="selectFile($event)"><i class="icon" ng-class="isDepthmapProcessing ? 'icon-loading' : 'icon-open'"></i>{{depthy.hasDepthmap() ? 'Change' : 'Open' }} depthmap</button> -->

@@ -5,10 +5,9 @@
   <p>
     Depthy works with photos shot using <a href="https://play.google.com/store/apps/details?id=com.google.android.GoogleCamera" target="_blank">LensBlur</a> camera mode, or  created with Depthy itself.
   </p>
-  <p>
-    To make it 3D, you should <span class="link" ng-click="imageInfo()">add</span> the depthmap yourself.
-    Otherwise, 
-     <span class="link" ng-click="selectFile($event)">open</span> another photo, or choose something from the <span class="link" ng-click="depthy.leftpaneOpen(true)">gallery</span>.
-  </p>
-  <p class="" ng-if="Modernizr.android">Note: Google Photos strips out the depthmap. Select <code class="text-warning">Documents</code> when prompted and find your LensBlur photo on your device.</p>
+  <div class="btn-group btn-group-unjustified">
+    <div class="btn btn-warning" ng-click="imageInfo()">Load your depthmap</div>
+    <div class="btn btn-default" ng-click="selectFile($event)">Try another</div>
+  </div>
+  <div class="margin-top-lg" ng-if="Modernizr.android">Note: Google Photos strips out the depthmap. Select <code class="text-warning">Documents</code> when prompted and find your LensBlur photo on your device.</div>
 </div>

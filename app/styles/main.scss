@@ -5,10 +5,10 @@ $brand-primary: #185C94; //#0165BD;
 $brand-danger: #E61717;
 $brand-success: #12B812;
 $brand-warning: #E68F17;
-$brand-info: #5bc0de;
+$brand-info: #185C94;
 $brand-neutral: #666;
 
-$contrast: 15%;
+$contrast: 10%;
 
 $brand-primary-dark: darken($brand-primary, $contrast); //#0165BD; 
 $brand-danger-dark: darken($brand-danger, $contrast);
@@ -34,7 +34,7 @@ $headings-font-family: $font-family-sans-serif;
 $headings-font-weight: 700;
 
 $padding-base-vertical: 10px;
-$padding-base-horizontal: 12px;
+$padding-base-horizontal: 15px;
 $padding-large-vertical: 14px;
 $padding-large-horizontal: 30px;
 
@@ -46,11 +46,16 @@ $border-radius-large: 0px;
 $border-radius-small: 0px;
 
 // states 
-$state-warning-text: $brand-warning;
-$state-danger-bg: $brand-danger;
+$state-danger-bg: fade-out($brand-danger, 0.8);
 $state-danger-text: $text-color;
-$state-warning-bg: $brand-warning;
+$state-danger-border: $brand-danger;
+$state-warning-bg: fade-out($brand-warning, 0.8);
 $state-warning-text: $text-color;
+$state-warning-border: $brand-warning;
+$state-info-bg: fade-out($brand-info, 0.8);
+$state-info-text: $text-color;
+$state-info-border: $brand-info;
+
 
 // wells
 $well-bg: rgba(0,0,0,0.2);

@@ -127,8 +127,11 @@ p a {
     border-color: $btn-default-color;
     background: $brand-neutral-vdark;
     &:hover {
-      // background: fade-out($btn-default-bg, 0.5);
+      background: $brand-neutral-dark;
       color: #fff;
+    }
+    &:active {
+      background: lighten($brand-neutral-dark, $contrast);
     }
     &.active {
       // background: $btn-default-color;
@@ -270,7 +273,8 @@ logo {
     color: inherit;
   }
   .icon-back {
-    padding-right: 0.5em;
+    padding-right: 5px;
+    margin-left: -5px;
     cursor: pointer;
   }
 }
@@ -305,18 +309,23 @@ logo {
     overflow: hidden;
   }
   .modal-dialog {
-    height: 100.5%;
+    height: 100%;
     margin: 0 -1px;
   }
   .modal-content {
     height: 100%;
     box-shadow: none;
+    border: none;
   }
-  .modal.fade .modal-dialog {
-    transform: translateX(100%);
-    opacity: 1;
-  }
-  .modal.fade.in .modal-dialog {
+  .modal.fade {
+    opacity: 1!important;
+    .modal-dialog {
+      transform: translateX(100%);
+      opacity: 1!important;
+    }
+
+  } 
+  .modal.fade.in .modal-dialog, .modal.fade.out .modal-dialog {
     transform: translateX(0%);
   }
   .modal-header {
@@ -335,6 +344,8 @@ logo {
     bottom: 0px;
   }
 }
+
+
 
 // popups
 .popup-clicker {
@@ -442,13 +453,39 @@ logo {
     color: $text-color;
     padding: $panel-heading-padding;    
   }
+
+  &.empty {
+    img {display: none;}
+    &:before {
+      content: 'NO IMAGE';
+      color: $brand-neutral-dark;
+      text-align: center;
+      display: block;
+      font-weight: $headings-font-weight;
+      font-size: $font-size-large;
+      padding: $padding-large-horizontal * 2 $padding-base-horizontal * 2;
+    }
+  }
 }
 
 .thumbnails-set {
   text-align: center;
   .thumbnail {
+    vertical-align: bottom;
     display: inline-block;
     max-width: 47%;
     margin: 4px;
+    &.empty {
+      width: 47%;
+
+    }
   }
+}
+
+
+
+// alerts
+
+.alert {
+  border-width: $border-width;
 }

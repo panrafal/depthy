@@ -1,6 +1,6 @@
 @mixin button-variant($color, $background, $border) {
   color: $color;
-  background-color: darken($background, $contrast);
+  background-color: $background;
   transition: all 0.2s ease;
   // border-color: $background;
   border: none;
@@ -13,13 +13,13 @@
   &.active,
   .open > &.dropdown-toggle {
     color: $color;
-    background-color: darken($background, $contrast / 2);
+    background-color: lighten($background, $contrast / 2);
         // border-color: darken($border, 12%);
   }
   &:active,
   &.active,
   .open > &.dropdown-toggle {
-    background-color: $background;
+    background-color: lighten($background, $contrast);
   }
   &.disabled,
   &[disabled],
@@ -29,8 +29,10 @@
     &:focus,
     &:active,
     &.active {
+      opacity: 1;
       background-color: desaturate($background, 50%);
-          border-color: $border;
+      color: darken($color, $contrast * 4);
+      border-color: $border;
     }
   }
 
