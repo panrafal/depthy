@@ -384,6 +384,7 @@ angular.module('depthyApp').provider('depthy', function depthy() {
       },
 
       leftpaneOpen: function(gallery) {
+        gallery = false;
         if (!gallery && depthy.leftpaneOpen !== true && !leftpaneDeferred) {
           leftpaneDeferred = StateModal.stateDeferred('pane');
           leftpaneDeferred.promise.finally(function() {

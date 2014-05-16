@@ -17,7 +17,7 @@
   <div id="leftpane">
     <section id="about">
       <header>
-        <logo></logo>
+        <logo ng-click="depthy.leftpaneClose()"></logo>
         <p class="lead">
           the third dimension viewer
         </p>
@@ -25,16 +25,16 @@
       <article class="text-center">
         <div class="button-open btn btn-lg btn-success col-xs-8 center-block margin-lg" ng-click="selectFile($event)"><i class="icon" ng-class="depthy.isLoading() ? 'icon-loading' : 'icon-open'"></i>Open photo</div>
       </article>
-      <footer>
-        Depthy 0.2 created by <a href="http://www.stamina.pl/">Rafał Lindemann</a>.<br/>
-        Ideas? Issues? Code? It's open sourced on <a href="https://github.com/panrafal/depthy">GitHub</a>!
-      </footer>
     </section>
     <section id="gallery">
       <ul>
         <li class="" ng-repeat="(id, title) in depthy.samples" ng-style="{'background-image':'url(samples/'+id+'-thumb.jpg)'}" ng-click="loadSample(id)"></li>
       </ul>
     </section>
+    <footer>
+      Depthy 0.2 created by <a href="http://www.stamina.pl/">Rafał Lindemann</a>.<br/>
+      Ideas? Issues? Code? It's open sourced on <a href="https://github.com/panrafal/depthy">GitHub</a>!
+    </footer>
   </div>
 
 

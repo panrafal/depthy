@@ -22,7 +22,7 @@ angular.module('depthyApp')
 
   $scope.loadSample = function(name) {
     $state.go('sample', {id: name});
-    depthy.leftpaneOpen(true);
+    // depthy.leftpaneOpen(true);
   };
 
   $scope.animateOption = function(obj, option, duration) {

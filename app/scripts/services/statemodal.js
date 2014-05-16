@@ -8,10 +8,12 @@ angular.module('depthyApp')
   Back buttons will reject the promise. */
   this.stateDeferred = function(state, options) {
     options = options || {};
-    if (state && $state.current.name !== state && !options.stateCurrent) $state.go(state, options.stateParams, options.stateOptions);
     var deferred = $q.defer(), deregister;
-
     deferred.state = state;
+
+    if ($state.current.name === state) state = false;
+    if (state && !options.stateCurrent) $state.go(state, options.stateParams, options.stateOptions);
+
     deferred.promise.then(
       function() {
         if (deregister) deregister();

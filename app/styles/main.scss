@@ -104,8 +104,10 @@ $thumbnail-padding: 1px;
 $navbar-height: 40px;
 $navbar-bg: $body-bg;
 
-$leftpane-width: 450px;
-$leftpane-bg: darken($brand-primary, 15%);
+$leftpane-width: 400px;
+$leftpane-bg: $brand-neutral-vdark;
+
+$about-bg: transparent; //$brand-primary-dark;
 
 $gallery-width: 70px;
 $gallery-bg: darken($leftpane-bg, 15%);

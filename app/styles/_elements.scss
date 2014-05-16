@@ -91,10 +91,35 @@
   z-index: 50;
   background: $leftpane-bg;
 
+  overflow-x: hidden;
+  overflow-y: auto;
+  overflow-scrolling: touch;
+
   transition: all 0.5s ease-in-out;
   transform: translate3d(-100%, 0, 0);
 
   @extend .accelerate;
+
+
+  &:after {
+    display: none;
+    content: '';
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    right: 0px;
+    width: remify(100px);
+    background: linear-gradient(to left, fade-out($body-bg, 1),fade-out($body-bg, 0.85) 90%,fade-out($body-bg, 0.6) 100%);
+    transition: all 0.5s ease-in-out;
+    transform: translateX(0);
+    z-index: 1;
+    pointer-events: none;
+
+    .leftpane-opened & {
+      transform: translateX(100%);      
+    }
+  }
+
 
 
   .leftpane-opened & {
@@ -109,47 +134,15 @@
     transform: translateX(-100%) translateX(-20px);
   }
 
-}
-
-// ------------------------------------------------------ ABOUT
-#about {
-  position: absolute;
-  height: 100%;
-  left: 0px;
-  right: remify($gallery-width);
-
-  padding: $padding-large-horizontal;
-  padding-top: $padding-large-vertical;
-
-  oveflow-y: auto;
-  // color: #fff;
-
-  header {
-    text-align: center;
-  }
-
-  logo {
-    width: 100%;
-    // font-size: 5em;
-    margin-bottom: 2rem;
-  }
-
-  .container {
-    max-width: 650px;
-  } 
-
-  .notice {
-    opacity: 0.5;
-  }
-  .button-open {
-    margin-top: 2em;
-  }
-
   footer {
-    color: fade-out($text-color, 0.6);
+
+    padding: $padding-large-vertical $padding-large-horizontal;
+    padding-top: 0;
+    margin-top: $padding-large-vertical * 2;
+
+    color: $brand-neutral;
     text-align: center;
-    margin-top: 4em;
-    font-size: 0.9em;
+    font-size: $font-size-small;
     a {
       color: inherit;
       text-decoration: underline;
@@ -160,48 +153,51 @@
   }
 
 
+}
 
-  &:after {
-    content: '';
-    position: absolute;
-    top: 0px;
-    bottom: 0px;
-    right: 0px;
-    width: remify($gallery-width);
-    background: linear-gradient(to left, fade-out($body-bg, 1),fade-out($body-bg, 0.85) 90%,fade-out($body-bg, 0.6) 100%);
-    transition: all 0.5s ease-in-out;
-    transform: translateX(0);
-    z-index: 1;
-    pointer-events: none;
+// ------------------------------------------------------ ABOUT
+#about {
+  background: $about-bg;
 
-    .leftpane-opened & {
-      transform: translateX(100%);      
-    }
+  padding: $padding-large-vertical $padding-large-horizontal;
+
+  header {
+    text-align: center;
+    margin-bottom: 4 * $padding-large-vertical;
   }
 
+  logo {
+    width: 100%;
+    // font-size: 5em;
+    margin-bottom: 2rem;
+  }
 
 }
 
 // ------------------------------------------------------ SAMPLES
 #gallery {
   // display: none;
-  position: absolute;
-  height: 100%;
-  right: 0px;
-  width: remify($gallery-width);
-  background: $gallery-bg;
+  // background: $gallery-bg;
 
   ul {
     margin: 0;
     padding: 0;
     list-style: none;
+    overflow: hidden;
   }
   li {
     cursor:pointer;
-    width: remify($gallery-width);
-    height: remify($gallery-width);
+    width: percentage(1 / 5);
+    display: block;
+    float: left;
     background-position: 50% 50%;
     background-size: cover;
+
+    &:after {
+      content: '';
+      display: block;
+      padding-top: 100%;
+    }
   }
 
   
