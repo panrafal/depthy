@@ -290,69 +290,6 @@ logo {
 
 
 
-// popups
-.popup-clicker {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background: transparent;
-  z-index: 60;
-}
-.popup {
-  z-index: 61;
-  position: absolute;
-  width: 100%;
-  max-width: remify(400px);
-  text-align: center;
-  bottom: 0;
-  background: $body-bg;
-  // background-image: linear-gradient(to bottom, fade-out($body-bg, 0.1),fade-out($body-bg, 1) remify(100px));
-
-  left: 50%;
-  padding: $padding-base-vertical;
-
-  transform: translateX(-50%);
-
-  @extend .anim-slideup-centered;
-  .zen-mode & {
-    transform: translate(-50%, 100%) translateY(remify(60px));
-  }
-
-  .close {
-    padding: remify(10px);
-    box-sizing: content-box;
-    position: absolute;
-    top: 0px;
-    right: 0px;
-  }
-
-  .popup-header {
-    @extend h4;
-    color: $text-color;
-    // font-size: 1rem;
-    background: transparent;// $brand-neutral-dark;
-    padding: $padding-base-vertical;
-    margin-top: -$padding-base-vertical;
-    margin-bottom: $padding-base-vertical;
-  } 
-
-  .popup-footer {
-    margin-top: $padding-base-vertical;
-    margin-bottom: 0;
-  }
-
-  .btn-block, .option {
-    margin: $padding-small-vertical 0;
-
-    &:first-child {
-      margin-top: 0;
-    }
-    &:last-child {
-      margin-bottom: 0;
-    }
-  }
-
-}
 
 
 // options
@@ -452,13 +389,13 @@ logo {
   padding: $padding-large-vertical $padding-large-horizontal;
   position: relative;
   &.alert-icon {
-    padding-left: $padding-large-horizontal * 2 + 16px;
-    // padding-right: $padding-large-horizontal * 2 + 16px;
+    padding-left: $padding-base-horizontal * 2 + 16px;
+    padding-right: $padding-base-horizontal;
     .icon:first-child {
       position: absolute;
       top: 50%;
       margin-top: -8px;
-      left: $padding-large-horizontal;
+      left: $padding-base-horizontal;
     }
   }
 }
@@ -489,6 +426,99 @@ logo {
   transition: width 0.1s ease;
 }
 
+
+
+// popups
+.popup-clicker {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  z-index: 60;
+}
+.popup {
+  z-index: 61;
+  position: absolute;
+  width: 100%;
+  max-width: remify(400px);
+  text-align: center;
+  bottom: 0;
+  background: $body-bg;
+  // background-image: linear-gradient(to bottom, fade-out($body-bg, 0.1),fade-out($body-bg, 1) remify(100px));
+
+  left: 50%;
+  padding: $padding-base-vertical;
+
+  transform: translateX(-50%);
+
+  @extend .anim-slideup-centered;
+  .zen-mode & {
+    transform: translate(-50%, 100%) translateY(remify(60px));
+  }
+
+  .close {
+    padding: remify(10px);
+    box-sizing: content-box;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+  }
+
+  .popup-header {
+    @extend h4;
+    color: $text-color;
+    // font-size: 1rem;
+    background: transparent;// $brand-neutral-dark;
+    padding: $padding-base-vertical;
+    margin-top: -$padding-base-vertical;
+    margin-bottom: $padding-base-vertical;
+  } 
+
+  .popup-footer {
+    margin-top: $padding-base-vertical;
+    margin-bottom: 0;
+  }
+
+  .btn-block, .option {
+    margin: $padding-small-vertical 0;
+
+    &:first-child {
+      margin-top: 0;
+    }
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+}
+
+
+// panels 
+
+.panel {
+  max-width: remify(400px);
+  margin: $padding-large-vertical auto;
+
+  .panel-body {
+
+    &>:first-child {
+      margin-top: 0;
+    }
+    &>:last-child {
+      margin-bottom: 0;
+    }
+
+    .alert {
+      margin-left: -$padding-base-horizontal;
+      margin-right: -$padding-base-horizontal;
+
+      &:last-child {
+        margin-bottom: -$padding-base-horizontal;
+      }
+    }
+  }
+
+}
 
 
 // modal

@@ -116,7 +116,7 @@
   position: absolute;
   height: 100%;
   left: 0px;
-  right: percentage($gallery-width / $leftpane-width);
+  right: remify($gallery-width);
 
   padding: $padding-large-horizontal;
   padding-top: $padding-large-vertical;
@@ -184,6 +184,7 @@
 
 // ------------------------------------------------------ SAMPLES
 #gallery {
+  // display: none;
   position: absolute;
   height: 100%;
   right: 0px;
@@ -235,11 +236,13 @@
 
   .alerts {
     position: absolute;
-    width: remify(400px);
-    max-width: 80%;
-    left: 50%;
+    // width:100%;
+    // width: remify(400px);
+    // max-width: 80%;
+    left: $padding-base-vertical;
+    right: $padding-base-vertical;
     top: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(0%, -50%);
     z-index: 10;
     transition: all 0.5s ease-in-out;
 
