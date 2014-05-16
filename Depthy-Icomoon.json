@@ -1,7 +1,7 @@
 {
 	"metadata": {
 		"name": "Depthy 1 1",
-		"lastOpened": 1400232726031,
+		"lastOpened": 1400238190743,
 		"created": 1398196495318
 	},
 	"iconSets": [
@@ -14,7 +14,7 @@
 					"code": 58889,
 					"name": "warning",
 					"tempChar": "",
-					"ligatures": ""
+					"ligatures": "warning"
 				},
 				{
 					"order": 30,
@@ -1342,7 +1342,7 @@
 					"code": 58917,
 					"name": "info",
 					"tempChar": "",
-					"ligatures": ""
+					"ligatures": "info"
 				},
 				{
 					"id": 249,
@@ -1355,7 +1355,7 @@
 					"code": 58918,
 					"name": "error",
 					"tempChar": "",
-					"ligatures": ""
+					"ligatures": "error"
 				},
 				{
 					"id": 251,
@@ -1496,7 +1496,7 @@
 					"code": 58892,
 					"name": "loop",
 					"tempChar": "",
-					"ligatures": ""
+					"ligatures": "loading"
 				},
 				{
 					"id": 285,
@@ -7965,7 +7965,7 @@
 					"code": 58880,
 					"name": "yes",
 					"tempChar": "",
-					"ligatures": ""
+					"ligatures": "yes"
 				},
 				{
 					"id": 10,
@@ -7978,7 +7978,7 @@
 					"code": 58881,
 					"name": "no",
 					"tempChar": "",
-					"ligatures": ""
+					"ligatures": "no"
 				},
 				{
 					"id": 12,
@@ -10762,7 +10762,7 @@
 		"search": "",
 		"gridSize": 16,
 		"showGrid": true,
-		"showLiga": false
+		"showLiga": true
 	},
 	"externalSets": []
 }

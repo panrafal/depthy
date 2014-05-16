@@ -14,12 +14,16 @@
     </div>
   </div>
   <p class="text-muted text-center" ng-if="depthy.hasDepthmap() || depthy.hasAlternativeImage()">
-    {{Modernizr.mobile ? 'Press and hold the images' : 'Right-click the images'}} to save them.
+    {{Modernizr.mobile ? 'Press and hold the image' : 'Right-click the image'}} to save it.
   </p>
   <p class="text-center margin-top-lg">
     
   </p>
-  <div class="">You can now create and edit depthmaps in a program of your choice! They just should be monochromatic and of the same size as the original image. The darker the spot, the closer it is.</div>
+  <div class="alert alert-note alert-icon">
+    <i class="icon icon-info"></i>
+    You can create depthmaps for any image yourself!<br/>
+    Just keep in mind that darker spots are closer to the screen.
+  </div>
 </div>
 <div class="modal-footer">
   <!-- <button class="btn btn-success" ng-click="selectFile($event)"><i class="icon" ng-class="isDepthmapProcessing ? 'icon-loading' : 'icon-open'"></i>{{depthy.hasDepthmap() ? 'Change' : 'Open' }} depthmap</button> -->
