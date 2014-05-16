@@ -49,7 +49,8 @@ angular.module('depthyApp', [
       depthy.loadUrlDirectImage('http://i.imgur.com/' + $stateParams.id + '.png', true, {
         shareUrl: depthy.rootShareUrl + $state.href('imgur', {id: $stateParams.id}),
         thumb: 'http://i.imgur.com/' + $stateParams.id + 'm.jpg',
-        storeUrl: 'http://imgur.com/' + $stateParams.id
+        storeUrl: 'http://imgur.com/' + $stateParams.id,
+        store: depthy.stores.imgur
       });
     }]
   })

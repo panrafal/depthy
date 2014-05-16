@@ -119,7 +119,7 @@ angular.module('depthyApp')
     // wait for DOM
     $timeout(function() {
       generateAndUpload(850, 0.8, 950000);
-    });
+    }, depthy.modalWait);
   }
 
 

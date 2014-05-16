@@ -1,6 +1,8 @@
 <div class="modal-header">
   <!-- <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button> -->
-  <h4 class="modal-title"><i class="icon icon-back" ng-click="$dismiss()"></i>{{imageReady ? 'Here is your GIF!' : 'Please wait...'}}</h4>
+  <h4 class="modal-title" ng-click="$dismiss()"><i class="icon icon-back" ></i>
+    {{imageReady ? 'Your GIF is ready to take!' : 'Please wait...'}}
+  </h4>
 </div>
 <div class="modal-body">
   
@@ -8,33 +10,39 @@
     <div class="progress progress-md progress-striped active">
       <div class="progress-bar" role="progressbar" ng-style="{width: exportProgress * 100 + '%'}"></div>
     </div>
-    <div class="text-muted text-center margin" ng-if="Modernizr.mobile">Generating GIFs on a mobile is a tedious task. If it takes too long, choose a 
-    smaller size or make it shorter...</div>
+    <div class="alert alert-warning alert-icon" ng-if="Modernizr.mobile ? (depthy.exportSize > 150 || viewer.animateDuration > 1) : (depthy.exportSize > 300 || viewer.animateDuration > 2)">
+    <i class="icon icon-stopwatch"></i>
+      Generating GIFs is a tedious task. If it takes too long, choose a smaller size or make it shorter...
+    </div>
   </div>
 
   <div class="text-center export-image anim-expand verylong ng-hide" ng-show="imageReady">
     <div class="thumbnail center-block">
       <img src="" title="Size is {{imageSize / 1024 / 1024 | number: 2}}MB" />
+      <h5>{{imageSize / 1024 | number: 0}}KB</h5>
     </div>
-    <p>Your GIF weights {{imageSize / 1024 / 1024 | number: 2}}MB and is ready to take! {{Modernizr.mobile ? 'Press and hold the image' : 'Right-click the image'}} to save it.</p>
-    <p ng-if="Modernizr.android && Modernizr.chrome && imageSize > 1000000" class="text-center text-warning anim-expand">
+    <p class="text-muted"> {{Modernizr.mobile ? 'Touch and hold the image' : 'Right-click the image'}} to save it.</p>
+
+    <div class="alert alert-warning alert-icon" ng-if="Modernizr.android && Modernizr.chrome && imageSize > 1000000">
+      <i class="icon icon-warning"></i>
       Due to the bug in Chrome the option to save the GIF can be unavailable. You'll have to make it smaller or share it.
-    </p>
-    <p ng-if="imageOverLimit" class="text-center text-warning">
-      It's <b>too big</b> too share though.<br/>
-      You'll have to do it on your own, or make it smaller...
-    </p>
-    <div ng-if="!imageOverLimit">
+    </div>
+    <div class="alert alert-warning alert-icon" ng-if="imageOverLimit">
+      <i class="icon icon-meter"></i>
+      It's <b>too big</b> too share! You'll have to share it on your own, or make it smaller...
+    </div>
+    <div class="margin-top-lg" ng-if="!imageOverLimit">
       <!-- <p class="text-muted">or</p> -->
       <div ng-switch="shareUrl" class="export-share">
         <div class="anim-expand long" ng-switch-when="">
           <p class="text-danger anim-expand" ng-if="shareError">{{shareError}}</p>
-          <p>
-            <button class="btn btn-success btn-lg" ng-click="share()"><i class="icon icon-upload"></i>Share it!</button><br/>
-          </p>
-          <p class="text-muted disclaimer">
-            Your photo will be uploaded to <a href="http://imgur.com" target="_blank">Imgur.com</a>.<br/>It will remain relatively private until you share it too much and it will go viral.
-          </p>
+          <button class="btn btn-success btn-lg col-sm-6 col-xs-8 center-block" ng-click="share()"><i class="icon icon-upload"></i>Share it!</button><br/>
+
+          <div class="alert alert-info alert-icon margin-top-xl" class="anim-expand">
+            <i class="icon icon-cloud"></i>
+            Your GIF will be uploaded to <a href="http://imgur.com" target="_blank">Imgur.com</a>.<br/>It will remain relatively private until you share it too much and it will go viral.
+          </div>
+
         </div>
         <div class="anim-expand" ng-switch-when="sharing">
           <div class="progress progress-md progress-striped active">
@@ -44,8 +52,12 @@
           <p class="text-muted">Uploading, please wait...</p>
         </div>
         <div class="anim-expand" ng-switch-default>
-          Your GIF is now uploaded to:<br/>
-          <p class="text-primary"><a href="{{shareUrl}}" target="_blank">{{shareUrl}}</a></p>
+          <p>Your GIF is now uploaded to:</p>
+          <div class="alert alert-success alert-lg alert-icon">
+            <i class="icon icon-link"></i>
+            <a href="{{shareUrl}}" target="_blank">{{shareUrl}}</a>
+          </div>
+
           <div class="btn-group btn-group-shares margin-lg">
             <div class="btn btn-icon btn-twitter" share-popup="twitter" share-options="share" ga="['send', 'event', 'png', 'share', 'twitter']"><i class="icon icon-lg icon-twitter"></i></div>
             <div class="btn btn-icon btn-facebook" share-popup="facebook" share-options="share" ga="['send', 'event', 'png', 'share', 'facebook']"><i class="icon icon-lg icon-facebook"></i></div>
@@ -54,7 +66,10 @@
         </div>
       </div>
     </div>
-    <p>To gain good karma use <b class="text-primary">#depthy</b> in your shares, thanks!</p>
+    <p>
+      Want some good karma?<br/>
+      Use <b class="text-primary">#depthy</b> in your shares, thanks!
+    </p>
   </div>
   
 </div>

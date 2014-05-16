@@ -3,26 +3,27 @@
   <h4 class="modal-title"><i class="icon icon-back" ng-click="$dismiss()"></i>Image properties</h4>
 </div>
 <div class="modal-body" >
-  <div class="thumbnails-set">
-    <div class="thumbnail" ng-class="{empty: !depthy.hasDepthmap(), loading: loading}">
-      <img image-source="depth">
-      <button class="btn btn-success btn-block" ng-click="selectFile($event)"><i class="icon" ng-class="isDepthmapProcessing ? 'icon-loading' : 'icon-open'"></i>{{depthy.hasDepthmap() ? 'Change' : 'Open' }} depthmap</button>
-    </div>
-    <div class="thumbnail" ng-if="depthy.hasOriginalImage()" ng-class="{loading: loading}">
-      <img image-source="alternative">
-      <button class="btn btn-default btn-block" disabled>Original image</button>
+  <div class="text-center">
+    <div class="thumbnails-set margin-top-none">
+      <div class="thumbnail" ng-class="{empty: !depthy.hasDepthmap(), loading: loading}">
+        <img image-source="depth">
+        <button class="btn btn-success btn-block" ng-click="selectFile($event)"><i class="icon" ng-class="isDepthmapProcessing ? 'icon-loading' : 'icon-open'"></i>{{depthy.hasDepthmap() ? 'New' : 'Open' }} depthmap</button>
+      </div><div class="thumbnail" ng-if="depthy.hasOriginalImage()" ng-class="{loading: loading}">
+        <img image-source="alternative">
+        <button class="btn btn-default btn-block" disabled>Original image</button>
+      </div>
     </div>
   </div>
   <p class="text-muted text-center" ng-if="depthy.hasDepthmap() || depthy.hasAlternativeImage()">
     {{Modernizr.mobile ? 'Press and hold the image' : 'Right-click the image'}} to save it.
   </p>
-  <p class="text-center margin-top-lg">
-    
-  </p>
-  <div class="alert alert-note alert-icon">
+  <div class="alert alert-info alert-icon margin-top-xl">
     <i class="icon icon-info"></i>
-    You can create depthmaps for any image yourself!<br/>
-    Just keep in mind that darker spots are closer to the screen.
+    <p>You can create depthmaps for any image yourself!</p>
+  </div>
+  <div class="alert alert-info alert-icon">
+    <i class="icon icon-stack"></i>
+    <p>Keep in mind that darker spots are closer to the screen. Check the samples for reference.</p>
   </div>
 </div>
 <div class="modal-footer">

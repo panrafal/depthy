@@ -35,7 +35,7 @@ $headings-font-weight: 700;
 
 $padding-base-vertical: 10px;
 $padding-base-horizontal: 15px;
-$padding-large-vertical: 14px;
+$padding-large-vertical: 15px;
 $padding-large-horizontal: 30px;
 
 
@@ -48,13 +48,16 @@ $border-radius-small: 0px;
 // states 
 $state-danger-bg: $brand-danger;
 $state-danger-text: $text-color;
-$state-danger-border: $brand-danger;
+$state-danger-border: $brand-danger-dark;
 $state-warning-bg: $brand-warning;
 $state-warning-text: $text-color;
-$state-warning-border: $brand-warning;
+$state-warning-border: $brand-warning-dark;
 $state-info-bg: $brand-info;
 $state-info-text: $text-color;
-$state-info-border: $brand-info;
+$state-info-border: $brand-info-dark;
+$state-success-bg: $brand-success;
+$state-success-text: $text-color;
+$state-success-border: $brand-success-dark;
 
 
 // wells
@@ -92,7 +95,7 @@ $code-bg: fade-out($text-color, 0.8);
 // thumbnails
 $thumbnail-border: $border-color;
 $thumbnail-bg: $body-bg;
-$thumbnail-matte: $text-color;
+$thumbnail-matte: $brand-neutral-dark;
 $thumbnail-padding: 1px;
 
 @import "_bootstrap.scss";

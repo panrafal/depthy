@@ -111,6 +111,7 @@ angular.module('depthyApp')
 
   $scope.exportPngRun = function() {
     StateModal.showModal('export.png', {
+      stateOptions: {location: 'replace'},
       templateUrl: 'views/export-png-modal.html',
       controller: 'ExportPngModalCtrl',
       windowClass: 'export-png-modal',
@@ -120,6 +121,7 @@ angular.module('depthyApp')
 
   $scope.sharePngRun = function() {
     StateModal.showModal('share.png', {
+      stateOptions: {location: 'replace'},
       templateUrl: 'views/share-png-modal.html',
       controller: 'SharePngModalCtrl',
       // backdrop: 'static',

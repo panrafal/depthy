@@ -4,19 +4,21 @@
 </div>
 <div class="modal-body text-center">
 
-
-  <p class="alert alert-danger" ng-if="uploadError" class="anim-expand"><i class="icon icon-error"></i>{{uploadError}}</p>
-  <div ng-if="!share && !uploadError" class="anim-expand">
-    <div class="progress progress-striped active">
+  <p class="alert alert-danger alert-icon margin-xl" ng-if="uploadError" class="anim-expand">
+    <i class="icon icon-error"></i>{{uploadError}}
+  </p>
+  <div ng-if="!share && !uploadError" class="margin-xl anim-expand long">
+    <div class="progress progress-md progress-striped active">
       <div class="progress-bar" role="progressbar" ng-style="{width: uploadProgress * 100 + '%'}">
       </div>
     </div>
     <p class="text-muted">Uploading, please wait...</p>
   </div>
 
-  <div ng-if="share" class="anim-expand long">
+  <div ng-if="share" class="margin-xl anim-expand long">
     <p>Copy this link and use it however you want:</p>
-    <div class="alert alert-primary alert-lg">
+    <div class="alert alert-success alert-lg alert-icon">
+      <i class="icon icon-link"></i>
       <a href="{{share.url}}">{{share.url}}</a>
     </div>
     <div class="btn-group btn-group-shares margin-lg">
@@ -25,9 +27,15 @@
       <div class="btn btn-icon btn-google" share-popup="google" share-options="share" ga="['send', 'event', 'png', 'share', 'google']"><i class="icon icon-lg icon-googleplus"></i></div>
     </div>
 
-    <p>To gain good karma use <b class="text-primary">#depthy</b> in your shares, thanks!</p>
+    <p>
+      Want some good karma?<br/>
+      Use <b class="text-primary">#depthy</b> in your shares, thanks!
+    </p>
 
-    <p class="text-muted" ng-if="depthy.loaded.store.url" class="anim-expand">This image is hosted on <a href="{{depthy.loaded.store.url}}" target="_blank">{{depthy.loaded.store.name}}</a>.</p>
+    <div class="alert alert-info alert-icon margin-top-xl" ng-if="depthy.opened.storeUrl" class="anim-expand">
+      <i class="icon icon-cloud"></i>
+      This image is hosted on <a href="{{depthy.opened.storeUrl}}" target="_blank">{{depthy.opened.store.name || depthy.opened.storeUrl}}</a>.
+    </div>
   </div>
 
   
