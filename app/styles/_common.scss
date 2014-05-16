@@ -257,43 +257,33 @@ p a {
 
 logo {
   display: inline-block;
-  text-transform: lowercase;
-  font-family: $headings-font-family;
-  font-weight: $headings-font-weight;
-
-  letter-spacing: -0.03em;
-  line-height: 0.6em;
-  height: 1em;
-  padding: 0.11em 0.12em 0.11em 0.09em;
-
+  width: 20em;
+  font-size: 22px;
   vertical-align: middle;
-
-  span {
-    font-size: 0.8em;
-    vertical-align: bottom;
+  background: url('../images/logo-grey-shadow.svg') no-repeat 50% 50%;
+  position: relative;
+  &:before {
+    content: '';
+    display: block;
+    padding-top: percentage(160 / 440);
   }
 
-  @mixin logo-color($color) {
-    color: $color;
-    border: 0.11em solid $color;
-
-    $shadow-color: fade-out($color, 0.9);
-    $shadow-size: 0.03em;
-    box-shadow: inset 0px 0px 0px $shadow-size * 1 $shadow-color,
-                inset 0px 0px 0px $shadow-size * 2 $shadow-color,
-                inset 0px 0px 0px $shadow-size * 3 $shadow-color,
-                inset 0px 0px 0px $shadow-size * 4 $shadow-color,
-                inset 0px 0px 0px $shadow-size * 5 $shadow-color
-                // inset 0px 0px 0px $shadow-size * 6 $shadow-color,
-                // inset 0px 0px 0px $shadow-size * 7 $shadow-color
-                ;
+  &:after {
+    content: '';
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    $unit: 20 / 22 + 0em;
+    box-shadow-: 
+              // inset 0 0 0 $unit * 2 fade-out(#eee, 0.8),
+              inset 0 0 0 $unit * 1.5 fade-out(#eee, 0.8),
+              inset 0 0 0 $unit * 2 fade-out(#eee, 0.8);
+      
   }
 
-  @include logo-color($brand-primary);
-
-  &.white {
-    @include logo-color($text-color);
-  }
 
 }
 

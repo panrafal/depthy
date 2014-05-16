@@ -43,9 +43,9 @@
 
   logo {
     position: absolute;
-    left: 14px;
-    top: 10px;
-    font-size: remify($navbar-height);
+    left: $padding-large-vertical;
+    top: $padding-large-vertical;
+    width: 5em;
     cursor: pointer;
     transition: all 0.5s ease-in-out;
 
@@ -66,7 +66,7 @@
   font-size: 16px;
   position: fixed;
   left: -10px;
-  top: 12px;
+  top: $padding-large-vertical + 2px;
   z-index: 60;
   width: 2em;
 
@@ -118,7 +118,8 @@
   left: 0px;
   right: percentage($gallery-width / $leftpane-width);
 
-  padding: 2em;
+  padding: $padding-large-horizontal;
+  padding-top: $padding-large-vertical;
 
   oveflow-y: auto;
   // color: #fff;
@@ -128,7 +129,8 @@
   }
 
   logo {
-    font-size: 5em;
+    width: 100%;
+    // font-size: 5em;
     margin-bottom: 2rem;
   }
 
