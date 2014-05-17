@@ -26,6 +26,9 @@ angular.module('depthyApp').provider('depthy', function depthy() {
       imgurId: 'b4ca5b16efb904b',
 
       rootShareUrl: 'http://depthy.me/',
+      share: {
+        url: 'http://depthy.me/',
+      },
 
       // true - opened fully, 'gallery' opened on gallery
       leftpaneOpened: false,
@@ -39,6 +42,7 @@ angular.module('depthyApp').provider('depthy', function depthy() {
       useOriginalImage: false,
 
       modalWait: 700,
+
 
       samples: {
         flowers: 'flowers',
@@ -116,6 +120,10 @@ angular.module('depthyApp').provider('depthy', function depthy() {
       },
       getLoadError: function() {
         return this.opened.error;
+      },
+      // true when leftpane is incollapsible
+      isFullLayout: function() {
+        return $window.innerWidth >= 1200;
       },
 
       getViewerCtrl: function() {
@@ -372,7 +380,7 @@ angular.module('depthyApp').provider('depthy', function depthy() {
       },
 
       isLeftpaneOpened: function() {
-        return this.leftpaneOpened;
+        return this.leftpaneOpened || this.isFullLayout();
       },
 
       leftpaneToggle: function() {
@@ -385,6 +393,9 @@ angular.module('depthyApp').provider('depthy', function depthy() {
 
       leftpaneOpen: function(gallery) {
         gallery = false;
+        depthy.zenMode = false;
+        if (this.isFullLayout()) return;
+        
         if (!gallery && depthy.leftpaneOpen !== true && !leftpaneDeferred) {
           leftpaneDeferred = StateModal.stateDeferred('pane');
           leftpaneDeferred.promise.finally(function() {
@@ -393,10 +404,10 @@ angular.module('depthyApp').provider('depthy', function depthy() {
           });
         }
         depthy.leftpaneOpened = gallery ? 'gallery' : true;
-        depthy.zenMode = false;
       },
 
       leftpaneClose: function() {
+        if (this.isFullLayout()) return;
         if (leftpaneDeferred) {
           if (depthy.leftpaneOpened === true) {
             leftpaneDeferred.reject();

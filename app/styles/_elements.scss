@@ -78,6 +78,10 @@
   .zen-mode & {
     transform: translateX(-100%);
   }
+  @media #{$media-full} {
+    transform: translateX(-100%)!important;
+  }
+
 }
 
 // ------------------------------------------------------ LEFTPANE
@@ -91,18 +95,31 @@
   z-index: 50;
   background: $leftpane-bg;
 
-  overflow-x: hidden;
-  overflow-y: auto;
-  overflow-scrolling: touch;
-
   transition: all 0.5s ease-in-out;
   transform: translate3d(-100%, 0, 0);
 
   @extend .accelerate;
 
+  &>.scroll {
+    overflow-x: hidden;
+    overflow-y: auto;
+    overflow-scroll: touch;
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+
+    &>section {
+      flex-shrink: 0;
+    }
+  }
+
+  &>.filler {
+
+  }
 
   &:after {
-    display: none;
+    // display: none;
     content: '';
     position: absolute;
     top: 0px;
@@ -112,12 +129,17 @@
     background: linear-gradient(to left, fade-out($body-bg, 1),fade-out($body-bg, 0.85) 90%,fade-out($body-bg, 0.6) 100%);
     transition: all 0.5s ease-in-out;
     transform: translateX(0);
-    z-index: 1;
+    z-index: -1;
     pointer-events: none;
 
     .leftpane-opened & {
       transform: translateX(100%);      
     }
+    @media #{$media-full} {
+      transform: translateX(100%);      
+    }
+
+
   }
 
 
@@ -134,22 +156,9 @@
     transform: translateX(-100%) translateX(-20px);
   }
 
-  footer {
 
-    padding: $padding-large-vertical $padding-large-horizontal;
-    padding-top: 0;
-    margin-top: $padding-large-vertical * 2;
-
-    color: $brand-neutral;
-    text-align: center;
-    font-size: $font-size-small;
-    a {
-      color: inherit;
-      text-decoration: underline;
-      &:hover {
-        color: fade-out(#fff, 0.4);
-      }    
-    }
+  @media #{$media-full} {
+    transform: translate3d(0, 0, 0);
   }
 
 
@@ -172,12 +181,18 @@
     margin-bottom: 2rem;
   }
 
+  .button-open {
+    max-width: $leftpane-width / 5 * 3;
+  }
+
 }
 
-// ------------------------------------------------------ SAMPLES
+// ------------------------------------------------------ GALLERY
 #gallery {
   // display: none;
   // background: $gallery-bg;
+
+  flex-grow: 1;
 
   ul {
     margin: 0;
@@ -218,6 +233,40 @@
   }
   
 
+}
+
+// ------------------------------------------------------ SHARES
+#share {
+  margin-top: $padding-large-vertical * 2;
+  padding: 0 $padding-large-horizontal;
+  .btn-group-shares {
+    max-width: $leftpane-width / 5 * 3 + $border-width * 2;
+    margin: 0 auto;
+    margin-top: $border-width;
+
+    border-spacing: $border-width 0px;
+
+  }
+
+}
+
+// ------------------------------------------------------ FOOTER
+#footer {
+
+  padding: $padding-large-vertical $padding-large-horizontal;
+  padding-top: 0;
+  margin-top: $padding-large-vertical;
+
+  color: $brand-neutral;
+  text-align: center;
+  font-size: $font-size-small;
+  a {
+    color: inherit;
+    text-decoration: underline;
+    &:hover {
+      color: fade-out(#fff, 0.4);
+    }    
+  }
 }
 
 // ------------------------------------------------------ VIEWER
@@ -345,9 +394,6 @@
     transform: translateX(0);
   }
 }
-
-
-// ------------------------------------------------------ MODAL
 
 
 

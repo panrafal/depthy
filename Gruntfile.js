@@ -282,6 +282,11 @@ module.exports = function (grunt) {
     },
 
     svgmin: {
+      options: {                                      // Configuration that will be passed directly to SVGO
+        plugins: [
+          { mergePaths: false },
+        ]
+      },
       dist: {
         files: [{
           expand: true,

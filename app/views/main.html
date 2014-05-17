@@ -15,26 +15,40 @@
   </nav>
 
   <div id="leftpane">
-    <section id="about">
-      <header>
-        <logo ng-click="depthy.leftpaneClose()"></logo>
-        <p class="lead">
-          the third dimension viewer
-        </p>
-      </header>
-      <article class="text-center">
-        <div class="button-open btn btn-lg btn-success col-xs-8 center-block margin-lg" ng-click="selectFile($event)"><i class="icon" ng-class="depthy.isLoading() ? 'icon-loading' : 'icon-open'"></i>Open photo</div>
-      </article>
-    </section>
-    <section id="gallery">
-      <ul>
-        <li class="" ng-repeat="(id, title) in depthy.samples" ng-style="{'background-image':'url(samples/'+id+'-thumb.jpg)'}" ng-click="loadSample(id)"></li>
-      </ul>
-    </section>
-    <footer>
-      Depthy 0.2 created by <a href="http://www.stamina.pl/">Rafał Lindemann</a>.<br/>
-      Ideas? Issues? Code? It's open sourced on <a href="https://github.com/panrafal/depthy">GitHub</a>!
-    </footer>
+    <div class="scroll">
+      <section id="about">
+        <header>
+          <logo ng-click="depthy.leftpaneClose()"></logo>
+          <p class="lead">
+            the third dimension viewer
+          </p>
+        </header>
+        <article class="text-center">
+          <div class="button-open btn btn-lg btn-success center-block margin-lg" ng-click="selectFile($event)"><i class="icon" ng-class="depthy.isLoading() ? 'icon-loading' : 'icon-open'"></i>Open photo</div>
+        </article>
+      </section>
+      <section id="gallery">
+        <ul>
+          <li class="" ng-repeat="(id, title) in depthy.samples" ng-style="{'background-image':'url(samples/'+id+'-thumb.jpg)'}" ng-click="loadSample(id)"></li>
+        </ul>
+      </section>
+      <section class="text-center" id="share">
+        <div class="btn-group btn-group-shares btn-group-justified">
+          <div class="btn btn-icon btn-twitter" share-popup="twitter" share-options="depthy.share" ga="['send', 'event', 'depthy', 'share', 'twitter']"><i class="icon icon-twitter"></i></div>
+          <div class="btn btn-icon btn-facebook" share-popup="facebook" share-options="depthy.share" ga="['send', 'event', 'depthy', 'share', 'facebook']"><i class="icon icon-facebook"></i></div>
+          <div class="btn btn-icon btn-google" share-popup="google" share-options="depthy.share" ga="['send', 'event', 'depthy', 'share', 'google']"><i class="icon icon-googleplus"></i></div>
+        </div>
+        <div class="btn-group btn-group-shares btn-group-justified">
+          <div class="btn btn-sm btn-twitter" share-popup="twitter-follow" share-options="{name: 'staminapl'}" ga="['send', 'event', 'depthy', 'follow', 'twitter']"><i class="icon icon-twitter"></i>Follow</div>
+          <a class="btn btn-sm btn-google" href="https://plus.google.com/104689068982536734877" target="_blank" ga="['send', 'event', 'depthy', 'share', 'google']"><i class="icon icon-googleplus"></i>Follow</a>
+        </div>
+        
+      </section>
+      <section id="footer">
+        Depthy 0.2 created by <a href="http://www.stamina.pl/">Rafał Lindemann</a>.<br/>
+        Ideas? Issues? Code? It's open sourced on <a href="https://github.com/panrafal/depthy">GitHub</a>!
+      </section >
+    </div>
   </div>
 
 

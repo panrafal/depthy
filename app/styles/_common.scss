@@ -133,6 +133,10 @@ p a {
 
 .center-block {
   float: none;
+
+  &.btn-group {
+    overflow: hidden;
+  }
 }
 
 
@@ -204,7 +208,11 @@ p a {
 
 .btn-group-shares {
   .btn + .btn {
-    margin-left: $border-width;
+    margin-left: $padding-base-horizontal;
+  }
+
+  &.btn-group-justified {
+    border-spacing: $padding-base-horizontal 0px;
   }
 }
 
@@ -251,6 +259,10 @@ p a {
 .link {
   text-decoration: underline;
   cursor: pointer;
+}
+
+.lead {
+  font-size: $font-size-large !important;
 }
 
 // ------------------------------------------------------ components
@@ -490,6 +502,10 @@ logo {
     }
   }
 
+  @media #{$media-full} {
+    margin-left: remify($leftpane-width / 2);
+  }
+
 }
 
 
@@ -623,3 +639,11 @@ logo {
     bottom: 0px;
   }
 }
+
+
+@media #{$media-full} {
+  .modal-backdrop, .modal {
+    left: remify($leftpane-width);
+  }
+}
+
