@@ -125,6 +125,9 @@ angular.module('depthyApp').provider('depthy', function depthy() {
       isFullLayout: function() {
         return $window.innerWidth >= 1200;
       },
+      isOffline: function() {
+        return navigator.onLine === false;
+      },
 
       getViewerCtrl: function() {
         if (!this._viewerCtrl) {

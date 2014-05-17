@@ -156,6 +156,9 @@
     transform: translateX(-100%) translateX(-20px);
   }
 
+  .alert {
+    margin: 0;
+  }
 
   @media #{$media-full} {
     transform: translate3d(0, 0, 0);

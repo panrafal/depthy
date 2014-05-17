@@ -158,4 +158,8 @@ angular.module('depthyApp')
   });
   $($window).resize();
 
+  $($window).on('online offline', function() {
+    $scope.$safeApply();
+  });
+
 });

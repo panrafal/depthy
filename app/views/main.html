@@ -3,6 +3,7 @@
     'leftpane-opened': depthy.isLeftpaneOpened() === true, 
     'leftpane-gallery': depthy.isLeftpaneOpened() === 'gallery', 
     'zen-mode': depthy.zenMode,
+    'offline': depthy.isOffline(),
     'depthy-ready': depthy.isReady(),
     'depthy-loading': depthy.isLoading()}"
   ng-swipe-right="depthy.leftpaneOpen()"
@@ -48,6 +49,10 @@
         Depthy 0.2 created by <a href="http://www.stamina.pl/">Rafał Lindemann</a>.<br/>
         Ideas? Issues? Code? It's open sourced on <a href="https://github.com/panrafal/depthy">GitHub</a>!
       </section >
+      <section class="alert alert-warning alert-icon anim-expand" ng-if="depthy.isOffline()">
+        <i class="icon icon-powercord"></i>
+        You're working offline.<br/>Some feature may not be available!
+      </section>
     </div>
   </div>
 
