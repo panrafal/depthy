@@ -397,6 +397,35 @@ module.exports = function (grunt) {
     //   dist: {}
     // },
 
+    manifest: {
+      generate: {
+        options: {
+          basePath: '<%= yeoman.dist %>/',
+          cache: [
+            'http://fonts.googleapis.com/css?family=Roboto+Condensed:400,700',
+            'http://www.google-analytics.com/analytics.js'
+          ],
+          network: ['http://*', 'https://*', '*'],
+          // fallback: ['/ /offline.html'],
+          exclude: ['js/jquery.min.js'],
+          preferOnline: true,
+          verbose: true,
+          timestamp: true,
+          hash: true,
+          master: ['index.html']
+        },
+        src: [
+          'bower_components/gif.js/dist/*.*',
+          'scripts/**/*.*',
+          'styles/**/*.*',
+          'images/**/*.*',
+          'samples/*.*',
+          'favicon.png'
+        ],
+        dest: '<%= yeoman.dist %>/manifest.appcache'
+      }
+    },
+
     // Test settings
     karma: {
       unit: {
@@ -449,7 +478,8 @@ module.exports = function (grunt) {
     'uglify',
     'rev',
     'usemin',
-    'htmlmin'
+    'htmlmin',
+    'manifest'
   ]);
 
   grunt.registerTask('default', [
