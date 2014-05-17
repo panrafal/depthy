@@ -25,6 +25,11 @@ angular.module('depthyApp')
     // depthy.leftpaneOpen(true);
   };
 
+  $scope.openImage = function(image) {
+    $state.go(image.state, image.stateParams);
+    // depthy.leftpaneOpen(true);
+  };
+
   $scope.animateOption = function(obj, option, duration) {
     $(obj).animate(option, {
       duration: duration || 250,
@@ -67,7 +72,7 @@ angular.module('depthyApp')
       if ($scope.activePopup.state === state) $scope.activePopup = null;
     });
     return $scope.activePopup;
-  }
+  };
 
   $scope.imageOptions = function() {
     $scope.openPopup('image.options');
@@ -91,7 +96,7 @@ angular.module('depthyApp')
     
     $scope.openPopup('export.gif.options').promise.finally(function() {
       depthy.viewer.animate = oldAnimate;
-    })
+    });
 
   };
 

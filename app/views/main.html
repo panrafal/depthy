@@ -30,7 +30,7 @@
       </section>
       <section id="gallery">
         <ul>
-          <li class="" ng-repeat="(id, title) in depthy.samples" ng-style="{'background-image':'url(samples/'+id+'-thumb.jpg)'}" ng-click="loadSample(id)"></li>
+          <li class="" ng-repeat="image in depthy.gallery" ng-style="{'background-image':'url('+image.thumb+')'}" ng-click="openImage(image)"></li>
         </ul>
       </section>
       <section class="text-center" id="share">

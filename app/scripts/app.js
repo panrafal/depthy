@@ -47,7 +47,8 @@ angular.module('depthyApp', [
     url: '/ip/:id',
     controller: ['$stateParams', '$state', 'depthy', function ($stateParams, $state, depthy) {
       depthy.loadUrlDirectImage('http://i.imgur.com/' + $stateParams.id + '.png', true, {
-        shareUrl: depthy.rootShareUrl + $state.href('imgur', {id: $stateParams.id}),
+        state: 'imgur',
+        stateParams: {id: $stateParams.id},
         thumb: 'http://i.imgur.com/' + $stateParams.id + 'm.jpg',
         storeUrl: 'http://imgur.com/' + $stateParams.id,
         store: depthy.stores.imgur
@@ -57,21 +58,33 @@ angular.module('depthyApp', [
   .state('imgur2', {
     url: '/ii/:id',
     controller: ['$stateParams', 'depthy', function ($stateParams, depthy) {
-      depthy.loadUrlImage('http://i.imgur.com/' + $stateParams.id + '.png');
+      depthy.loadUrlImage('http://i.imgur.com/' + $stateParams.id + '.png', {
+        state: 'imgur2',
+        stateParams: {id: $stateParams.id},
+        thumb: 'http://i.imgur.com/' + $stateParams.id + 'm.jpg',
+        storeUrl: 'http://imgur.com/' + $stateParams.id,
+        store: depthy.stores.imgur
+      });
     }]
   })
   .state('url-png', {
     url: '/up?url',
     controller: ['$stateParams', '$state', 'depthy', function ($stateParams, $state, depthy) {
       depthy.loadUrlDirectImage($stateParams.url, true, {
-        thumb: $stateParams.url,
+        state: 'url-png',
+        stateParams: {url: $stateParams.url},
+        // thumb: $stateParams.url,
       });
     }]
   })
   .state('url-auto', {
     url: '/u?url',
     controller: ['$stateParams', '$state', 'depthy', function ($stateParams, $state, depthy) {
-      depthy.loadUrlImage($stateParams.url);
+      depthy.loadUrlImage($stateParams.url, {
+        state: 'url-auto',
+        stateParams: {url: $stateParams.url},
+        // thumb: $stateParams.url,
+      });
     }]
   })
   // hollow state for locally loaded files

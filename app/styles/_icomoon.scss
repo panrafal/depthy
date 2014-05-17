@@ -1,7 +1,7 @@
 @font-face {
 	font-family: 'icomoon';
 	src:url('fonts/icomoon.eot');
-	src:url('fonts/icomoon.eot?#iefix-wgd26s') format('embedded-opentype'),
+	src:url('fonts/icomoon.eot?#iefix-apqk5n') format('embedded-opentype'),
 		url('fonts/icomoon.woff') format('woff'),
 		url('fonts/icomoon.ttf') format('truetype'),
 		url('fonts/icomoon.svg#icomoon') format('svg');
@@ -33,15 +33,6 @@
 
 .icon-warning:before {
 	content: "\e609";
-}
-.icon-navicon-dense:before {
-	content: "\e60a";
-}
-.icon-navicon-thin:before {
-	content: "\e60d";
-}
-.icon-navicon:before {
-	content: "\e620";
 }
 .icon-navicon-bold:before {
 	content: "\e621";
@@ -100,11 +91,23 @@
 .icon-settings:before {
 	content: "\e618";
 }
+.icon-trophy:before {
+	content: "\e60a";
+}
+.icon-meter:before {
+	content: "\e607";
+}
 .icon-remove:before {
 	content: "\e619";
 }
+.icon-powercord:before {
+	content: "\e626";
+}
 .icon-cloud:before {
 	content: "\e627";
+}
+.icon-link:before {
+	content: "\e62a";
 }
 .icon-eye:before {
 	content: "\e624";
@@ -114,6 +117,9 @@
 }
 .icon-info:before {
 	content: "\e625";
+}
+.icon-error:before {
+	content: "\e62b";
 }
 .icon-loop:before {
 	content: "\e60c";
@@ -130,13 +136,16 @@
 .icon-github:before {
 	content: "\e622";
 }
+.icon-reddit:before {
+	content: "\e62c";
+}
+.icon-pinterest:before {
+	content: "\e62d";
+}
 .icon-yes:before {
 	content: "\e600";
 }
 .icon-no:before {
-	content: "\e601";
-}
-.icon-error:before {
 	content: "\e601";
 }
 .icon-setup:before {
@@ -144,9 +153,6 @@
 }
 .icon-movie:before {
 	content: "\e605";
-}
-.icon-link:before {
-	content: "\e607";
 }
 .icon-loop-circle:before {
 	content: "\e603";
