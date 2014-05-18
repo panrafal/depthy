@@ -57,7 +57,7 @@ angular.module('depthyApp').provider('depthy', function depthy() {
 
         // true if it's shareable directly
         isShareable: function() {
-          return self.sample && self.url && !self.local;
+          return self.sample || self.url && !self.local;
         },
         isStoreable: function() {
           return self.isShareable();
@@ -188,7 +188,12 @@ angular.module('depthyApp').provider('depthy', function depthy() {
     }
 
     var storeImageHistory = _.throttle(function storeImageHistory() {
-      console.log('storeImageHistory', history);
+      var store = history.filter(function(image) {
+        return image.isStoreable();
+      }).map(function(image) {
+        return _.pick(image, ['state', 'stateParams', 'title', 'thumb', 'added', 'viewed', 'views', 'storeKey']);
+      });
+      console.log('storeImageHistory', history, store);
 
     }, 500, {leading: false});
 
