@@ -41,7 +41,7 @@ angular.module('depthyApp')
         depthy.opened.createShareImage({
           state: 'imgur',
           stateParams: {id: id},
-          thumb: 'https://i.imgur.com/' + id + 'm.jpg',
+          thumb: 'https://i.imgur.com/' + id + 's.jpg',
           store: depthy.stores.imgur,
           storeUrl: 'https://imgur.com/' + id,
           storeKey: deleteHash

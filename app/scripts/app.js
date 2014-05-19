@@ -49,7 +49,7 @@ angular.module('depthyApp', [
       depthy.loadUrlDirectImage('http://i.imgur.com/' + $stateParams.id + '.png', true, {
         state: 'imgur',
         stateParams: {id: $stateParams.id},
-        thumb: 'http://i.imgur.com/' + $stateParams.id + 'm.jpg',
+        thumb: 'http://i.imgur.com/' + $stateParams.id + 's.jpg',
         storeUrl: 'http://imgur.com/' + $stateParams.id,
         store: depthy.stores.imgur
       });

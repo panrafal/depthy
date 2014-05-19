@@ -132,10 +132,18 @@ angular.module('depthyApp').provider('depthy', function depthy() {
           this.onViewed();
         },
         onViewed: function() {
+          if (!self.thumb) {
+            depthy.getViewer().exportThumbnail({width: 75, height: 75}, 0.8).then(function(url) {
+              self.thumb = url;
+              console.log('Thumbnail generated %db', url.length);
+              $rootScope.$safeApply();
+            });            
+          }
           self.viewed = new Date().getTime();
           self.views += 1;
           updateImageGallery();
           storeImageHistory();
+          $rootScope.$safeApply();
         },
         onClosed: function() {
           // cleanup a bit

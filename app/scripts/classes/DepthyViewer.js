@@ -703,6 +703,38 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
       );
     };
 
+
+    /** Exports thumbnail as JPG file. Returns promise */
+    this.exportThumbnail = function(size, quality) {
+      size = size || {width: 50, height: 50};
+      return this.getPromise().then(
+        function() {
+          var localstage = new PIXI.Stage(),
+              scale = sizeFitScale(image.size, size, true),
+              localrenderer = new PIXI.WebGLRenderer(size.width, size.height, null, false, true);
+
+          var imageSprite = new PIXI.Sprite(image.texture);
+          imageSprite.scale = new PIXI.Point(scale, scale);
+          localstage.addChild(imageSprite);
+
+          // discard alpha channel
+          imageSprite.filters = [createDiscardAlphaFilter()];
+
+          localrenderer.render(localstage);
+          var dataUrl = localrenderer.view.toDataURL('image/jpeg', quality);
+
+          try {
+            localrenderer.destroy();
+          } catch(e) {
+            console.error('Render destroy error', e);
+          }
+          return dataUrl;
+        }
+      );
+    };
+
+
+
     this.isReady = isReady;
 
     // STARTUP
