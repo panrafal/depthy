@@ -7,7 +7,8 @@ angular.module('depthyApp')
   $timeout(function() {
     depthy.getViewer().exportToPNG(null).then(
       function(url) {
-        
+        // shorten this!
+        url = URL.createObjectURL(depthy.dataURItoBlob(url));
         var img = angular.element('img[image-source="export-png-modal"]')[0];
         img.onload = function() {
           $scope.loading = false;
