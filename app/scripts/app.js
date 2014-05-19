@@ -90,6 +90,7 @@ angular.module('depthyApp', [
   // hollow state for locally loaded files
   .state('local', {
     url: '/local/:id',
+    hollow: true,
     controller: ['$stateParams', 'depthy', function($stateParams, depthy) {
       depthy.loadLocalImage($stateParams.id);
     }]

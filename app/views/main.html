@@ -17,6 +17,7 @@
 
   <div id="leftpane">
     <div class="scroll">
+
       <section id="about">
         <header>
           <logo ng-click="depthy.leftpaneClose()"></logo>
@@ -28,11 +29,13 @@
           <div class="button-open btn btn-lg btn-success center-block margin-lg" ng-click="selectFile($event)"><i class="icon" ng-class="depthy.isLoading() ? 'icon-loading' : 'icon-open'"></i>Open photo</div>
         </article>
       </section>
+
       <section id="gallery">
         <ul>
-          <li class="" ng-repeat="image in depthy.gallery" ng-style="{'background-image':'url('+image.thumb+')'}" ng-click="openImage(image)"></li>
+          <li class="" ng-repeat="image in depthy.gallery" ng-style="{'background-image':'url('+image.thumb+')'}" ng-click="openImage(image)" ng-class="'type-' + image.getType()"></li>
         </ul>
       </section>
+
       <section class="text-center" id="share">
         <div class="btn-group btn-group-shares btn-group-justified">
           <div class="btn btn-icon btn-twitter" share-popup="twitter" share-options="depthy.share" ga="['send', 'event', 'depthy', 'share', 'twitter']"><i class="icon icon-twitter"></i></div>
@@ -43,12 +46,13 @@
           <div class="btn btn-sm btn-twitter" share-popup="twitter-follow" share-options="{name: 'staminapl'}" ga="['send', 'event', 'depthy', 'follow', 'twitter']"><i class="icon icon-twitter"></i>Follow</div>
           <a class="btn btn-sm btn-google" href="https://plus.google.com/104689068982536734877" target="_blank" ga="['send', 'event', 'depthy', 'share', 'google']"><i class="icon icon-googleplus"></i>Follow</a>
         </div>
-        
       </section>
+
       <section id="footer">
         Depthy 0.2 created by <a href="http://www.stamina.pl/">Rafał Lindemann</a>.<br/>
         Ideas? Issues? Code? It's open sourced on <a href="https://github.com/panrafal/depthy">GitHub</a>!
       </section >
+
       <section class="alert alert-warning alert-icon anim-expand" ng-if="depthy.isOffline()">
         <i class="icon icon-powercord"></i>
         You're working offline.<br/>Some feature may not be available!

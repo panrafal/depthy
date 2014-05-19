@@ -210,11 +210,34 @@
     float: left;
     background-position: 50% 50%;
     background-size: cover;
+    position: relative;
 
     &:after {
       content: '';
       display: block;
       padding-top: 100%;
+    }
+
+    &:before {
+      @extend .icon;
+      position: absolute;
+      right: 6px;
+      bottom: 6px;
+      text-shadow: 0px 0px 1px fade-out(#000, 0.2);
+      font-size: 12px;
+    }
+
+    &.type-shared {
+      @extend .icon-share;
+    }
+    &.type-local {
+      @extend .icon-open;
+    }
+    &.type-remote {
+      @extend .icon-link;
+    }
+    &.type-modified {
+      @extend .icon-draw;
     }
   }
 
@@ -234,6 +257,7 @@
       transform: translateX(100%);      
     }
   }
+
   
 
 }

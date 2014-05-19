@@ -715,6 +715,8 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
 
           var imageSprite = new PIXI.Sprite(image.texture);
           imageSprite.scale = new PIXI.Point(scale, scale);
+          imageSprite.anchor = {x: 0.5, y: 0.5};
+          imageSprite.position = {x: size.width / 2, y: size.height / 2};
           localstage.addChild(imageSprite);
 
           // discard alpha channel

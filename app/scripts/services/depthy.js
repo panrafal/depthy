@@ -93,9 +93,9 @@ angular.module('depthyApp').provider('depthy', function depthy() {
         },
         // returns the type
         getType: function() {
+          if (self.isLocal()) return 'local';
           if (self.isModified()) return 'modified';
           if (self.isShared()) return 'shared';
-          if (self.isLocal()) return 'local';
           if (self.isSample()) return 'sample';
           if (self.isRemote()) return 'remote';
           return 'unknown';
@@ -440,7 +440,7 @@ angular.module('depthyApp').provider('depthy', function depthy() {
 
         if (!file) {
           deferred.reject('Can\'t open this image anymore');
-        } else if (file.type !== 'image/jpeg' && file.type !== 'image/png') {
+        } else if (file.type && file.type !== 'image/jpeg' && file.type !== 'image/png') {
           deferred.reject('Only JPEG and PNG, please!');
         } else {
           var reader = new FileReader();
@@ -546,7 +546,7 @@ angular.module('depthyApp').provider('depthy', function depthy() {
           return depthy.refreshOpenedImage();
 
         } else {
-          $q.reject('JPG required!');
+          $q.reject('Only JPEG and PNG, please!');
         }
       },
 
@@ -693,6 +693,10 @@ angular.module('depthyApp').provider('depthy', function depthy() {
 
       zenModeToggle: function() {
         if (depthy.leftpaneOpened !== 'gallery') depthy.leftpaneClose();
+        if (!depthy.isReady() || !depthy.hasCompleteImage()) {
+          depthy.zenMode = false;
+          return;
+        }
         depthy.zenMode = !depthy.zenMode;
       },
 
