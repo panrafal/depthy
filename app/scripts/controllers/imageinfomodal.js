@@ -13,7 +13,7 @@ angular.module('depthyApp')
         img.onload = function() {
           --$scope.loading;
           $scope.$safeApply();
-        }
+        };
         img.src = url;
       });
     } else --$scope.loading;
@@ -22,8 +22,8 @@ angular.module('depthyApp')
       img.onload = function() {
         --$scope.loading;
         $scope.$safeApply();
-      }
-      img.src = depthy.opened.originalUrl;
+      };
+      img.src = depthy.opened.originalSource;
     } else --$scope.loading;
   }, depthy.modalWait);
 

@@ -346,6 +346,7 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
       if (renderer && (renderer.width !== stageSize.width || renderer.height !== stageSize.height)) {
         renderer.resize(stageSize.width, stageSize.height);
         image.dirty = depth.dirty = true;
+        stageDirty = true;
       }
 
       sizeDirty = false;

@@ -13,27 +13,32 @@ angular.module('depthyApp').provider('depthy', function depthy() {
     var leftpaneDeferred, depthy,
       history = [];
 
+    function isImageInfo(info) {
+      return info && info.isShareable && info.isStoreable;
+    }
+
     function createImageInfo(info) {
 
       var self = angular.extend({
-        imageUrl: null,
-        depthUrl: null,
-        originalUrl: null,
+        imageSource: null,
+        depthSource: null,
+        depthUsesAlpha: false,
+        originalSource: null,
 
         // state it was opened from
         state: null,
         stateParams: null,
 
         // True if waiting for results
-        loading: true,
+        loading: false,
         // loaded from this url
-        url: null,
+        url: undefined,
         // TRUE if local file
-        local: false,
+        local: undefined,
          // image was parsed
-        parsed: false,
+        parsed: undefined,
         // id of local sample
-        sample: false,
+        sample: undefined,
         // 
         title: false,
         // thumbnail url
@@ -45,8 +50,6 @@ angular.module('depthyApp').provider('depthy', function depthy() {
         // store secret key, if any
         storeKey: false,
 
-        // in history
-        peristed: false,
         // time when first added to history
         added: false,
         // time last viewed
@@ -57,20 +60,28 @@ angular.module('depthyApp').provider('depthy', function depthy() {
 
         // true if it's shareable directly
         isShareable: function() {
-          return self.sample || self.url && !self.local;
+          return self.state && !self.local;
         },
         isStoreable: function() {
-          return self.isShareable();
+          return self.isShareable() && self.isConfirmed() && self.thumb && self.thumb.length < 500;
         },
         isEmpty: function() {
-          return !(self.url || self.local || self.sample || self.procesing);
+          return !(self.url || self.local || self.sample || self.procesing) || self.empty;
         },
         isOpened: function() {
           return depthy.opened === self;
         },
+        // returns true for images that loaded successfully in the past
+        isConfirmed: function() {
+          return self.viewed || self.sample && self.thumb;
+        },
         getStateUrl: function() {
           if (!self.state) return false;
           return $state.href(self.state, self.stateParams || {});
+        },
+        openState: function() {
+          if (!self.state) throw 'No state to go to';
+          $state.go(self.state, self.stateParams);
         },
         // returns shareUrl
         getShareUrl: function(followShares) {
@@ -95,10 +106,12 @@ angular.module('depthyApp').provider('depthy', function depthy() {
             title: self.title,
             thumb: self.thumb,
           }, info);
-          var share = populateImageHistory(info, true);
+          var share = lookupImageHistory(info);
+          storeImageHistory();
+          updateImageGallery();
           return share;
         },
-        markModified: function() {
+        markAsModified: function() {
           // self.shareUrl = self.store = self.storeUrl = false;
           // it's no longer shared here!
           self.sharedAs = null;
@@ -121,92 +134,137 @@ angular.module('depthyApp').provider('depthy', function depthy() {
         onViewed: function() {
           self.viewed = new Date().getTime();
           self.views += 1;
-          self.storeHistory(true);
-        },
-        storeHistory: function(update) {
-          if (!self.peristed) {
-            self.peristed = true;
-            self.added = new Date().getTime();
-            history.push(self);
-            if (update) updateImageGallery();
-          }
-          if (update) storeImageHistory();
+          updateImageGallery();
+          storeImageHistory();
         },
         onClosed: function() {
           // cleanup a bit
-          self.imageUrl = self.depthUrl = self.originalUrl = self.loading = false;
+          if (!self.sample && !self.modified) {
+            self.imageSource = self.depthSource = self.originalSource = self.depthUsesAlpha = false;
+          }
+          self.loading = false;
+        },
+        addToHistory: function() {
+          if (history.indexOf(self) < 0) {
+            if (self.added === false) self.added = new Date().getTime();
+            history.push(self);
+          }
+        },
+        removeFromHistory: function() {
+          _.remove(history, function(a) {return a === self;});
+        },
+        // tries to reopen this image if it has minimum set of info. Returns promise on success
+        tryToReopen: function() {
+          if (self.isOpened()) return depthy.getReadyPromise();
+          // imageSource is enough to open
+          if (!self.imageSource) return false;
+          console.log('%cReopening image: %o', 'font-weight: bold', self);
+          openImage(self);
+          depthy.getViewer().setDepthmap(self.depthSource, self.depthUsesAlpha);
+          return depthy.refreshOpenedImage()
+          // .catch(function() {
+          //  self.error = 'Image could not be reopened!';
+          // })
+          .finally(self.onOpened);
         }
       }, info || {});
       return self;
     }
 
-    function lookupImageHistory(info, create) {
+    /* @param info - image info to lookup
+       @param createMode - truey creates missing image, 'extend' extends existing, otherwise defaults existing */
+    function lookupImageHistory(info, createMode) {
       var image;
-      if (info && info.state) {
+      if (isImageInfo(info)) return info;
+      if (info.state) {
         if (info.state === true) {
           info.state = $state.current.name;
           info.stateParams = $state.params;
-          console.log('lookupImageHistory state detected as ', info.state, info.stateParams);
+          // console.log('lookupImageHistory state detected as ', info.state, info.stateParams);
         }
         image = _.find(history, {state: info.state, stateParams: info.stateParams});
-        console.log('%cFound %o in history when looking for %o', 'font-weight:bold', image, info);
+        // console.log('%cFound %o in history when looking for %o', 'font-weight:bold', image, info);
       }
-      return (image && angular.extend(image, info)) || (create && createImageInfo(info));
-    }
-
-    function populateImageHistory(info, update) {
-      var image = lookupImageHistory(info, true);
-      image.storeHistory(update);
+      if (image) {
+        _[createMode === 'extend' ? 'extend' : 'defaults'](image, info);
+      } else if (createMode) {
+        image = createImageInfo(info);
+        if (image.state) image.addToHistory();
+      }
       return image;
     }
 
     // used internally
-    function openImage(info, stateInfo) {
-      if (info) {
+    function prepareImage(info, extraInfo) {
+      if (extraInfo) info = angular.extend(info, extraInfo);
+      var opened = lookupImageHistory(info, 'extend');
+      return opened;
+    }
+
+    function openImage(image) {
+      if (image.isOpened()) return image;
+      if (depthy.opened) {
+        depthy.opened.onClosed();
         depthy.getViewer().reset();
-      } else {
-        info = {};
       }
-      if (stateInfo) info = angular.extend({}, info, stateInfo);
-
-      if (depthy.opened) depthy.opened.onClosed();
-
-      depthy.opened = lookupImageHistory(info, true);
+      image.loading = true;
+      depthy.opened = image;
       return depthy.opened;
     }
 
     function updateImageGallery() {
       console.log('updateImageGallery');
       var gallery = _.filter(history, function(image) {
-        return true; //!!image.thumb;
+        return image.isConfirmed();
       });
+
       gallery.sort(function(a, b) {
         if (a.added === b.added) return 0;
         return a.added > b.added ? -1 : 1;
       });
+
       depthy.gallery = gallery;
     }
 
     var storeImageHistory = _.throttle(function storeImageHistory() {
+      if (!Modernizr.localstorage) return;
+
       var store = history.filter(function(image) {
         return image.isStoreable();
       }).map(function(image) {
         return _.pick(image, ['state', 'stateParams', 'title', 'thumb', 'added', 'viewed', 'views', 'storeKey']);
       });
+
       console.log('storeImageHistory', history, store);
+      window.localStorage.setItem('history', JSON.stringify(store));
 
     }, 500, {leading: false});
 
     function restoreImageHistory() {
       // recreate samples
-      _.forEach(depthy.samples, function(title, name) {
-        populateImageHistory({
+      depthy.samples.forEach(function(sample) {
+        lookupImageHistory({
           state: 'sample',
-          stateParams: {id: name},
-          sample: name,
-          title: name,
-          thumb: 'samples/'+name+'-thumb.jpg',
-        });
+          stateParams: {id: sample.id},
+          sample: sample.id,
+          title: sample.title,
+          thumb: 'samples/' + sample.id + '-thumb.jpg',
+          imageSource: 'samples/' + sample.id + '-image.jpg',
+          depthSource: 'samples/' + sample.id + '-depth.jpg',
+          originalSource: 'samples/' + sample.id + '-alternative.jpg',
+          added: 0,
+        }, true);
+      });
+
+      // read history
+      if (!Modernizr.localstorage) return;
+      var stored = JSON.parse(localStorage.getItem('history') || 'null');
+      if (!angular.isObject(stored)) return;
+      console.log('restoreImageHistory', stored);
+      stored.forEach(function(image) {
+        // don't recreate non existing samples... default the rest.
+        image = lookupImageHistory(image, image.state === 'sample' ? false : 'default');
+        if (image && !image.isStoreable()) image.removeFromHistory();
       });
     }
 
@@ -238,13 +296,13 @@ angular.module('depthyApp').provider('depthy', function depthy() {
 
       gallery: [],
 
-      samples: {
-        flowers: 'flowers',
-        hut: 'hut',
-        shelf: 'shelf',
-        mango: 'mango',
-        tunnel: 'tunnel',
-      },
+      samples: [
+        { id: 'flowers', title: 'Flowers'},
+        { id: 'hut', title: 'Hut'},
+        { id: 'shelf', title: 'Shelf'},
+        { id: 'mango', title: 'Mango'},
+        { id: 'tunnel', title: 'Tunnel'},
+      ],
 
 
       stores: {
@@ -266,7 +324,7 @@ angular.module('depthyApp').provider('depthy', function depthy() {
         return this.getViewer().hasDepthmap();
       },
       hasOriginalImage: function() {
-        return !!this.opened.originalUrl;
+        return !!this.opened.originalSource;
       },
       hasCompleteImage: function() {
         return this.hasImage() && this.hasDepthmap();
@@ -299,41 +357,53 @@ angular.module('depthyApp').provider('depthy', function depthy() {
       // sets proper image according to opened image and useOriginalImage setting
       refreshOpenedImage: function() {
         var opened = this.opened;
-        this.getViewer().setImage((depthy.useOriginalImage ? opened.originalUrl : opened.imageUrl) || opened.imageUrl);
+        this.getViewer().setImage((depthy.useOriginalImage ? opened.originalSource : opened.imageSource) || opened.imageSource);
+        return this.getReadyPromise();
+      },
+
+      getReadyPromise: function() {
         return $q.when(depthy.getViewer().getPromise());
       },
 
-      loadSampleImage: function(name, openedInfo) {
-        if (depthy.opened.sample === name && !depthy.opened.modified) return;
-        var opened = openImage({
+      loadImage: function(image) {
+        var opened = prepareImage(image);
+        if (opened.tryToReopen()) return this.getReadyPromise();
+        return $q.reject('Image can\'t be loaded!');
+      },
+
+      loadSampleImage: function(name) {
+        // samples are already defined, can be only reopened
+        return this.loadImage({
           state: 'sample',
           stateParams: {id: name},
-          sample: name,
-          title: depthy.samples[name],
-          thumb: 'samples/'+name+'-thumb.jpg',
-          imageUrl: 'samples/'+name+'-image.jpg',
-          depthUrl: 'samples/'+name+'-depth.jpg',
-          originalUrl: 'samples/'+name+'-alternative.jpg',
-        }, openedInfo);
-        depthy.getViewer().setDepthmap(opened.depthUrl);
-        return depthy.refreshOpenedImage()
-          .catch(function() {
-            opened.error = 'Sample not found!';
-          })
-          .finally(opened.onOpened);
+        });
       },
 
       loadLocalImage: function(file) {
 
-        var opened = openImage({
+        var fileId = _.isObject(file) ? new Date().getTime() + '' : file,
+        opened = prepareImage({
+          state: 'local',
+          stateParams: {id: fileId},
           local: true,
           parsed: true,
-          title: (file.name || '').replace(/\.(jpe?g|png)$/i, ''),
         });
+        if (opened.tryToReopen()) return this.getReadyPromise();
+        openImage(opened);
+
+        if (_.isObject(file)) {
+          opened.title = (file.name || '').replace(/\.(jpe?g|png)$/i, '');
+          opened.imageFile = file;
+        } else {
+          file = opened.imageFile;
+          console.log('Reopening old file', file);
+        }
 
         var deferred = $q.defer();
 
-        if (file.type !== 'image/jpeg' && file.type !== 'image/png') {
+        if (!file) {
+          deferred.reject('Can\'t open this image anymore');
+        } else if (file.type !== 'image/jpeg' && file.type !== 'image/png') {
           deferred.reject('Only JPEG and PNG, please!');
         } else {
           var reader = new FileReader();
@@ -354,12 +424,12 @@ angular.module('depthyApp').provider('depthy', function depthy() {
       },
 
       loadUrlImage: function(url, openedInfo) {
-        if (depthy.opened.url === url) return;
-
-        var opened = openImage({
+        var opened = prepareImage({
           url: url,
           parsed: true,
         }, openedInfo);
+        if (opened.tryToReopen()) return this.getReadyPromise();
+        openImage(opened);
 
         var xhr = new XMLHttpRequest(),
             deferred = $q.defer();
@@ -386,15 +456,16 @@ angular.module('depthyApp').provider('depthy', function depthy() {
 
 
       loadUrlDirectImage: function(url, isPng, openedInfo) {
-        if (depthy.opened.url === url) return $q.resolve();
-
-        var opened = openImage({
+        var opened = prepareImage({
           url: url,
-          imageUrl: url,
-          depthUrl: isPng ? url : false,
+          imageSource: url,
+          depthSource: isPng ? url : false,
+          depthUsesAlpha: isPng,
         }, openedInfo);
+        if (opened.tryToReopen()) return this.getReadyPromise();
+        openImage(opened);
 
-        this.getViewer().setDepthmap(opened.depthUrl, isPng);
+        this.getViewer().setDepthmap(opened.depthSource, isPng);
         return depthy.refreshOpenedImage()
           .catch(function(err) {
             opened.error = angular.isString(err) ? err : 'Image not found!';
@@ -411,10 +482,10 @@ angular.module('depthyApp').provider('depthy', function depthy() {
           var result = function(error) {
             // no matter what, we use it...
             console.log('DepthExtractor result', error);
-            opened.imageUrl = URL.createObjectURL( new Blob([buffer], {type: 'image/jpeg'}) );
-            opened.depthUrl = reader.depth.data ? 'data:' + reader.depth.mime + ';base64,' + reader.depth.data : false;
-            opened.originalUrl = reader.image.data ? 'data:' + reader.image.mime + ';base64,' + reader.image.data : false;
-            depthy.getViewer().setDepthmap(opened.depthUrl);
+            opened.imageSource = URL.createObjectURL( new Blob([buffer], {type: 'image/jpeg'}) );
+            opened.depthSource = reader.depth.data ? 'data:' + reader.depth.mime + ';base64,' + reader.depth.data : false;
+            opened.originalSource = reader.image.data ? 'data:' + reader.image.mime + ';base64,' + reader.image.data : false;
+            depthy.getViewer().setDepthmap(opened.depthSource);
             deferred.resolve(depthy.refreshOpenedImage());
           };
 
@@ -429,11 +500,12 @@ angular.module('depthyApp').provider('depthy', function depthy() {
               imageSource = URL.createObjectURL( new Blob([buffer], {type: 'image/jpeg'}) );
           console.log('PNG depth %d colorType %d transparent %s', bitDepth, colorType, isTransparent);
 
-          opened.imageUrl = imageSource;
-          opened.depthUrl = isTransparent ? imageSource : false;
-          opened.originalUrl = false;
+          opened.imageSource = imageSource;
+          opened.depthSource = isTransparent ? imageSource : false;
+          opened.depthUsesAlpha = isTransparent;
+          opened.originalSource = false;
 
-          depthy.getViewer().setDepthmap(opened.depthUrl, isTransparent);
+          depthy.getViewer().setDepthmap(opened.depthSource, isTransparent);
           return depthy.refreshOpenedImage();
 
         } else {
@@ -455,9 +527,11 @@ angular.module('depthyApp').provider('depthy', function depthy() {
               var depthReader = new DepthReader();
               opened.loading = true;
               var result = function() {
-                depthy.getViewer().setDepthmap(depthReader.depth.data ?
+                opened.depthSource = depthReader.depth.data ?
                     'data:' + depthReader.depth.mime + ';base64,' + depthReader.depth.data :
-                    URL.createObjectURL( new Blob([buffer], {type: 'image/jpeg'})));
+                    URL.createObjectURL( new Blob([buffer], {type: 'image/jpeg'}));
+                opened.depthUsesAlpha = false;
+                depthy.getViewer().setDepthmap(opened.depthSource);
                 deferred.resolve(depthy.getViewer().getPromise());
                 deferred.promise.finally(opened.onDepthmapOpened);
               };
@@ -468,14 +542,16 @@ angular.module('depthyApp').provider('depthy', function depthy() {
           reader.readAsArrayBuffer(file);
         } else if (file.type === 'image/png') {
           opened.loading = true;
-          depthy.getViewer().setDepthmap(URL.createObjectURL( file ));
+          opened.depthSource = URL.createObjectURL( file );
+          opened.depthUsesAlpha = false;
+          depthy.getViewer().setDepthmap(opened.depthSource);
           deferred.resolve(depthy.getViewer().getPromise());
           deferred.promise.finally(opened.onDepthmapOpened);
         } else {
           deferred.reject('Only JPEG and PNG files are supported!');
         }
         deferred.promise.finally(function() {
-          opened.markModified();
+          opened.markAsModified();
         });
         return deferred.promise;
 
@@ -585,7 +661,8 @@ angular.module('depthyApp').provider('depthy', function depthy() {
 
     };
 
-    openImage();
+    openImage(createImageInfo({empty: true}));
+
     restoreImageHistory();
     updateImageGallery();
 

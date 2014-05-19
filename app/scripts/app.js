@@ -88,8 +88,11 @@ angular.module('depthyApp', [
     }]
   })
   // hollow state for locally loaded files
-  .state('file', {
-    url: '/file',
+  .state('local', {
+    url: '/local/:id',
+    controller: ['$stateParams', 'depthy', function($stateParams, depthy) {
+      depthy.loadLocalImage($stateParams.id);
+    }]
   })
   // hollow states for back button on alerts
   .state('alert', {

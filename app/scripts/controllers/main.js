@@ -44,11 +44,11 @@ angular.module('depthyApp')
 
   $scope.$watch('compoundFiles', function(files) {
     if (files && files.length) {
-      $state.go('file');
       depthy.loadLocalImage(files[0]).then(
         function() {
           ga('send', 'event', 'image', 'parsed', depthy.hasDepthmap() ? 'depthmap' : 'no-depthmap');
           depthy.leftpaneClose();
+          depthy.opened.openState();
         },
         function(e) {
           ga('send', 'event', 'image', 'error', e);
