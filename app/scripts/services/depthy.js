@@ -62,8 +62,12 @@ angular.module('depthyApp').provider('depthy', function depthy() {
         isShareable: function() {
           return self.state && !self.local;
         },
+        // true if it's a user's share
+        isShared: function() {
+          return !!self.storeKey;
+        },
         isStoreable: function() {
-          return self.isShareable() && self.isConfirmed() && self.thumb && self.thumb.length < 500;
+          return !!(self.isShareable() && self.isConfirmed() && self.thumb && self.thumb.length < 500);
         },
         isEmpty: function() {
           return !(self.url || self.local || self.sample || self.procesing) || self.empty;
@@ -73,7 +77,28 @@ angular.module('depthyApp').provider('depthy', function depthy() {
         },
         // returns true for images that loaded successfully in the past
         isConfirmed: function() {
-          return self.viewed || self.sample && self.thumb;
+          return self.viewed || self.sample || self.isShared() && self.thumb;
+        },
+        isLocal: function() {
+          return !!self.local;
+        },
+        isSample: function() {
+          return !!self.sample;
+        },
+        isRemote: function() {
+          return !!self.url;
+        },
+        isModified: function() {
+          return !!self.modified;
+        },
+        // returns the type
+        getType: function() {
+          if (self.isModified()) return 'modified';
+          if (self.isShared()) return 'shared';
+          if (self.isLocal()) return 'local';
+          if (self.isSample()) return 'sample';
+          if (self.isRemote()) return 'remote';
+          return 'unknown';
         },
         getStateUrl: function() {
           if (!self.state) return false;
@@ -85,19 +110,22 @@ angular.module('depthyApp').provider('depthy', function depthy() {
         },
         // returns shareUrl
         getShareUrl: function(followShares) {
-          if (self.sharedAs && followShares) return self.sharedAs.getShareUrl(false);
+          if (self.sharedAs && followShares !== false) return self.sharedAs.getShareUrl(false);
           if (!self.isShareable()) return false;
-          return self.getStateUrl();
+          return depthy.rootShareUrl + self.getStateUrl();
         },
         getShareInfo: function(followShares) {
-          if (self.sharedAs && followShares) return self.sharedAs.getShareInfo(false);
+          if (self.sharedAs && followShares !== false) return self.sharedAs.getShareInfo(false);
           var url = self.getShareUrl(false);
           if (!url) return null;
           return {
             url: url,
             title: (self.title ? self.title + ' ' : '') + '#depthy',
-            img: self.thumb,
+            img: self.thumb && (self.thumb.match(/^https?:/) ? self.thumb : depthy.rootShareUrl + self.thumb),
           };
+        },
+        getShareImage: function() {
+          return self.sharedAs || self;
         },
         // creates new image, based on this one, and sets it as sharedAs
         createShareImage: function(info) {
@@ -106,7 +134,8 @@ angular.module('depthyApp').provider('depthy', function depthy() {
             title: self.title,
             thumb: self.thumb,
           }, info);
-          var share = lookupImageHistory(info);
+          var share = lookupImageHistory(info, true);
+          self.sharedAs = share;
           storeImageHistory();
           updateImageGallery();
           return share;
@@ -147,7 +176,7 @@ angular.module('depthyApp').provider('depthy', function depthy() {
         },
         onClosed: function() {
           // cleanup a bit
-          if (!self.sample && !self.modified) {
+          if (!self.sample && !self.isModified()) {
             self.imageSource = self.depthSource = self.originalSource = self.depthUsesAlpha = false;
           }
           self.loading = false;

@@ -4,6 +4,10 @@ angular.module('depthyApp')
 .controller('SharePngModalCtrl', function ($scope, $sce, $timeout, $modalInstance, $state, $q, ga, depthy) {
   var uploadPromise;
 
+  $scope.image = depthy.opened;
+  $scope.shareImage = depthy.opened;
+
+
   function upload(imageDataUri) {
     ga('send', 'event', 'png', 'upload', '', imageDataUri.length);
     uploadPromise = $.ajax({
@@ -16,8 +20,8 @@ angular.module('depthyApp')
       data: {
         image: imageDataUri.substr('data:image/png;base64,'.length),
         type: 'base64',
-        name: depthy.opened.title,
-        title: depthy.opened.title + ' #depthy',
+        name: $scope.image.title,
+        title: $scope.image.title + ' #depthy',
         description: 'View this image in 3D on http://depthy.stamina.pl'
       },
       xhr: function() {
@@ -38,7 +42,8 @@ angular.module('depthyApp')
 
       if (response.data.type === 'image/png') {
         ga('send', 'event', 'png', 'upload-success');
-        depthy.opened.createShareImage({
+        $scope.shareImage = $scope.image.createShareImage({
+          url: 'https://i.imgur.com/' + id,
           state: 'imgur',
           stateParams: {id: id},
           thumb: 'https://i.imgur.com/' + id + 's.jpg',
@@ -47,7 +52,7 @@ angular.module('depthyApp')
           storeKey: deleteHash
         });
 
-        $scope.share = depthy.opened.getShareInfo();
+        $scope.share = $scope.image.getShareInfo();
 
         uploadPromise = null;
 
@@ -111,7 +116,7 @@ angular.module('depthyApp')
     );
   }
 
-  $scope.share = depthy.opened.getShareInfo();
+  $scope.share = $scope.image.getShareInfo();
   if (!$scope.share) {
     // wait for DOM
     $timeout(function() {
