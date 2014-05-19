@@ -6,16 +6,16 @@
   <div class="text-center">
     <div class="thumbnails-set margin-top-none">
       <div class="thumbnail" ng-class="{empty: !depthy.hasDepthmap(), loading: loading}">
-        <img image-source="depth">
+        <a image-source="depth" target="_blank" download="{{depthy.opened.getFilename() + '-depthmap.jpg'}}"><img image-source="depth"></a>
         <button class="btn btn-success btn-block" ng-click="selectFile($event)"><i class="icon" ng-class="isDepthmapProcessing ? 'icon-loading' : 'icon-open'"></i>{{depthy.hasDepthmap() ? 'New' : 'Open' }} depthmap</button>
       </div><div class="thumbnail" ng-if="depthy.hasOriginalImage()" ng-class="{loading: loading}">
-        <img image-source="alternative">
+        <a image-source="depth" target="_blank" download="{{depthy.opened.getFilename() + '-alternative.jpg'}}"><img image-source="alternative"></a>
         <button class="btn btn-default btn-block" disabled>Original image</button>
       </div>
     </div>
   </div>
   <p class="text-muted text-center" ng-if="depthy.hasDepthmap() || depthy.hasAlternativeImage()">
-    {{Modernizr.mobile ? 'Press and hold the image' : 'Right-click the image'}} to save it.
+    {{depthy.downloadInstructions}} to save it.
   </p>
   <div class="alert alert-info alert-icon margin-top-xl">
     <i class="icon icon-info"></i>

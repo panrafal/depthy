@@ -5,11 +5,11 @@
 <div class="modal-body">
   <div class="text-center">
     <div class="thumbnail" ng-class="{loading: loading}">
-      <img image-source="export-png-modal" />
+      <a image-source="export-png-modal" target="_blank" download="{{depthy.opened.getFilename() + '.png'}}"><img image-source="export-png-modal" /></a>
     </div>
   </div>
   <p class="text-muted text-center">
-    {{Modernizr.mobile ? 'Press and hold the image' : 'Right-click the image'}} to save it.
+    {{depthy.downloadInstructions}} to save it.
   </p>
 
   <div class="alert alert-info alert-icon margin-top-xl">

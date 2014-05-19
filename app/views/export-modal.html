@@ -18,12 +18,12 @@
 
   <div class="text-center export-image anim-expand verylong ng-hide" ng-show="imageReady">
     <div class="thumbnail center-block">
-      <img src="" title="Size is {{imageSize / 1024 / 1024 | number: 2}}MB" />
+      <a image-source="export-gif" target="_blank" download="{{depthy.opened.getFilename() + '.gif'}}"><img image-source="export-gif" /></a>
       <h5>{{imageSize / 1024 | number: 0}}KB</h5>
     </div>
-    <p class="text-muted"> {{Modernizr.mobile ? 'Touch and hold the image' : 'Right-click the image'}} to save it.</p>
+    <p class="text-muted"> {{depthy.downloadInstructions}} to save it.</p>
 
-    <div class="alert alert-warning alert-icon" ng-if="Modernizr.android && Modernizr.chrome && imageSize > 1000000">
+    <div class="alert alert-warning alert-icon" ng-if="Modernizr.android && Modernizr.chrome && !Modernizr.adownload && imageSize > 1000000">
       <i class="icon icon-warning"></i>
       Due to the bug in Chrome the option to save the GIF can be unavailable. You'll have to make it smaller or share it.
     </div>

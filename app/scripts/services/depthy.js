@@ -100,6 +100,9 @@ angular.module('depthyApp').provider('depthy', function depthy() {
           if (self.isRemote()) return 'remote';
           return 'unknown';
         },
+        getFilename: function() {
+          return self.title || (self.stateParams && self.stateParams.id) || 'image';
+        },
         getStateUrl: function() {
           if (!self.state) return false;
           return $state.href(self.state, self.stateParams || {});
@@ -269,13 +272,13 @@ angular.module('depthyApp').provider('depthy', function depthy() {
       var store = history.filter(function(image) {
         return image.isStoreable();
       }).map(function(image) {
-        return _.pick(image, ['state', 'stateParams', 'title', 'thumb', 'added', 'viewed', 'views', 'storeKey']);
+        return _.pick(image, ['state', 'stateParams', 'title', 'url', 'thumb', 'added', 'viewed', 'views', 'storeKey']);
       });
 
       console.log('storeImageHistory', history, store);
       window.localStorage.setItem('history', JSON.stringify(store));
 
-    }, 500, {leading: false});
+    }, 4000, {leading: false});
 
     function restoreImageHistory() {
       // recreate samples
@@ -341,12 +344,13 @@ angular.module('depthyApp').provider('depthy', function depthy() {
         { id: 'tunnel', title: 'Tunnel'},
       ],
 
-
       stores: {
         imgur: {
           name: 'imgur'
         }
       },
+
+      downloadInstructions: Modernizr.adownload ? 'Click the image' : Modernizr.mobile ? 'Touch and hold the image' : 'Right-click the image',
 
       isReady: function() {
         return this.getViewer().isReady();
@@ -376,7 +380,6 @@ angular.module('depthyApp').provider('depthy', function depthy() {
       isOffline: function() {
         return navigator.onLine === false;
       },
-
       getViewerCtrl: function() {
         if (!this._viewerCtrl) {
           this._viewerCtrl = angular.element('[depthy-viewer]').controller('depthyViewer');

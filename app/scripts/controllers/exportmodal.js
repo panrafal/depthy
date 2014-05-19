@@ -27,15 +27,19 @@ angular.module('depthyApp')
         var imageReader = new FileReader();
         imageReader.onload = function() {
           imageDataUri = imageReader.result;
+          var url = URL.createObjectURL(blob);
 
           // this is way way waaay quicker if you set data uris directly......
-          var img = $rootElement.find('.export-modal .export-image img')[0];
-          if (Modernizr.android && Modernizr.chrome) {
-            // chrome on Android can save only data uris, it's opposite for others
-            img.src = imageDataUri;
-          } else {
-            img.src = URL.createObjectURL(blob);
-          }
+          angular.element('img[image-source="export-gif"]').attr('src', url);
+          angular.element('a[image-source="export-gif"]').attr('href', url);
+
+          // var img = $rootElement.find('.export-modal .export-image img')[0];
+          // if (Modernizr.android && Modernizr.chrome) {
+          //   // chrome on Android can save only data uris, it's opposite for others
+          //   img.src = imageDataUri;
+          // } else {
+          //   img.src = ;
+          // }
           $scope.imageReady = true;
           $scope.$safeApply();
         };

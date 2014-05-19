@@ -9,21 +9,23 @@ angular.module('depthyApp')
   $timeout(function() {
     if (depthy.hasDepthmap()) {
       depthy.getViewer().exportDepthmap().then(function(url) {
-        var img = angular.element('[image-source="depth"]')[0];
+        var img = angular.element('img[image-source="depth"]')[0];
         img.onload = function() {
           --$scope.loading;
           $scope.$safeApply();
         };
         img.src = url;
+        angular.element('a[image-source="depth"]').attr('href', url);
       });
     } else --$scope.loading;
     if (depthy.hasOriginalImage()) {
-      var img = angular.element('[image-source="alternative"]')[0];
+      var img = angular.element('img[image-source="alternative"]')[0];
       img.onload = function() {
         --$scope.loading;
         $scope.$safeApply();
       };
       img.src = depthy.opened.originalSource;
+      angular.element('a[image-source="alternative"]').attr('href', depthy.opened.originalSource);
     } else --$scope.loading;
   }, depthy.modalWait);
 
