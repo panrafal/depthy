@@ -10,7 +10,9 @@ angular.module('depthyApp')
           options = $scope.$parent.$eval($attrs.depthyViewer);
 
       $scope.$parent.$watch($attrs.depthyViewer, function(newOptions) {
-        if (viewer && newOptions) viewer.setOptions(options);
+        if (viewer && newOptions) {
+          viewer.setOptions(options);
+        }
       }, true);
 
       viewer = new DepthyViewer($element[0], options);

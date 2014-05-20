@@ -6,6 +6,7 @@ angular.module('depthyApp').provider('depthy', function depthy() {
   var viewer = angular.extend({}, DepthyViewer.defaultOptions, {
     hoverElement: 'body',
     fit: Modernizr.mobile ? 'cover' : 'contain',
+    depthScale: Modernizr.mobile ? 2 : 1,
   });
 
   this.$get = function(ga, $timeout, $rootScope, $document, $window, $q, $modal, $state, StateModal) {
@@ -308,6 +309,33 @@ angular.module('depthyApp').provider('depthy', function depthy() {
       });
     }
 
+    var _storeableViewerKeys = ['fit', 'animate', 'animateDuration', 'animatePosition', 'animateScale', 'depthScale'],
+        _storeableDepthyKeys = ['useOriginalImage', 'exportSize'];
+
+    var storeSettings = _.throttle(function storeSettings() {
+      if (!Modernizr.localstorage) return;
+      if (depthy.isViewerOverriden()) return;
+      var store = _.pick(depthy, _storeableDepthyKeys);
+      store.viewer = _.pick(viewer, _storeableViewerKeys);
+
+      console.log('storeSettings', store);
+      window.localStorage.setItem('settings', JSON.stringify(store));
+
+    }, 4000, {leading: false});
+
+    function restoreSettings() {
+      // read history
+      if (!Modernizr.localstorage) return;
+      var stored = JSON.parse(localStorage.getItem('settings') || 'null');
+      if (!angular.isObject(stored)) return;
+
+      _.merge(depthy, _.pick(stored, _storeableDepthyKeys));
+      _.merge(depthy.viewer, _.pick(stored.viewer, _storeableViewerKeys));
+
+      console.log('restoreSettings', stored);
+      //
+    }
+
     depthy = {
       viewer: viewer,
 
@@ -380,6 +408,10 @@ angular.module('depthyApp').provider('depthy', function depthy() {
       isOffline: function() {
         return navigator.onLine === false;
       },
+      isViewerOverriden: function(override) {
+        if (override !== undefined) depthy.viewerOverriden = override;
+        return depthy.viewerOverriden || depthy.exportActive;
+      },
       getViewerCtrl: function() {
         if (!this._viewerCtrl) {
           this._viewerCtrl = angular.element('[depthy-viewer]').controller('depthyViewer');
@@ -393,6 +425,8 @@ angular.module('depthyApp').provider('depthy', function depthy() {
         }
         return this._viewer;
       },
+
+      storeSettings: storeSettings,
 
       // sets proper image according to opened image and useOriginalImage setting
       refreshOpenedImage: function() {
@@ -728,14 +762,26 @@ angular.module('depthyApp').provider('depthy', function depthy() {
 
     };
 
-    openImage(createImageInfo({empty: true}));
-
-    restoreImageHistory();
-    updateImageGallery();
 
     $rootScope.$on('$stateChangeSuccess', function() {
       depthy.zenMode = false;
     });
+
+    openImage(createImageInfo({empty: true}));
+
+    restoreSettings();
+    restoreImageHistory();
+    updateImageGallery();
+
+    $rootScope.$watch(function() {
+      var store = _.pick(depthy, _storeableDepthyKeys);
+      store.viewer = _.pick(viewer, _storeableViewerKeys);
+      return store;
+    }, function(n, o) {
+      if (n === o) return;
+      storeSettings();
+    }, true);
+
 
     return depthy;
   };

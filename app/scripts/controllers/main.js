@@ -138,12 +138,14 @@ angular.module('depthyApp')
 
   $scope.$watch('(activePopup.state === "export.gif.options" || depthy.exportActive) && depthy.exportSize', function(size) {
     if (size) {
+      depthy.isViewerOverriden(true);
       depthy.viewer.size = {width: size, height: size};
       $scope.oldFit = depthy.viewer.fit;
       depthy.viewer.fit = false;
     } else {
       if ($scope.oldFit) depthy.viewer.fit = $scope.oldFit;
       $($window).resize();
+      depthy.isViewerOverriden(false);
     }
   });
 
