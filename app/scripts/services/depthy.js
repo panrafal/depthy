@@ -309,7 +309,7 @@ angular.module('depthyApp').provider('depthy', function depthy() {
       });
     }
 
-    var _storeableViewerKeys = ['fit', 'animate', 'animateDuration', 'animatePosition', 'animateScale', 'depthScale', 'tipsState'],
+    var _storeableViewerKeys = ['fit', 'animate', 'animateDuration', 'animatePosition', 'animateScale', 'depthScale', 'depthFocus', 'tipsState'],
         _storeableDepthyKeys = ['useOriginalImage', 'exportSize'];
 
     var storeSettings = _.throttle(function storeSettings() {

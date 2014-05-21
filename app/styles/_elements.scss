@@ -103,7 +103,7 @@
   &>.scroll {
     overflow-x: hidden;
     overflow-y: auto;
-    overflow-scroll: touch;
+    -webkit-overflow-scrolling: touch;
     height: 100%;
 
     display: flex;
@@ -145,7 +145,7 @@
 
 
   .leftpane-opened & {
-    transform: translate3d(0, 0, 0);
+    transform: none; //translate3d(0, 0, 0);
   }
 
   .leftpane-gallery & {
