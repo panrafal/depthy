@@ -7,7 +7,10 @@ angular.module('depthyApp')
   $rootScope.viewer = depthy.viewer; // shortcut
   $rootScope.Modernizr = window.Modernizr;
 
+  $scope.version = depthy.getVersion();
+  
   ga('set', 'dimension1', (Modernizr.webgl ? 'webgl' : 'no-webgl') + ' ' + (Modernizr.webp ? 'webp' : 'no-webp'));
+
 
   $rootScope.$safeApply = function(fn) {
     var phase = this.$root.$$phase;

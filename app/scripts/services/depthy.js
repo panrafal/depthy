@@ -309,7 +309,7 @@ angular.module('depthyApp').provider('depthy', function depthy() {
       });
     }
 
-    var _storeableViewerKeys = ['fit', 'animate', 'animateDuration', 'animatePosition', 'animateScale', 'depthScale'],
+    var _storeableViewerKeys = ['fit', 'animate', 'animateDuration', 'animatePosition', 'animateScale', 'depthScale', 'tipsState'],
         _storeableDepthyKeys = ['useOriginalImage', 'exportSize'];
 
     var storeSettings = _.throttle(function storeSettings() {
@@ -317,6 +317,7 @@ angular.module('depthyApp').provider('depthy', function depthy() {
       if (depthy.isViewerOverriden()) return;
       var store = _.pick(depthy, _storeableDepthyKeys);
       store.viewer = _.pick(viewer, _storeableViewerKeys);
+      store.version = depthy.version;
 
       console.log('storeSettings', store);
       window.localStorage.setItem('settings', JSON.stringify(store));
@@ -338,6 +339,9 @@ angular.module('depthyApp').provider('depthy', function depthy() {
 
     depthy = {
       viewer: viewer,
+
+      version: 201,
+      tipsState: {},
 
       exportSize: Modernizr.mobile ? 150 : 300,
       exportType: 'gif',
@@ -380,6 +384,9 @@ angular.module('depthyApp').provider('depthy', function depthy() {
 
       downloadInstructions: Modernizr.adownload ? 'Click the image' : Modernizr.mobile ? 'Touch and hold the image' : 'Right-click the image',
 
+      getVersion: function() {
+        return Math.floor(this.version / 10000) + '.' + Math.floor(this.version % 10000 / 100) + '.' + (this.version % 100);
+      },
       isReady: function() {
         return this.getViewer().isReady();
       },
