@@ -12,7 +12,7 @@ angular.module('depthyApp')
     deferred.state = state;
 
     // if ($state.current.name === state) state = false;
-    if (state && !options.stateCurrent) $state.go(state, options.stateParams, options.stateOptions);
+    if (state && !options.stateCurrent && state !== true) $state.go(state, options.stateParams, options.stateOptions);
 
     deferred.promise.then(
       function() {
@@ -27,9 +27,9 @@ angular.module('depthyApp')
 
     if (state) {
       deregister = $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState) {
-        if (fromState.name === state) {
-          deregister();
-          deregister = null;
+        deregister();
+        deregister = null;
+        if (state === true || fromState.name === state) {
           state = false;
           deferred.reject();
         }

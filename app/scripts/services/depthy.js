@@ -355,6 +355,7 @@ angular.module('depthyApp').provider('depthy', function depthy() {
 
       // true - opened fully, 'gallery' opened on gallery
       leftpaneOpened: false,
+      activePopup: null,
 
       movearoundShow: false,
 
@@ -738,7 +739,9 @@ angular.module('depthyApp').provider('depthy', function depthy() {
         if (this.isFullLayout()) return;
         
         if (!gallery && depthy.leftpaneOpen !== true && !leftpaneDeferred) {
-          leftpaneDeferred = StateModal.stateDeferred('pane');
+          if (depthy.activePopup) depthy.activePopup.reject();
+
+          leftpaneDeferred = StateModal.stateDeferred(true);
           leftpaneDeferred.promise.finally(function() {
             if (depthy.leftpaneOpened === true) depthy.leftpaneOpened = false;
             leftpaneDeferred = null;
@@ -756,6 +759,16 @@ angular.module('depthyApp').provider('depthy', function depthy() {
           leftpaneDeferred = null;
         }
         depthy.leftpaneOpened = false;
+      },
+
+      openPopup: function(state, options) {
+        depthy.leftpaneClose();
+        depthy.activePopup = StateModal.stateDeferred(true, options);
+        depthy.activePopup.state = state;
+        depthy.activePopup.promise.finally(function() {
+          if (depthy.activePopup.state === state) depthy.activePopup = null;
+        });
+        return depthy.activePopup;
       },
 
       zenModeToggle: function() {
