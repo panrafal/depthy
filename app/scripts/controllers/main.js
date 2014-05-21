@@ -12,7 +12,6 @@ angular.module('depthyApp')
 
   ga('set', 'dimension1', (Modernizr.webgl ? 'webgl' : 'no-webgl') + ' ' + (Modernizr.webp ? 'webp' : 'no-webp'));
 
-
   $rootScope.$safeApply = function(fn) {
     var phase = this.$root.$$phase;
     if(phase === '$apply' || phase === '$digest') {
@@ -162,6 +161,25 @@ angular.module('depthyApp')
 
   $($window).on('online offline', function() {
     $scope.$safeApply();
+  });
+
+  $timeout(function() {
+    $scope.scroll = new IScroll('#leftpane', {
+      mouseWheel: true,
+      scrollbars: 'custom',
+      click: true,
+      fadeScrollbars: true,
+      interactiveScrollbars: true,
+      resizeScrollbars: false,
+      eventPassthrough: 'horizontal',
+    });
+    // refresh on every digest...
+    $scope.$watch(function() {
+      setTimeout(function() {
+        console.log('scroll refresh');
+        $scope.scroll.refresh();
+      }, 100);
+    });
   });
 
 });

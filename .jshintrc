@@ -31,6 +31,7 @@
     "Promise": false,
     "_": true,
     "requestAnimFrame": true,
-    "screenfull": true
+    "screenfull": true,
+    'IScroll': true
   }
 }

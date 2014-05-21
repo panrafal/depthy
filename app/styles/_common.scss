@@ -454,6 +454,27 @@ logo {
 }
 
 
+// scrollbars
+.iScrollVerticalScrollbar {
+  position: absolute;
+  z-index: 9999;
+  width: 7px;
+  bottom: 0px;
+  top: 0px;
+  right: 0px;
+  *:hover>& {
+    opacity: 1!important;
+  }
+}
+.iScrollIndicator {
+  box-sizing: border-box;
+  position: absolute;
+  background-color: $text-color;
+  border: 0;
+  right: 0px;
+  height: 60px;
+  width: $border-width;
+}
 
 // popups
 .popup-clicker {

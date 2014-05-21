@@ -112,14 +112,15 @@
   @extend .accelerate;
 
   &>.scroll {
-    overflow-x: hidden;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    height: 100%;
+    // overflow-x: hidden;
+    // overflow-y: auto;
+    // -webkit-overflow-scrolling: touch;
+    // height: 100%;
 
     display: flex;
     flex-direction: column;
-
+    min-height: 100%;
+    
     &>section {
       flex-shrink: 0;
     }
