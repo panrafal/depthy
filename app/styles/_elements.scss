@@ -29,6 +29,16 @@
   
   @extend .accelerate;
 
+  .btn-group {
+    margin-top: $padding-large-vertical;
+    margin-right: $padding-large-vertical;
+  }
+
+  .btn-control {
+    background: transparent;
+    text-shadow: 0px 0px 2px fade-out(#000, 0.2);
+    padding: $padding-base-vertical $padding-base-vertical;
+  }
 
   &:before {
     content: '';
@@ -36,12 +46,13 @@
     left: 0px;
     right: 0px;
     top: 0px;
-    height: remify(60px);
+    height: remify(100px);
     pointer-events: none;
-    background: linear-gradient(to top, fade-out($body-bg, 1),fade-out($body-bg, 0.7) 70%,fade-out($body-bg, 0.6) 100%);
+    background: linear-gradient(to top, fade-out($body-bg, 1),fade-out($body-bg, 0.8) 70%,fade-out($body-bg, 0.7) 100%);
   }
 
   logo {
+    // background-color: $body-bg;
     position: absolute;
     left: $padding-large-vertical;
     top: $padding-large-vertical;
@@ -56,7 +67,7 @@
   }
 
   .zen-mode & {
-    transform: translateY(-100%) translateY(-40px);
+    transform: translateY(-110px) translateY(-40px);
   }
 
 }
@@ -383,21 +394,6 @@
     transition: all 0.5s ease-in-out;
 
     background: linear-gradient(to bottom, fade-out($body-bg, 1),fade-out($body-bg, 0.7) 70%,fade-out($body-bg, 0.6) 100%);
-
-    .btn {
-      i.icon {
-        margin: 0px;
-      }
-      // margin: 0 $padding-small-horizontal;
-      padding: $padding-large-vertical $padding-large-horizontal;
-      // background: transparent;
-      text-shadow: 1px 1px 0px fade-out(#000, 0.8);
-      &:after {
-        // content: attr(title);
-      }
-
-    }
-
 
     .zen-mode &, &.ng-hide {
       display: block!important;

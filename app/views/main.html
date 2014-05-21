@@ -13,6 +13,9 @@
   <nav id="navbar" class="text-right">
     <logo class="white" ng-click="depthy.leftpaneOpen()"></logo>
     <!-- <button class="btn btn-ctrl btn-success" ng-click="selectFile($event)" title="Open"><i class="icon" ng-class="depthy.isLoading() ? 'icon-loading' : 'icon-open'"></i></button> -->
+    <div class="btn-group">
+      <button class="btn btn-default btn-control" ng-click="screenfull.toggle()" ng-if="screenfull.enabled && !screenfull.isFullscreen" title="Fullscreen" ga><i class="icon icon-expand"></i></button>
+    </div>
   </nav>
 
   <div id="leftpane">
@@ -83,9 +86,9 @@
 
     <div class="buttons-options" ng-show="!depthy.activePopup">
       <div class="btn-group">
-        <button class="btn btn-default" ng-click="shareOptions()" ng-disabled="!depthy.hasCompleteImage() || !depthy.isReady()" title="Share"><i class="icon icon-share"></i></button>
-        <button class="btn btn-default" ng-click="imageOptions()" ng-disabled="!depthy.hasCompleteImage() || !depthy.isReady()" title="Options" ga><i class="icon icon-settings"></i></button>
-        <button class="btn btn-default" ng-click="imageInfo()" ng-disabled="!Modernizr.webgl || !depthy.hasImage() || depthy.isLoading()" title="Info" ga><i class="icon icon-image"></i></button>
+        <button class="btn btn-default btn-control" ng-click="shareOptions()" ng-disabled="!depthy.hasCompleteImage() || !depthy.isReady()" title="Share"><i class="icon icon-share"></i></button>
+        <button class="btn btn-default btn-control" ng-click="imageOptions()" ng-disabled="!depthy.hasCompleteImage() || !depthy.isReady()" title="Options" ga><i class="icon icon-settings"></i></button>
+        <button class="btn btn-default btn-control" ng-click="imageInfo()" ng-disabled="!Modernizr.webgl || !depthy.hasImage() || depthy.isLoading()" title="Info" ga><i class="icon icon-image"></i></button>
       </div>
     </div>
   </section>

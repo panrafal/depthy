@@ -18,7 +18,8 @@
     "jquery": "~1.11.0",
     "lodash": "~2.4.1",
     "pixi.js": "panrafal/pixi.js#build/depthy",
-    "promise": "http://s3.amazonaws.com/es6-promises/promise-1.0.0.js"
+    "promise": "http://s3.amazonaws.com/es6-promises/promise-1.0.0.js",
+    "screenfull": "~1.2.1"
   },
   "devDependencies": {
     "angular-mocks": "1.2.15",

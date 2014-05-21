@@ -216,6 +216,21 @@ p a {
   }
 }
 
+.btn-control {
+  i.icon {
+    margin: 0px;
+  }
+  // margin: 0 $padding-small-horizontal;
+  padding: $padding-large-vertical $padding-large-horizontal;
+  // background: transparent;
+  // text-shadow: 1px 1px 0px fade-out(#000, 0.8);
+  &:after {
+    // content: attr(title);
+  }
+
+}
+
+
 // links
 .link-icon {
   font-size: 16px;

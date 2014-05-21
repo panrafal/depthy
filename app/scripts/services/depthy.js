@@ -778,7 +778,7 @@ angular.module('depthyApp').provider('depthy', function depthy() {
           return;
         }
         depthy.zenMode = !depthy.zenMode;
-      },
+      }
 
     };
 

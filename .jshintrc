@@ -30,6 +30,7 @@
     "DepthyViewer": false,
     "Promise": false,
     "_": true,
-    "requestAnimFrame": true
+    "requestAnimFrame": true,
+    "screenfull": true
   }
 }
