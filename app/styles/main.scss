@@ -1,11 +1,11 @@
 $icon-font-path: "/bower_components/bootstrap-sass-official/vendor/assets/fonts/bootstrap/";
 
 // http://colorschemedesigner.com/#00428sOsOFfFf
-$brand-primary: #185C94; //#0165BD; 
-$brand-danger: #E61717;
-$brand-success: #12B812;
-$brand-warning: #E68F17;
-$brand-info: #185C94;
+$brand-primary: #007DA1; //#0165BD; 
+$brand-success: #0A95BB;
+$brand-danger: #AA3C2F;
+$brand-warning: #C66025;
+$brand-info: #666;
 $brand-neutral: #666;
 
 $contrast: 10%;
@@ -81,7 +81,7 @@ $modal-header-border-color: lighten($body-bg, 10%);
 // panels
 $panel-bg: $body-bg;
 $panel-header-bg: $brand-primary;
-$panel-header-border: $brand-primary-dark;
+$panel-header-border: darken($panel-header-bg, $contrast);
 $panel-header-color: $text-color;
 $panel-footer-bg: $brand-neutral-dark;
 $panel-footer-border: $brand-neutral-vdark;
@@ -112,9 +112,9 @@ $about-bg: transparent; //$brand-primary-dark;
 $gallery-width: 70px;
 $gallery-bg: darken($leftpane-bg, 15%);
 
-$facebook-color: #3B5998;
-$google-color: #D74635;
-$twitter-color: #00C3F8;
+$facebook-color: desaturate(darken(#3B5998, $contrast), $contrast * 2);
+$google-color:   desaturate(darken(#D74635, $contrast), $contrast * 2);
+$twitter-color:  desaturate(darken(#00C3F8, $contrast), $contrast * 2);
 
 
 $media-tiny: "(max-width: #{$screen-xs-max})";

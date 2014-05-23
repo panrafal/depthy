@@ -97,7 +97,7 @@ angular.module('depthyApp')
   $scope.exportGifRun = function() {
     depthy.exportActive = true;
     StateModal.showModal('export.gif.run', {
-      stateOptions: {location: 'replace'},
+      // stateOptions: {location: 'replace'},
       templateUrl: 'views/export-modal.html',
       controller: 'ExportModalCtrl',
       // backdrop: 'static',
@@ -110,7 +110,7 @@ angular.module('depthyApp')
 
   $scope.exportPngRun = function() {
     StateModal.showModal('export.png', {
-      stateOptions: {location: 'replace'},
+      // stateOptions: {location: 'replace'},
       templateUrl: 'views/export-png-modal.html',
       controller: 'ExportPngModalCtrl',
       windowClass: 'export-png-modal',
@@ -120,7 +120,7 @@ angular.module('depthyApp')
 
   $scope.sharePngRun = function() {
     StateModal.showModal('share.png', {
-      stateOptions: {location: 'replace'},
+      // stateOptions: {location: 'replace'},
       templateUrl: 'views/share-png-modal.html',
       controller: 'SharePngModalCtrl',
       // backdrop: 'static',

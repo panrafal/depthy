@@ -165,11 +165,11 @@ p a {
     border-color: $btn-default-color;
     background: $brand-neutral-vdark;
     &:hover {
-      background: $brand-neutral-dark;
+      background: $brand-primary-dark;
       color: #fff;
     }
     &:active {
-      background: lighten($brand-neutral-dark, $contrast);
+      background: lighten($brand-primary-dark, $contrast);
     }
     &.active {
       // background: $btn-default-color;
@@ -292,7 +292,7 @@ logo {
   &:before {
     content: '';
     display: block;
-    padding-top: percentage(160 / 440);
+    padding-top: percentage(180 / 460);
   }
 
   &:after {
@@ -431,7 +431,12 @@ logo {
   padding: $padding-large-vertical $padding-large-horizontal;
 }
 
-
+.alert-info {
+  background: transparent;
+  margin: $padding-base-vertical 0;
+  padding-top: $padding-base-vertical;
+  padding-bottom: $padding-base-vertical;
+}
 .alert-primary {
   @include alert-variant($brand-primary, $brand-primary, $text-color);
 }
@@ -469,7 +474,7 @@ logo {
 .iScrollIndicator {
   box-sizing: border-box;
   position: absolute;
-  background-color: $text-color;
+  background-color: fade-out($text-color, 0.7);
   border: 0;
   right: 0px;
   height: 60px;
@@ -550,6 +555,8 @@ logo {
 .panel {
   max-width: remify(400px);
   margin: $padding-large-vertical auto;
+  border: 0;
+  box-shadow: none;
 
   .panel-body {
 
@@ -666,14 +673,16 @@ logo {
     position: absolute;
     width: 100%;
     top: 59px;
-    bottom: 0px;
+    bottom: 53px;
   }
+  
   .modal-footer {
-    display: none;
+    // display: none;
     position: absolute;
     width: 100%;
     bottom: 0px;
   }
+
 }
 
 
