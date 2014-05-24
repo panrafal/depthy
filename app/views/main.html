@@ -11,7 +11,7 @@
 >
   <div id="hamburger" class="icon icon-navicon-bold" ng-click="depthy.leftpaneToggle()"></div>
   <nav id="navbar" class="text-right">
-    <logo class="white" ng-click="depthy.leftpaneOpen()"></logo>
+    <!-- <logo class="white" ng-click="depthy.leftpaneOpen()"></logo> -->
     <!-- <button class="btn btn-ctrl btn-success" ng-click="selectFile($event)" title="Open"><i class="icon" ng-class="depthy.isLoading() ? 'icon-loading' : 'icon-open'"></i></button> -->
     <div class="btn-group">
       <button class="btn btn-default btn-control" ng-click="screenfull.toggle()" ng-if="screenfull.enabled && !screenfull.isFullscreen" title="Fullscreen" ga><i class="icon icon-expand"></i></button>
@@ -23,7 +23,7 @@
 
       <section id="about">
         <header>
-          <logo ng-click="depthy.leftpaneClose()"></logo>
+          <div class="logo" ng-include="'images/logo.svg'" ng-click="depthy.leftpaneClose()"></div>
           <p class="lead">
             the third dimension viewer
           </p>

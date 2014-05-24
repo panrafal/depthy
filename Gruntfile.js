@@ -49,6 +49,10 @@ module.exports = function (grunt) {
       gruntfile: {
         files: ['Gruntfile.js']
       },
+      svgmin: {
+        files: '<%= yeoman.app %>/images/*.svg',
+        tasks: ['svgmin']
+      },
       ngtemplates: {
         files: '<%= yeoman.app %>/views/*.html',
         tasks: ['ngtemplates']
@@ -163,6 +167,16 @@ module.exports = function (grunt) {
           'template/modal/*.html',
         ],
         dest: '.tmp/scripts/bs-templates.js'
+      },
+      svg: {
+        options: {
+          htmlmin: {}
+        },
+        cwd: '.tmp',
+        src: [
+          'images/*.svg',
+        ],
+        dest: '.tmp/scripts/svg-templates.js'
       },
 
     },
@@ -292,7 +306,7 @@ module.exports = function (grunt) {
           expand: true,
           cwd: '<%= yeoman.app %>/images',
           src: '{,*/}*.svg',
-          dest: '<%= yeoman.dist %>/images'
+          dest: '.tmp/images'
         }]
       }
     },
@@ -373,16 +387,15 @@ module.exports = function (grunt) {
     concurrent: {
       server: [
         'compass:server',
-        'ngtemplates'
+        'svgmin',
       ],
       test: [
         'compass'
       ],
       dist: [
         'compass:dist',
-        'ngtemplates',
         'imagemin',
-        'svgmin'
+        'svgmin',
       ]
     },
 
@@ -445,6 +458,7 @@ module.exports = function (grunt) {
       'clean:server',
       // 'bowerInstall',
       'concurrent:server',
+      'ngtemplates',
       'autoprefixer',
       'connect:livereload',
       'watch'
@@ -469,6 +483,7 @@ module.exports = function (grunt) {
     // 'bowerInstall',
     'useminPrepare',
     'concurrent:dist',
+    'ngtemplates',
     'autoprefixer',
     'concat',
     'ngmin',

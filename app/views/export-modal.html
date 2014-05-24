@@ -23,11 +23,11 @@
     </div>
     <p class="text-muted"> {{depthy.downloadInstructions}} to save it.</p>
 
-    <div class="alert alert-warning alert-icon" ng-if="Modernizr.android && Modernizr.chrome && !Modernizr.adownload && imageSize > 1000000">
+    <div class="alert alert-warning alert-icon text-left" ng-if="Modernizr.android && Modernizr.chrome && !Modernizr.adownload && imageSize > 1000000">
       <i class="icon icon-warning"></i>
       Due to the bug in Chrome the option to save the GIF can be unavailable. You'll have to make it smaller or share it.
     </div>
-    <div class="alert alert-warning alert-icon" ng-if="imageOverLimit">
+    <div class="alert alert-warning alert-icon text-left" ng-if="imageOverLimit">
       <i class="icon icon-meter"></i>
       It's <b>too big</b> too share! You'll have to share it on your own, or make it smaller...
     </div>

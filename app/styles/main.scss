@@ -1,10 +1,19 @@
 $icon-font-path: "/bower_components/bootstrap-sass-official/vendor/assets/fonts/bootstrap/";
 
 // http://colorschemedesigner.com/#00428sOsOFfFf
-$brand-primary: #007DA1; //#0165BD; 
+
+$brand-primary: #007DA1;
 $brand-success: #0A95BB;
 $brand-danger: #AA3C2F;
 $brand-warning: #C66025;
+$brand-info: #666;
+$brand-neutral: #666;
+
+
+$brand-primary: #167D2E;
+$brand-success: #17A139;
+$brand-danger: #D4402A;
+$brand-warning: #D98915;
 $brand-info: #666;
 $brand-neutral: #666;
 
@@ -112,9 +121,9 @@ $about-bg: transparent; //$brand-primary-dark;
 $gallery-width: 70px;
 $gallery-bg: darken($leftpane-bg, 15%);
 
-$facebook-color: desaturate(darken(#3B5998, $contrast), $contrast * 2);
-$google-color:   desaturate(darken(#D74635, $contrast), $contrast * 2);
-$twitter-color:  desaturate(darken(#00C3F8, $contrast), $contrast * 2);
+$facebook-color: desaturate(darken(#3B5998, $contrast), $contrast);
+$google-color:   desaturate(darken(#D74635, $contrast), $contrast);
+$twitter-color:  desaturate(darken(#00C3F8, $contrast), $contrast);
 
 
 $media-tiny: "(max-width: #{$screen-xs-max})";
