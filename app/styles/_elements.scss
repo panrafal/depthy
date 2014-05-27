@@ -185,6 +185,7 @@
   background: $about-bg;
 
   padding: $padding-large-vertical $padding-large-horizontal;
+  padding-bottom: 0;
 
   header {
     text-align: center;
@@ -198,7 +199,7 @@
   }
 
   .logo {
-    margin-bottom: 2rem;
+    margin-bottom: $padding-large-vertical;
     position: relative;
     width: 100%;
 
@@ -214,6 +215,14 @@
       left: 0px;
       top: 0px;    
     }
+  }
+
+  article {
+    margin: $padding-large-vertical * 2;
+  }
+
+  .lead {
+    margin: 0;
   }
 
   .button-open {

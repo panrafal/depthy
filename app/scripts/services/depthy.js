@@ -92,6 +92,9 @@ angular.module('depthyApp').provider('depthy', function depthy() {
         isModified: function() {
           return !!self.modified;
         },
+        isAvailable: function() {
+          return !depthy.isOffline() || this.isSample() || this.isLocal();
+        },
         // returns the type
         getType: function() {
           if (self.isLocal()) return 'local';

@@ -28,11 +28,11 @@ h1, h2, h3, h4, h5 {
   margin: 0;
   text-transform: uppercase;
   color: $headings-color;
-  $shadow-color: #000;
-  text-shadow: 3px 3px 0px fade-out($shadow-color, 0.9)
-         , 2px 2px 0px fade-out($shadow-color, 0.9)
-         , 1px 1px 0px fade-out($shadow-color, 0.9)
-         ;
+  // $shadow-color: #000;
+  // text-shadow: 2px 2px 0px fade-out(#000, 0.8);
+  //        , 2px 2px 0px fade-out($shadow-color, 0.9)
+  //        , 1px 1px 0px fade-out($shadow-color, 0.9)
+  //        ;
 }
 
 em {
@@ -592,6 +592,7 @@ logo {
   padding: $padding-large-vertical $padding-large-vertical;
   .modal-title {
     color: inherit;
+    font-size: 20px;
   }
   .icon-back {
     padding-right: 5px;

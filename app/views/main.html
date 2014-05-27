@@ -29,13 +29,18 @@
           </p>
         </header>
         <article class="text-center">
-          <div class="button-open btn btn-lg btn-success center-block margin-lg" ng-click="selectFile($event)"><i class="icon" ng-class="depthy.isLoading() ? 'icon-loading' : 'icon-open'"></i>Open photo</div>
+          <div class="button-open btn btn-lg btn-success center-block" ng-click="selectFile($event)"><i class="icon" ng-class="depthy.isLoading() ? 'icon-loading' : 'icon-open'"></i>Open photo</div>
         </article>
+      </section>
+
+      <section class="alert alert-warning alert-icon anim-expand" ng-if="depthy.isOffline()">
+        <i class="icon icon-powercord"></i>
+        You're working offline.<br/>Some feature may not be available!
       </section>
 
       <section id="gallery">
         <ul>
-          <li class="" ng-repeat="image in depthy.gallery" ng-style="{'background-image':'url('+image.thumb+')'}" ng-click="openImage(image)" ng-class="'type-' + image.getType()"></li>
+          <li class="" ng-repeat="image in depthy.gallery" ng-style="{'background-image':'url('+image.thumb+')'}" ng-click="openImage(image)" ng-class="'type-' + image.getType()" ng-if="image.isAvailable()"></li>
         </ul>
       </section>
 
@@ -56,10 +61,7 @@
         Ideas? Issues? Code? It's open sourced on <a href="https://github.com/panrafal/depthy">GitHub</a>!
       </section >
 
-      <section class="alert alert-warning alert-icon anim-expand" ng-if="depthy.isOffline()">
-        <i class="icon icon-powercord"></i>
-        You're working offline.<br/>Some feature may not be available!
-      </section>
+
     </div>
   </div>
 
