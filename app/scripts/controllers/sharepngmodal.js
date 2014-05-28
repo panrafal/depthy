@@ -22,7 +22,7 @@ angular.module('depthyApp')
         type: 'base64',
         name: $scope.image.title,
         title: $scope.image.title + ' #depthy',
-        description: 'View this image in 3D on http://depthy.stamina.pl'
+        description: 'View this image in 3D on http://depthy.me'
       },
       xhr: function() {
         var xhr = new window.XMLHttpRequest();

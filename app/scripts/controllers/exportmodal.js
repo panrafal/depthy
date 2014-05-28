@@ -72,7 +72,7 @@ angular.module('depthyApp')
           type: 'base64',
           name: depthy.opened.title,
           title: depthy.opened.title + ' #depthy',
-          description: 'Created using http://depthy.stamina.pl'
+          description: 'Created using http://depthy.me'
         },
         xhr: function() {
           var xhr = new window.XMLHttpRequest();

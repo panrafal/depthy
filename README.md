@@ -1,11 +1,11 @@
 DEPTHY
 ======
 
-Google Camera's Lens Blur playground.
+Images with depthmap playground.
 
-Extracts depth map and original from photos made with Google Camera's Lens Blur.
+Depthy shows Google Camera Lens Blur photos with 3D parallax effect and creates animated GIFs from them. Plus extracts the depth map and enables you to create your own!
 
-This is the source of the http://depthy.stamina.pl webapp. Contributions more than welcome!
+This is the source of the http://depthy.me/ webapp. Contributions more than welcome!
 
 ## How to build
 
@@ -25,9 +25,6 @@ This is the source of the http://depthy.stamina.pl webapp. Contributions more th
 There is a lot of stuff you can do with depthmaps. If you have ideas and you know how to code,
 You already know how to help ;) I'm pretty lax on formalities, just make it work and at least 
 try to follow conventions of the code...
-
-Please note, that there's an inevitable design/ux overhaul planned. Though the apps API should
-not change significantly.
 
 ## License
 
