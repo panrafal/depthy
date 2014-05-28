@@ -1,207 +1,333 @@
-header {
-  padding: 2em 0 2em 0;
-  background: $body-bg;
-  // color: #fff;
-  .container {
-    max-width: 650px;
+
+
+#app {
+  position: fixed;
+  left: 0px;
+  top: 0px;
+  width: 100%;
+  height: 100%;
+}
+
+#main {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 100%;
+  height: 100%;
+}
+
+
+// ------------------------------------------------------ NAVBAR
+#navbar {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  height: remify($navbar-height);
+  z-index: 40;
+  transition: all 0.5s ease-in-out;
+  
+  @extend .accelerate;
+
+  .btn-group {
+    margin-top: $border-width;
+    margin-right: $border-width;
   }
 
-  .notice {
-    opacity: 0.5;
-  }
-  .file-select {
-    margin-top: 2em;
-    position: relative;
-    .btn-success {
-      position: relative;
-      z-index: 2;
-      transition: all 0.5s ease;
-    }
-    .progress {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      margin: 0;
-      width: 14em;
-      transform: translate(-50%, -50%);
-      z-index: 1;
-      opacity: 0;
-      transition: all 0.5s ease;
-    }
-    &.processing {
-      .btn-success {
-        opacity: 0;
-        visibility: hidden;
-      }
-      .progress {
-        opacity: 1;
-      }
-    }
+  .btn-control {
+    background: transparent;
+    text-shadow: 0px 0px 2px fade-out(#000, 0.2);
+    padding: $padding-base-vertical $padding-base-vertical;
   }
 
-  .gallery {
-    margin-top: 2em;
+  &:before {
+    content: '';
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    height: remify(100px);
+    pointer-events: none;
+    background: linear-gradient(to top, fade-out($body-bg, 1),fade-out($body-bg, 0.8) 70%,fade-out($body-bg, 0.7) 100%);
+  }
+
+  logo {
+    // background-color: $body-bg;
+    position: absolute;
+    left: $padding-large-vertical;
+    top: $padding-large-vertical;
+    width: 5em;
+    cursor: pointer;
+    transition: all 0.5s ease-in-out;
+
+    .leftpane-gallery & {
+      transform: translateX(remify($gallery-width)) translateX(-5px);
+    }
+
+  }
+
+  .zen-mode & {
+    transform: translateY(-110px) translateY(-40px);
+  }
+
+}
+
+#hamburger {
+  cursor: pointer;
+  font-size: 16px;
+  position: fixed;
+  left: 0px;
+  top: $padding-large-vertical + 2px;
+  z-index: 60;
+  width: 40px;
+  height: 40px;
+
+  transition: all 0.5s ease-in-out;
+
+  .leftpane-opened &, .leftpane-gallery & {
+    transform: translateX(-10px);
+  }
+  .zen-mode & {
+    transform: translateX(-100%);
+  }
+  @media #{$media-full} {
+    transform: translateX(-100%)!important;
+  }
+
+}
+
+// ------------------------------------------------------ LEFTPANE
+#leftpane {
+  position: absolute;
+  left: 0px;
+  top: 0px; //remify($navbar-height);
+  width: remify($leftpane-width);
+  bottom: 0px;
+  max-width: 100%;
+  z-index: 50;
+  background: $leftpane-bg;
+
+  transition: all 0.5s ease-in-out;
+  transform: translate3d(-100%, 0, 0);
+
+  @extend .accelerate;
+
+  &>.scroll {
+    // overflow-x: hidden;
+    // overflow-y: auto;
+    // -webkit-overflow-scrolling: touch;
+    // height: 100%;
+
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
     
-     img {
-      cursor:pointer;
-      width: 80px;
-      height: 80px;
-      box-shadow: 1px 1px 1px rgba(0,0,0,0.5);
-      margin-bottom: 0.3em;
-     }
+    &>section {
+      flex-shrink: 0;
+    }
   }
+
+  &>.filler {
+
+  }
+
+  &:after {
+    // display: none;
+    content: '';
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    right: 0px;
+    width: remify(100px);
+    background: linear-gradient(to left, fade-out($body-bg, 1),fade-out($body-bg, 0.85) 90%,fade-out($body-bg, 0.6) 100%);
+    transition: all 0.5s ease-in-out;
+    transform: translateX(0);
+    z-index: -1;
+    pointer-events: none;
+
+    .leftpane-opened & {
+      transform: translateX(100%);      
+    }
+    @media #{$media-full} {
+      transform: translateX(100%);      
+    }
+
+
+  }
+
+
+
+  .leftpane-opened & {
+    transform: none; //translate3d(0, 0, 0);
+  }
+
+  .leftpane-gallery & {
+    transform: translateX(-100%) translateX(remify($gallery-width));
+  }
+
+  .zen-mode & {
+    transform: translateX(-100%) translateX(-20px);
+  }
+
+  .alert {
+    margin: 0;
+  }
+
+  @media #{$media-full} {
+    transform: translate3d(0, 0, 0);
+  }
+
+
 }
 
-#error {
-  $error-bg: darken($brand-danger, 35%);
-  background: linear-gradient(to bottom, darken($error-bg, 4%) 0%,$error-bg 2em);
-  border-top: 1px solid lighten($error-bg, 2%);
-  text-align: center;
-  padding: 2em;
-  overflow: hidden;
-  transition: all 0.5s ease;
-  max-height: 200px;
+// ------------------------------------------------------ ABOUT
+#about {
+  background: $about-bg;
 
-  h2 {
-    color: $brand-danger;
-  }
-  a {
-    margin-top: 1em;
+  padding: $padding-large-vertical $padding-large-horizontal;
+  padding-bottom: 0;
+
+  header {
+    text-align: center;
+    margin-bottom: 4 * $padding-large-vertical;
   }
 
-  &.ng-hide {
-    max-height: 0px;
-    display: block!important;
+  logo {
+    width: 100%;
+    // font-size: 5em;
+    margin-bottom: 2rem;
+  }
+
+  .logo {
+    margin-bottom: $padding-large-vertical;
+    position: relative;
+    width: 100%;
+
+    &:after {
+      display: block;
+      content: '';
+      padding-top: percentage(140 / 460);
+    }
+    svg {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      left: 0px;
+      top: 0px;    
+    }
+  }
+
+  article {
+    margin: $padding-large-vertical * 2;
+  }
+
+  .lead {
+    margin: 0;
+  }
+
+  .button-open {
+    max-width: $leftpane-width / 5 * 3;
+  }
+
+}
+
+// ------------------------------------------------------ GALLERY
+#gallery {
+  // display: none;
+  // background: $gallery-bg;
+
+  flex-grow: 1;
+
+  ul {
+    margin: 0;
     padding: 0;
-    border-top-width: 0;
-  }
-
-}
-
-#file {
-  // background: #125267;
-  background: linear-gradient(to bottom, darken($body-bg, 12%) 0%,darken($body-bg, 8%) 2em);
-  border-top: 1px solid lighten($body-bg, 0%);
-  text-align: center;
-  padding: 2em 0em;
-  position: relative;
-  // min-height: 80vh;
-
-
-
-  .images {
-    // line-height: 80vh;
-    // padding: 1em 0;
-    position: relative;
-    white-space: nowrap;
-    overflow-x: auto;
-    overflow-y: hidden;
-    padding: 1em 0;
-
-    html.touch & {
-      overflow-x: scroll;
-      -webkit-overflow-scrolling: touch;
-    }
-
-
-
-    .image {
-      display: inline-block;
-      position: relative;
-      margin: 0em 1em;
-      img {
-        max-width: 70vw;
-        max-height: 80vh;
-        // max-width: 100%;
-        width: auto;
-        height: auto;
-        box-shadow: 2px 2px 2px rgba(0,0,0,0.5);
-      }
-
-      &+.image {
-      }
-    }
-
-  }
-
-
-}
-
-#viewer {
-  background: linear-gradient(to bottom, darken($body-bg, 8%) 0%,darken($body-bg, 5%) 2em);
-  border-top: 1px solid lighten($body-bg, 6%);
-  padding: 2em 0;
-
-  .depthy-viewer {
-    position: relative;
-    margin: 0 auto 2em auto;
+    list-style: none;
     overflow: hidden;
   }
-  canvas {
-    position: absolute;
-    left: 50%;
-    top: 50%;
+  li {
+    cursor:pointer;
+    width: percentage(1 / 5);
     display: block;
-    pointer-events: none;
-    box-shadow: 1px 1px 1px rgba(0,0,0,0.5);
-  }
+    float: left;
+    background-position: 50% 50%;
+    background-size: cover;
+    position: relative;
 
-  html.no-webgl canvas {
-    display: none;
-  }
-
-  .buttons-options {
-    &>button {
-      width: 90px;
+    &:after {
+      content: '';
+      display: block;
+      padding-top: 100%;
     }
-    .button-group {
-      button {
-        width: 90px - 34px;
-      }
-      button + button {
-        width: 34px;
-      }
+
+    &:before {
+      @extend .icon;
+      position: absolute;
+      right: 6px;
+      bottom: 6px;
+      text-shadow: 0px 0px 1px fade-out(#000, 0.2);
+      font-size: 12px;
     }
-  }
 
-  .popover {
-    .option {
-      margin: 0.5em 0;
-
-      .btn-group {
-        display: table;
-        width: 100%;
-        .btn {
-          display: table-cell;
-          float: none;
-        }
-      }
+    &.type-shared {
+      @extend .icon-share;
+    }
+    &.type-local {
+      @extend .icon-open;
+    }
+    &.type-remote {
+      @extend .icon-link;
+    }
+    &.type-modified {
+      @extend .icon-draw;
     }
   }
 
-  .button-animate {
-    .popover {
-      min-width: 250px;
+  
+  &:after {
+    content: '';
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    right: 0px;
+    width: remify(10px);
+    background: linear-gradient(to left, fade-out($body-bg, 1),fade-out($body-bg, 0.9) 90%,fade-out($body-bg, 0.6) 100%);
+    transition: all 0.5s ease-in-out;
+    transform: translateX(0);
+
+    .leftpane-opened &, .leftpane-gallery & {
+      transform: translateX(100%);      
     }
   }
 
-  .button-export {
-    margin-top: 1em;
-    .popover {
-      min-width: 250px;
-      transform: translate(-50%, -100%) translateY(55px);
-    }
+  
+
+}
+
+// ------------------------------------------------------ SHARES
+#share {
+  margin-top: $padding-large-vertical * 2;
+  padding: 0 $padding-large-horizontal;
+  .btn-group-shares {
+    max-width: $leftpane-width / 5 * 3 + $border-width * 2;
+    margin: 0 auto;
+    margin-top: $border-width;
+
+    border-spacing: $border-width 0px;
+
   }
 
 }
 
-footer {
-  background: linear-gradient(to bottom, darken($body-bg, 14%) 0%,darken($body-bg, 10%) 2em);
-  border-top: 1px solid lighten($body-bg, 0%);
-  color: fade-out(#fff, 0.6);
+// ------------------------------------------------------ FOOTER
+#footer {
+
+  padding: $padding-large-vertical $padding-large-horizontal;
+  padding-top: 0;
+  margin-top: $padding-large-vertical;
+
+  color: $brand-neutral;
   text-align: center;
-  padding: 1em;
-  font-size: 0.9em;
+  font-size: $font-size-small;
   a {
     color: inherit;
     text-decoration: underline;
@@ -211,20 +337,117 @@ footer {
   }
 }
 
-.export-modal {
-  .progress {
-    width: 50%;
-    margin: 0.5em auto;
+// ------------------------------------------------------ VIEWER
+#viewer {
+  z-index: 1;
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  top: 0px;
+  bottom: 0px;
+  transition: all 0.5s ease-in-out;
+
+  .alerts {
+    position: absolute;
+    // width:100%;
+    // width: remify(400px);
+    // max-width: 80%;
+    left: $padding-base-vertical;
+    right: $padding-base-vertical;
+    top: 50%;
+    transform: translate(0%, -50%);
+    z-index: 10;
+    transition: all 0.5s ease-in-out;
+
+    .zen-mode & {
+      opacity: 0;
+    }    
   }
-  .export-progress {
-    margin: 3em auto;
-  }
-  .export-image {
-    &>img {
-      max-width: 80vw;
-      max-height: 50vh;
-      margin-bottom: 1em;
-      box-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+
+  .depthy-viewer {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+
+    .icon-loading {
+      font-size: 32px;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 1em;
+      line-height: 1em;
+      text-align: center;
+      margin-left: -0.5em;
+      margin-top: -0.5em;
+      z-index: 2;
+
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.2s ease;
+
+      .depthy-loading & {
+        transition: all 0.2s 0.2s ease;
+        opacity: 1;
+        visibility: visible;
+      }
     }
   }
+
+  canvas {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    display: block;
+    pointer-events: none;
+    box-shadow: 1px 1px 1px rgba(0,0,0,0.5);
+
+    transition: all 0.2s ease-in-out;
+    opacity: 0;
+    .depthy-ready & {
+      opacity: 1;
+    }
+
+    html.no-webgl & {
+      display: none;
+    }
+  }
+
+  .buttons-options {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: remify(30px) 0;
+    text-align:center;
+    z-index: 20;
+    transition: all 0.5s ease-in-out;
+
+    background: linear-gradient(to bottom, fade-out($body-bg, 1),fade-out($body-bg, 0.7) 70%,fade-out($body-bg, 0.6) 100%);
+
+    .zen-mode &, &.ng-hide {
+      display: block!important;
+      transform: translateY(100%) translateY(remify(60px));
+    }
+
+  }
+
+
+  .leftpane-gallery & {
+    transform: translateX(remify($gallery-width / 2));
+  }
+  
+  @media #{$media-desktop} {
+    .leftpane-opened & {
+      transform: translateX(remify($leftpane-width / 2));
+    }
+  }
+
+  .zen-mode & {
+    transform: translateX(0);
+  }
 }
+
+
+
+

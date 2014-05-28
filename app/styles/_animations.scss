@@ -1,53 +1,87 @@
 
 .anim-fade {
-    transition: all 0.2s ease-in;
+  transition: all 0.2s ease-in-out;
 
-    &.ng-hide-remove, &.ng-enter {
-        opacity: 0;
-    }
-    &.ng-hide-remove-active, &.ng-enter-active {
-        opacity: 1;
-    }
+  &.ng-hide-remove, &.ng-enter,
+  &.ng-hide-active, &.ng-leave-active,
+  &.ng-hide {
+    opacity: 0;
+  }
+  &.ng-hide-remove-active, &.ng-enter-active {
+    opacity: 1;
+  }
 
-    &.ng-hide-active, &.ng-leave-active {
-        opacity: 0;
-    }    
 }
 
-.anim-slideup {
-    transition: all 0.5s ease-in;
+.anim-slideup-centered {
+  transition: all 0.5s ease-in-out;
+  &.ng-hide {
+    display: block!important;
+  }
 
-    &.ng-hide-remove, &.ng-enter {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    &.ng-hide-remove-active, &.ng-enter-active {
-        opacity: 1;
-        transform: translateY(0px);
-    }
-
-    &.ng-hide-active, &.ng-leave-active {
-        opacity: 0;
-        transform: translateY(20px);
-    }    
+  &.ng-hide-remove, &.ng-enter,
+  &.ng-hide-active, &.ng-leave-active,
+  &.ng-hide {
+    visibility: hidden;
+    transform: translate(-50%, 100%) translateY(remify(60px));
+  }
+  &.ng-hide-remove-active, &.ng-enter-active {
+    visibility: visible;
+    transform: translateX(-50%);
+  }
 }
 
 .anim-expand {
-    transition: all 0.2s ease-in;
+  transition: all 0.3s ease-in-out;
+
+  &.ng-animate {
+    visibility: visible;
+    max-height: 150px;
     overflow:hidden;
 
+    &.long {
+      transition-duration: 0.3s;
+      max-height: 300px;
+    }
+    &.verylong {
+      transition-duration: 0.4s;
+      max-height: 600px;
+    }
+    &.short {
+      transition-duration: 0.2s;
+      max-height: 50px;
+    } 
+    
     &.ng-hide-remove:not(.ng-hide-remove-active), 
     &.ng-enter:not(.ng-enter-active),
     &.ng-hide-active,
-    &.ng-leave-active {
-        height: 0px;
-        margin-top: 0px;
-        margin-bottom: 0px;
-        padding-top: 0px;
-        padding-botto: 0px;
+    &.ng-leave-active,
+    &.ng-hide {
+      overflow:hidden;
+      display: block!important;
+      visibility: hidden;
+      max-height: 0px;
+      margin-top: 0px;
+      margin-bottom: 0px;
+      padding-top: 0px;
+      padding-bottom: 0px;
     }
-    &.ng-hide-remove-active, &.ng-enter-active {
-        // height: auto;
-    }
+    // &.ng-hide-remove-active, &.ng-enter-active {
+    //     max-height: 100px;
+    // }
 
+  }
+ 
+}
+
+
+
+
+@keyframes icon-rotate { 
+  0% { 
+    transform: rotate(0deg); 
+  }
+  100% { 
+    transform: rotate(359deg); 
+  } 
 }

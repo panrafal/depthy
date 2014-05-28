@@ -1,0 +1,9 @@
+
+
+@function remify($v) {
+  @if $v == false or unit($v) != "px"  {
+    @return $v;
+  } @else {
+    @return ($v / $font-size-base) * 1rem;
+  }
+}

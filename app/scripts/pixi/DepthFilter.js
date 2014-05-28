@@ -58,6 +58,7 @@ PIXI.DepthmapFilter = function(texture)
     '   vec2 disCords = vTextureCoord;',
     '   disCords += offset * vec2(1.0, -1.0) * map * scale;',
     '   gl_FragColor = texture2D(uSampler, disCords) * vColor;',
+    // '   gl_FragColor = vec4(1,1,1,0.5);',
     // '   gl_FragColor *= texture2D(displacementMap, mapCords);',
     '}'
   ];

@@ -24,7 +24,14 @@
     "Modernizr": false,
     "PIXI": false,
     "GIF": false,
+    "isJpg": false,
+    "isPng": false,
+    "DepthReader": false,
+    "DepthyViewer": false,
+    "Promise": false,
     "_": true,
-    "requestAnimFrame": true
+    "requestAnimFrame": true,
+    "screenfull": true,
+    'IScroll': true
   }
 }

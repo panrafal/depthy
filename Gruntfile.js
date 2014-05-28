@@ -49,6 +49,10 @@ module.exports = function (grunt) {
       gruntfile: {
         files: ['Gruntfile.js']
       },
+      svgmin: {
+        files: '<%= yeoman.app %>/images/*.svg',
+        tasks: ['svgmin']
+      },
       ngtemplates: {
         files: '<%= yeoman.app %>/views/*.html',
         tasks: ['ngtemplates']
@@ -164,6 +168,16 @@ module.exports = function (grunt) {
         ],
         dest: '.tmp/scripts/bs-templates.js'
       },
+      svg: {
+        options: {
+          htmlmin: {}
+        },
+        cwd: '.tmp',
+        src: [
+          'images/*.svg',
+        ],
+        dest: '.tmp/scripts/svg-templates.js'
+      },
 
     },
     autoprefixer: {
@@ -259,16 +273,16 @@ module.exports = function (grunt) {
       html: ['<%= yeoman.dist %>/{,*/}*.html'],
       css: ['<%= yeoman.dist %>/styles/{,*/}*.css'],
       options: {
-        assetsDirs: ['<%= yeoman.dist %>']
+        assetsDirs: ['<%= yeoman.dist %>', '<%= yeoman.dist %>/styles']
       }
     },
 
     // The following *-min tasks produce minified files in the dist folder
-    cssmin: {
-      options: {
-        root: '<%= yeoman.app %>'
-      }
-    },
+    // cssmin: {
+    //   options: {
+    //     root: '<%= yeoman.app %>'
+    //   }
+    // },
 
     imagemin: {
       dist: {
@@ -282,12 +296,17 @@ module.exports = function (grunt) {
     },
 
     svgmin: {
+      options: {                                      // Configuration that will be passed directly to SVGO
+        plugins: [
+          { mergePaths: false },
+        ]
+      },
       dist: {
         files: [{
           expand: true,
           cwd: '<%= yeoman.app %>/images',
           src: '{,*/}*.svg',
-          dest: '<%= yeoman.dist %>/images'
+          dest: '.tmp/images'
         }]
       }
     },
@@ -317,7 +336,7 @@ module.exports = function (grunt) {
         files: [{
           expand: true,
           cwd: '.tmp/concat/scripts',
-          src: '*.js',
+          src: 'scripts.js',
           dest: '.tmp/concat/scripts'
         }]
       }
@@ -345,7 +364,7 @@ module.exports = function (grunt) {
             'views/{,*/}*.html',
             'images/{,*/}*.{webp}',
             'samples/*',
-            'fonts/*',
+            'styles/fonts/*',
             'CNAME',
             'bower_components/gif.js/dist/*.js'
           ]
@@ -368,44 +387,57 @@ module.exports = function (grunt) {
     concurrent: {
       server: [
         'compass:server',
-        'ngtemplates'
+        'svgmin',
       ],
       test: [
         'compass'
       ],
       dist: [
         'compass:dist',
-        'ngtemplates',
         'imagemin',
-        'svgmin'
+        'svgmin',
       ]
     },
 
-    // By default, your `index.html`'s <!-- Usemin block --> will take care of
-    // minification. These next options are pre-configured if you do not wish
-    // to use the Usemin blocks.
-    // cssmin: {
-    //   dist: {
-    //     files: {
-    //       '<%= yeoman.dist %>/styles/main.css': [
-    //         '.tmp/styles/{,*/}*.css',
-    //         '<%= yeoman.app %>/styles/{,*/}*.css'
-    //       ]
-    //     }
-    //   }
-    // },
-    // uglify: {
-    //   dist: {
-    //     files: {
-    //       '<%= yeoman.dist %>/scripts/scripts.js': [
-    //         '<%= yeoman.dist %>/scripts/scripts.js'
-    //       ]
-    //     }
-    //   }
-    // },
+    uglify: {
+      options: {
+        // compress: false,
+        // preserveComments: 'all',
+        // beautify: true,
+      }
+    },
     // concat: {
     //   dist: {}
     // },
+
+    manifest: {
+      generate: {
+        options: {
+          basePath: '<%= yeoman.dist %>/',
+          cache: [
+            'http://fonts.googleapis.com/css?family=Roboto+Condensed:400,700',
+            'http://www.google-analytics.com/analytics.js'
+          ],
+          network: ['http://*', 'https://*', '*'],
+          // fallback: ['/ /offline.html'],
+          exclude: ['js/jquery.min.js'],
+          preferOnline: true,
+          verbose: true,
+          timestamp: true,
+          hash: true,
+          master: ['index.html']
+        },
+        src: [
+          'bower_components/gif.js/dist/*.*',
+          'scripts/**/*.*',
+          'styles/**/*.*',
+          'images/**/*.*',
+          'samples/*.*',
+          'favicon.png'
+        ],
+        dest: '<%= yeoman.dist %>/manifest.appcache'
+      }
+    },
 
     // Test settings
     karma: {
@@ -426,6 +458,7 @@ module.exports = function (grunt) {
       'clean:server',
       // 'bowerInstall',
       'concurrent:server',
+      'ngtemplates',
       'autoprefixer',
       'connect:livereload',
       'watch'
@@ -450,6 +483,7 @@ module.exports = function (grunt) {
     // 'bowerInstall',
     'useminPrepare',
     'concurrent:dist',
+    'ngtemplates',
     'autoprefixer',
     'concat',
     'ngmin',
@@ -459,7 +493,8 @@ module.exports = function (grunt) {
     'uglify',
     'rev',
     'usemin',
-    'htmlmin'
+    'htmlmin',
+    'manifest'
   ]);
 
   grunt.registerTask('default', [

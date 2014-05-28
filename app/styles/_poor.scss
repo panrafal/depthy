@@ -9,6 +9,9 @@ html.no-csstransforms,
 html.no-rgba,
 html.no-backgroundsize,
 html.no-webgl,
+html.no-todataurljpeg,
+html.no-todataurlpng,
+html.no-datauri,
 html.no-js,
 html.no-canvas {
 
@@ -29,8 +32,12 @@ html.no-canvas {
     .container {
       margin-top: 4em;
       max-width: 600px;
+    }
 
-
+    h1 {
+      text-indent: -9000px;
+      background: url('../logo.png') 50% 0% no-repeat;
+      height: 200px;
     }
 
     .preview {

@@ -1,15 +1,16 @@
 'use strict';
 
 angular.module('depthyApp')
-.controller('MainCtrl', function ($rootScope, $window, $scope, $timeout, ga, depthy, $element, $modal) {
+.controller('MainCtrl', function ($rootScope, $window, $scope, $timeout, ga, depthy, $element, $modal, $state, StateModal) {
 
   $rootScope.depthy = depthy;
   $rootScope.viewer = depthy.viewer; // shortcut
   $rootScope.Modernizr = window.Modernizr;
+  $rootScope.screenfull = screenfull;
+
+  $scope.version = depthy.getVersion();
 
   ga('set', 'dimension1', (Modernizr.webgl ? 'webgl' : 'no-webgl') + ' ' + (Modernizr.webp ? 'webp' : 'no-webp'));
-
-  depthy.loadSample('flowers', false);
 
   $rootScope.$safeApply = function(fn) {
     var phase = this.$root.$$phase;
@@ -22,28 +23,14 @@ angular.module('depthyApp')
     }
   };
 
-  $scope.hasImage = function() {
-    return !!depthy.viewer.imageSource;
-  };
-
-  $scope.hasDepth = function() {
-    return !!depthy.viewer.depthSource;
-  };
-
   $scope.loadSample = function(name) {
-    depthy.loadSample(name);
-    ga('send', 'event', 'sample', name);
+    $state.go('sample', {id: name});
+    // depthy.leftpaneOpen(true);
   };
 
-  $scope.getNextDepthScaleName = function() {
-    var scale = depthy.viewer.depthScale;
-    return scale > 1.05 ? 'Tranquilize' : scale < 0.95 ? 'Normalize' : 'Dramatize';
-  };
-
-  $scope.cycleDepthScale = function() {
-    var scale = depthy.viewer.depthScale;
-    scale = scale > 1.05 ? 0.5 : scale < 0.95 ? 1 : 2;
-    $scope.animateOption(depthy.viewer, {depthScale: scale});
+  $scope.openImage = function(image) {
+    $state.go(image.state, image.stateParams);
+    // depthy.leftpaneOpen(true);
   };
 
   $scope.animateOption = function(obj, option, duration) {
@@ -58,73 +45,104 @@ angular.module('depthyApp')
   };
 
 
-  // $scope.$on('fileselect', function(e, files) {
   $scope.$watch('compoundFiles', function(files) {
     if (files && files.length) {
-      depthy.handleCompoundFile(files[0]);
+      depthy.loadLocalImage(files[0]).then(
+        function() {
+          ga('send', 'event', 'image', 'parsed', depthy.hasDepthmap() ? 'depthmap' : 'no-depthmap');
+          depthy.leftpaneClose();
+          depthy.opened.openState();
+        },
+        function(e) {
+          ga('send', 'event', 'image', 'error', e);
+          depthy.leftpaneClose();
+        }
+      );
+      // depthy.handleCompoundFile(files[0]);
     }
   });
 
-  $scope.$watch('depthy.viewer.sourcesDirty', function() {
-    // it's not the angular way, but should save us some memory...
-    var image = $element.find('[image-source="image"]')[0],
-      depth = $element.find('[image-source="depth"]')[0];
+
+  $scope.$watch('depthy.useOriginalImage', function() {
+    depthy.refreshOpenedImage();
+  });
+
+
+  $scope.imageOptions = function() {
+    depthy.openPopup('image.options');
+  };
+
+  $scope.shareOptions = function() {
+    depthy.openPopup('share.options');
+  };
+
+  $scope.imageInfo = function() {
+    StateModal.showModal('image.info', {
+      templateUrl: 'views/image-info-modal.html',
+      windowClass: 'info-modal',
+      controller: 'ImageInfoModalCtrl',
+    });
+  };
+
+  $scope.exportGifOptions = function() {
+    var oldAnimate = depthy.viewer.animate;
+    depthy.viewer.animate = true;
     
-    if (image && image.src !== depthy.viewer.imageSource) image.src = depthy.viewer.imageSource || '';
-    if (depth && depth.src !== depthy.viewer.depthSource) depth.src = depthy.viewer.depthSource || '';
+    depthy.openPopup('export.gif.options').promise.finally(function() {
+      depthy.viewer.animate = oldAnimate;
+    });
 
-  });
-
-  // wait for DOM
-
-  // animatePopover = $popover($element.find('#button-animate'), {
-  //   placement: 'top',
-  //   trigger: 'manual',
-  //   // title: 'How do you want your GIF?',
-  //   contentTemplate: 'views/animate-popover.html',
-  // });
-
-  // exportPopover = $popover($element.find('#button-export'), {
-  //   placement: 'top',
-  //   trigger: 'manual',
-  //   // title: 'How do you want your GIF?',
-  //   contentTemplate: 'views/export-popover.html',
-  // });
-
-  $scope.toggleAnimatePopup = function() {
-    if (!depthy.animatePopuped) depthy.viewer.animate = true;
-    depthy.exportPopuped = false;
-    depthy.animatePopuped = !depthy.animatePopuped;
   };
 
-  $scope.toggleExportPopup = function() {
-    if (!depthy.exportPopuped) depthy.viewer.animate = true;
-    depthy.animatePopuped = false;
-    depthy.exportPopuped = !depthy.exportPopuped;
-  };
-
-  $scope.$watch('(depthy.exportPopuped || depthy.exportActive) && depthy.exportSize', function(size) {
-    if (size) {
-      depthy.viewer.overrideStageSize = {width: size, height: size};
-    } else {
-      depthy.viewer.overrideStageSize = null;
-    }
-  });
-
-  $scope.startExport = function() {
+  $scope.exportGifRun = function() {
     depthy.exportActive = true;
-    $modal.open({
+    StateModal.showModal('export.gif.run', {
+      // stateOptions: {location: 'replace'},
       templateUrl: 'views/export-modal.html',
       controller: 'ExportModalCtrl',
-      backdrop: 'static',
+      // backdrop: 'static',
       keyboard: false,
       windowClass: 'export-modal',
     }).result.finally(function() {
       depthy.exportActive = false;
     });
-    depthy.exportPopuped = false;
-    depthy.viewer.animate = false;
   };
+
+  $scope.exportPngRun = function() {
+    StateModal.showModal('export.png', {
+      // stateOptions: {location: 'replace'},
+      templateUrl: 'views/export-png-modal.html',
+      controller: 'ExportPngModalCtrl',
+      windowClass: 'export-png-modal',
+    }).result.finally(function() {
+    });
+  };
+
+  $scope.sharePngRun = function() {
+    StateModal.showModal('share.png', {
+      // stateOptions: {location: 'replace'},
+      templateUrl: 'views/share-png-modal.html',
+      controller: 'SharePngModalCtrl',
+      // backdrop: 'static',
+      // keyboard: false,
+      windowClass: 'share-png-modal',
+    }).result.finally(function() {
+    });
+  };
+
+  $scope.$watch('(depthy.activePopup.state === "export.gif.options" || depthy.exportActive) && depthy.exportSize', function(size) {
+    if (size) {
+      depthy.isViewerOverriden(true);
+      depthy.viewer.size = {width: size, height: size};
+      $scope.oldFit = depthy.viewer.fit;
+      depthy.viewer.fit = false;
+    } else {
+      if ($scope.oldFit) depthy.viewer.fit = $scope.oldFit;
+      $($window).resize();
+      depthy.isViewerOverriden(false);
+    }
+  });
+
 
   $scope.$on('pixi.webgl.init.exception', function(evt, exception) {
     console.error('WebGL Init Exception', exception);
@@ -133,12 +151,35 @@ angular.module('depthyApp')
   });
 
   $($window).on('resize', function() {
-    depthy.viewer.maxSize = {
-      width: $window.innerWidth * 1,
-      height: $window.innerHeight * 0.8,
+    depthy.viewer.size = {
+      width: $window.innerWidth,
+      height: $window.innerHeight,
     };
     $scope.$safeApply();
   });
   $($window).resize();
+
+  $($window).on('online offline', function() {
+    $scope.$safeApply();
+  });
+
+  $timeout(function() {
+    $scope.scroll = new IScroll('#leftpane', {
+      mouseWheel: true,
+      scrollbars: 'custom',
+      click: true,
+      fadeScrollbars: true,
+      interactiveScrollbars: true,
+      resizeScrollbars: false,
+      eventPassthrough: 'horizontal',
+    });
+    // refresh on every digest...
+    $scope.$watch(function() {
+      setTimeout(function() {
+        console.log('scroll refresh');
+        $scope.scroll.refresh();
+      }, 100);
+    });
+  });
 
 });

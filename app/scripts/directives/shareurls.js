@@ -24,6 +24,9 @@ angular.module('shareUrls', [])
     twitter: {
       url: 'https://twitter.com/share?url={url}&text={title}&via={via}&hashtags={hashtags}'
     },
+    'twitter-follow': {
+      url: 'https://twitter.com/intent/user?screen_name={name}'
+    },
     google: {
       url: 'https://plus.google.com/share?url={url}',
     },

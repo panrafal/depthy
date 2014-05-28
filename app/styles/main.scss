@@ -1,43 +1,147 @@
 $icon-font-path: "/bower_components/bootstrap-sass-official/vendor/assets/fonts/bootstrap/";
 
-$color-accent: #2BBFF0;
+// http://colorschemedesigner.com/#00428sOsOFfFf
 
-$body-bg: #092933;
-$text-color: #fff;
-$well-bg: rgba(0,0,0,0.2);
+$brand-primary: #007DA1;
+$brand-success: #0A95BB;
+$brand-danger: #AA3C2F;
+$brand-warning: #C66025;
+$brand-info: #666;
+$brand-neutral: #666;
+
+
+$brand-primary: #167D2E;
+$brand-success: #17A139;
+$brand-danger: #D4402A;
+$brand-warning: #D98915;
+$brand-info: #666;
+$brand-neutral: #666;
+
+$contrast: 10%;
+
+$brand-primary-dark: darken($brand-primary, $contrast); //#0165BD; 
+$brand-danger-dark: darken($brand-danger, $contrast);
+$brand-success-dark: darken($brand-success, $contrast);
+$brand-warning-dark: darken($brand-warning, $contrast);
+$brand-info-dark: darken($brand-info, $contrast);
+$brand-neutral-dark: #222;
+
+$brand-neutral-vdark: #111;
+
+$brand-neutral-bright: #888;
+
+
+$body-bg: #000;
+$text-color: #eee;
+$headings-color: $brand-primary;
+$text-color-dark: #444;
+$text-muted: $brand-neutral;
+
+$font-family-sans-serif: 'Roboto Condensed', Helvetica, Arial, sans-serif;
+
+$headings-font-family: $font-family-sans-serif;
 $headings-font-weight: 700;
-$headings-color: $color-accent;
-$text-muted: #88a0a8;
 
-$brand-primary: $color-accent;
-$brand-danger: #F83A2D;
-$brand-success: #47A447;
-$brand-warning: #F8D920;
-$state-warning-text: #F8D920;
+$padding-base-vertical: 10px;
+$padding-base-horizontal: 15px;
+$padding-large-vertical: 15px;
+$padding-large-horizontal: 30px;
 
-$btn-default-color: #fff;
-$btn-default-bg: lighten($body-bg, 20%);
+
+$border-color: $brand-neutral-dark;
+$border-width: 4px;
+$border-radius-base: 0px;
+$border-radius-large: 0px;
+$border-radius-small: 0px;
+
+// states 
+$state-danger-bg: $brand-danger;
+$state-danger-text: $text-color;
+$state-danger-border: $brand-danger-dark;
+$state-warning-bg: $brand-warning;
+$state-warning-text: $text-color;
+$state-warning-border: $brand-warning-dark;
+$state-info-bg: $brand-info;
+$state-info-text: $text-color;
+$state-info-border: $brand-info-dark;
+$state-success-bg: $brand-success;
+$state-success-text: $text-color;
+$state-success-border: $brand-success-dark;
+
+
+// wells
+$well-bg: rgba(0,0,0,0.2);
+
+// buttons
+$btn-default-color: $text-color;
+$btn-default-bg: $body-bg;
 $btn-default-border: lighten($body-bg, 22%);
 
+// popovers
 $popover-bg: $body-bg;
 $popover-arrow-color: $body-bg;
 $popover-arrow-width: 6px;
 $popover-max-width: 400px;
 
+// modals
 $modal-content-bg: $body-bg;
 $modal-header-border-color: lighten($body-bg, 10%);
-// $border-radius-base: 0px;
 
-$facebook-color: #3B5998;
-$google-color: #D74635;
-$twitter-color: #00C3F8;
+// panels
+$panel-bg: $body-bg;
+$panel-header-bg: $brand-primary;
+$panel-header-border: darken($panel-header-bg, $contrast);
+$panel-header-color: $text-color;
+$panel-footer-bg: $brand-neutral-dark;
+$panel-footer-border: $brand-neutral-vdark;
+$panel-footer-color: $text-color;
+$panel-default-text: $text-color;
+
+// code
+$code-color: inherit;
+$code-bg: fade-out($text-color, 0.8);
+
+// thumbnails
+$thumbnail-border: $border-color;
+$thumbnail-bg: $body-bg;
+$thumbnail-matte: $brand-neutral-dark;
+$thumbnail-padding: 1px;
 
 @import "_bootstrap.scss";
+@import "_icomoon.scss";
 
-// bower:scss
-// endbower
+$navbar-height: 40px;
+$navbar-bg: $body-bg;
 
+$leftpane-width: 375px;
+$leftpane-bg: $brand-neutral-vdark;
+
+$about-bg: transparent; //$brand-primary-dark;
+
+$gallery-width: 70px;
+$gallery-bg: darken($leftpane-bg, 15%);
+
+$facebook-color: desaturate(darken(#3B5998, $contrast), $contrast);
+$google-color:   desaturate(darken(#D74635, $contrast), $contrast);
+$twitter-color:  desaturate(darken(#00C3F8, $contrast), $contrast);
+
+
+$media-tiny: "(max-width: #{$screen-xs-max})";
+$media-small: "(min-width: #{$screen-sm-min}) and (max-width: #{$screen-sm-max})";
+$media-medium: "(min-width: #{$screen-md-min}) and (max-width: #{$screen-md-max})";
+$media-large: "(min-width: #{$screen-lg-min})";
+
+$media-phone: $media-tiny;
+$media-tablet: $media-small;
+$media-mobile: "(max-width: #{$screen-xs-max})";
+$media-desktop: "(min-width: #{$screen-desktop})";
+
+$media-full: "(min-width: #{$screen-lg-min})";
+
+
+@import "_mixins.scss";
 @import "_common.scss";
 @import "_animations.scss";
 @import "_elements.scss";
+@import "_rwd.scss";
 @import "_poor.scss";

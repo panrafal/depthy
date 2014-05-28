@@ -1,0 +1,66 @@
+// Buttons 
+
+@mixin button-variant($color, $background, $border) {
+  color: $color;
+  background-color: $background;
+  transition: all 0.2s ease;
+  // border-color: $background;
+  border: none;
+  box-shadow: none;
+
+
+  &:hover,
+  &:focus,
+  &:active,
+  &.active,
+  .open > &.dropdown-toggle {
+    color: $color;
+    background-color: lighten($background, $contrast / 2);
+        // border-color: darken($border, 12%);
+  }
+  &:active,
+  &.active,
+  .open > &.dropdown-toggle {
+    background-color: lighten($background, $contrast);
+  }
+  &.disabled,
+  &[disabled],
+  fieldset[disabled] & {
+    &,
+    &:hover,
+    &:focus,
+    &:active,
+    &.active {
+      opacity: 1;
+      background-color: desaturate($background, 50%);
+      color: darken($color, $contrast * 4);
+      border-color: $border;
+    }
+  }
+
+  .badge {
+    color: $background;
+    background-color: $color;
+  }
+}
+
+
+
+// Alerts
+
+@mixin alert-variant($background, $border, $text-color) {
+  background-color: fade-out($background, 0.8);
+  border-color: fade-out(darken($background, $contrast), 0.6);
+  color: $text-color;
+
+  hr {
+    border-top-color: darken($border, 5%);
+  }
+  .alert-link {
+    color: darken($text-color, 10%);
+  }
+
+  .icon:first-child {
+    color: $background;
+  }
+}
