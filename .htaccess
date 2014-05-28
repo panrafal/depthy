@@ -209,7 +209,7 @@ AddDefaultCharset utf-8
 # http://www.rackspace.com/knowledge_center/frequently-asked-question/why-is-mod-rewrite-not-working-on-my-site
 
 <IfModule mod_rewrite.c>
-    Options +FollowSymlinks
+  # Options +FollowSymlinks
   # Options +SymLinksIfOwnerMatch
     RewriteEngine On
   # RewriteBase /
@@ -541,3 +541,9 @@ FileETag None
 # <IfModule mod_headers.c>
 #    Header set Connection Keep-Alive
 # </IfModule>
+
+
+<IfModule mod_rewrite.c>
+    RewriteCond %{HTTP_HOST} ^depthy\.stamina\.pl$ [NC]
+    RewriteRule ^ http://depthy.me%{REQUEST_URI} [R=301,L]
+</IfModule>
