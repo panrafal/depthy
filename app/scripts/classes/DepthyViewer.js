@@ -105,7 +105,14 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
     }
 
     function initOrient() {
-      window.addEventListener('deviceorientation', onOrientation);
+      if (window.DeviceMotionEvent) {
+        window.addEventListener('devicemotion', onMotion);
+      } else if (window.DeviceOrientationEvent) {
+        console.warn('devicemotion unsupported!');
+        window.addEventListener('deviceorientation', onOrientation);
+      } else {
+        console.warn('deviceorientation unsupported!');
+      }
     }
 
     var lastOrientation;
@@ -125,9 +132,9 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
             x : Math.max(-1, Math.min(1, depthOffset.x + x)),
             y : Math.max(-1, Math.min(1, depthOffset.y + y))
           };
+          renderDirty = true;
         }
         // console.log("offset %d %d ABG %d %d %d", depthOffset.x, depthOffset.y, event.alpha, event.beta, event.gamma)
-        renderDirty = true;
 
       }
       lastOrientation = {
@@ -135,6 +142,37 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
         beta: event.beta,
         gamma: event.gamma
       };
+    }
+
+    function onMotion(event) {
+      var rotation = event.rotationRate,
+          gravity = event.accelerationIncludingGravity || {}
+      if (!rotation) {
+        // unsupported :(
+        console.warn('devicemotion seems to be unsupported :(', event, rotation);
+        window.removeEventListener('devicemotion', onMotion);
+        window.addEventListener('deviceorientation', onOrientation);
+        return;
+      }
+      if (options.animate || !options.orient || !isReady()) return;
+      var rate = Modernizr.chrome && !Modernizr.ios ? 1 : 0.005, // Chrome doesn't give angle per second
+          portrait = window.innerHeight > window.innerWidth,
+          x = (portrait ? rotation.beta : rotation.alpha) * -rate,
+          y = (portrait ? rotation.alpha : -rotation.beta) * -rate;
+
+      // detect flipped orientation
+      if (Math.abs(gravity.z) < 9 && (portrait ? gravity.y : gravity.x) < 0) {
+        x *= -1;
+        y *= -1;
+      }
+
+      if (x && y) {
+        depthOffset = {
+          x : Math.max(-1, Math.min(1, depthOffset.x + x)),
+          y : Math.max(-1, Math.min(1, depthOffset.y + y))
+        };
+        renderDirty = true;
+      }
     }
 
     function initRenderer() {

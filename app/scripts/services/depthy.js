@@ -343,7 +343,7 @@ angular.module('depthyApp').provider('depthy', function depthy() {
     depthy = {
       viewer: viewer,
 
-      version: 201,
+      version: 202,
       tipsState: {},
 
       exportSize: Modernizr.mobile ? 150 : 300,
