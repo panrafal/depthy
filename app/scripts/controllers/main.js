@@ -167,7 +167,7 @@ angular.module('depthyApp')
     $scope.scroll = new IScroll('#leftpane', {
       mouseWheel: true,
       scrollbars: 'custom',
-      click: true,
+      click: false,
       fadeScrollbars: true,
       interactiveScrollbars: true,
       resizeScrollbars: false,
