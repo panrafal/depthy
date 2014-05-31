@@ -34,7 +34,7 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
 
       easeFactor: isMobile() ? 0.2 : 0.4,
 
-      orient: true,
+      orient: 2,
 
       hover: true,
       // element to control mouse movements
@@ -155,7 +155,7 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
         return;
       }
       if (options.animate || !options.orient || !isReady()) return;
-      var rate = Modernizr.chrome && !Modernizr.ios ? 1 : 0.005, // Chrome doesn't give angle per second
+      var rate = (Modernizr.chrome && !Modernizr.ios ? 1 : 0.005) / options.orient, // Chrome doesn't give angle per second
           portrait = window.innerHeight > window.innerWidth,
           x = (portrait ? rotation.beta : rotation.alpha) * -rate,
           y = (portrait ? rotation.alpha : -rotation.beta) * -rate;
