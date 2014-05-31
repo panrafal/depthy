@@ -1,14 +1,14 @@
 /**
  *
- * The DepthmapFilter class uses the pixel values from the specified texture (called the displacement map) to perform a displacement of an object.
+ * The DepthDisplacementFilter class uses the pixel values from the specified texture (called the displacement map) to perform a displacement of an object.
  * You can use this filter to apply all manor of crazy warping effects
  * Currently the r property of the texture is used offset the x and the g propery of the texture is used to offset the y.
- * @class DepthmapFilter
+ * @class DepthDisplacementFilter
  * @contructor
  * @param texture {Texture} The texture used for the displacemtent map * must be power of 2 texture at the moment
  */
 'use strict';
-PIXI.DepthmapFilter = function(texture)
+PIXI.DepthDisplacementFilter = function(texture)
 {
   PIXI.AbstractFilter.call( this );
  
@@ -64,10 +64,10 @@ PIXI.DepthmapFilter = function(texture)
   ];
 };
  
-PIXI.DepthmapFilter.prototype = Object.create( PIXI.AbstractFilter.prototype );
-PIXI.DepthmapFilter.prototype.constructor = PIXI.DepthmapFilter;
+PIXI.DepthDisplacementFilter.prototype = Object.create( PIXI.AbstractFilter.prototype );
+PIXI.DepthDisplacementFilter.prototype.constructor = PIXI.DepthDisplacementFilter;
  
-PIXI.DepthmapFilter.prototype.onTextureLoaded = function()
+PIXI.DepthDisplacementFilter.prototype.onTextureLoaded = function()
 {
   this.uniforms.mapDimensions.value.x = this.uniforms.displacementMap.value.width;
   this.uniforms.mapDimensions.value.y = this.uniforms.displacementMap.value.height;
@@ -81,7 +81,7 @@ PIXI.DepthmapFilter.prototype.onTextureLoaded = function()
  * @property map
  * @type Texture
  */
-Object.defineProperty(PIXI.DepthmapFilter.prototype, 'map', {
+Object.defineProperty(PIXI.DepthDisplacementFilter.prototype, 'map', {
   get: function() {
     return this.uniforms.displacementMap.value;
   },
@@ -96,7 +96,7 @@ Object.defineProperty(PIXI.DepthmapFilter.prototype, 'map', {
  * @property scale
  * @type Point
  */
-Object.defineProperty(PIXI.DepthmapFilter.prototype, 'scale', {
+Object.defineProperty(PIXI.DepthDisplacementFilter.prototype, 'scale', {
   get: function() {
     return this.uniforms.scale.value;
   },
@@ -111,7 +111,7 @@ Object.defineProperty(PIXI.DepthmapFilter.prototype, 'scale', {
  * @property focus
  * @type float
  */
-Object.defineProperty(PIXI.DepthmapFilter.prototype, 'focus', {
+Object.defineProperty(PIXI.DepthDisplacementFilter.prototype, 'focus', {
   get: function() {
     return this.uniforms.focus.value;
   },
@@ -126,7 +126,7 @@ Object.defineProperty(PIXI.DepthmapFilter.prototype, 'focus', {
  * @property offset
  * @type Point
  */
-Object.defineProperty(PIXI.DepthmapFilter.prototype, 'offset', {
+Object.defineProperty(PIXI.DepthDisplacementFilter.prototype, 'offset', {
   get: function() {
     return this.uniforms.offset.value;
   },
