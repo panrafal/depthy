@@ -33,7 +33,6 @@ PIXI.DepthPerspectiveFilter = function(texture)
   }
  
   this.fragmentSrc = [
-
 'precision highp float;',
 'varying vec2 vTextureCoord;',
 'varying vec4 vColor;',
@@ -44,7 +43,7 @@ PIXI.DepthPerspectiveFilter = function(texture)
 'uniform float scale;',
 'uniform vec2 offset;',
 'uniform float focus;',
-'const float maxSteps = 16.0;',
+'const float maxSteps = 32.0;',
 '',
 'float perspective = -0.05;',
 'float upscale = 1.1;',
@@ -71,10 +70,13 @@ PIXI.DepthPerspectiveFilter = function(texture)
 '    vec2 vpos = pos + vector[1];',
 '    float dpos = 1.0;',
 '    ',
-'    #define method 5',
+'    #define method 1',
+'    #define branched 1 // its faster no to branch on shorter loops',
 '    ',
 '    for(float i = 1.0; i <= maxSteps; ++i) {',
+'        #ifdef branched',
 '        if (dpos >= 0.0 && colCount < 0.2) {',
+'        #endif',
 '            float depth = 1.0 - texture2D(displacementMap, vpos * vec2(1, -1) + vec2(0, 1)).r;',
 '            float confidence;',
 '',
@@ -101,6 +103,10 @@ PIXI.DepthPerspectiveFilter = function(texture)
 '',
 '            #endif',
 '',
+'            #ifndef branched',
+'               confidence *= step(0.0, dpos);',
+'               confidence *= step(colCount, 0.2);',
+'            #endif',
 '',
 '//             if (confidence > 0.0) {',
 '               colSum += texture2D(uSampler, vpos) * confidence;',
@@ -109,8 +115,10 @@ PIXI.DepthPerspectiveFilter = function(texture)
 '',
 '    //     gl_FragColor = vec4(confidence, depth, dpos, 0);',
 '    //         return;',
-'',
+'            ',
+'        #ifdef branched',
 '        }',
+'        #endif',
 '            ',
 '        dpos -= dstep;',
 '        vpos -= vstep;',
@@ -119,7 +127,6 @@ PIXI.DepthPerspectiveFilter = function(texture)
 '    gl_FragColor = colSum / vec4(colCount);',
 '',
 '}',
-
 
 ];
 };
