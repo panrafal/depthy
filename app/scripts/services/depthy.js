@@ -337,14 +337,24 @@ angular.module('depthyApp').provider('depthy', function depthy() {
       _.merge(depthy, _.pick(stored, _storeableDepthyKeys));
       _.merge(depthy.viewer, _.pick(stored.viewer, _storeableViewerKeys));
 
+      if (stored.version !== depthy.version) {
+        installNewVersion(stored.version);
+      }
+
       console.log('restoreSettings', stored);
       //
     }
 
+    function installNewVersion(old) {
+      console.log('New version %s -> %s', old, depthy.version);
+      storeSettings();
+    }
+
     function checkUpdate() {
       // force the update daily
-      UpdateCheck.check(depthy.storedDate && (new Date().getTime() - depthy.storedDate > 86400000)).then(function() {
-        depthy.gotUpdate = true;
+      UpdateCheck.check(depthy.storedDate && (new Date().getTime() - depthy.storedDate > 86400000)).then(function(found) {
+        if (found) depthy.gotUpdate = true;
+        storeSettings();
       });
     }
 

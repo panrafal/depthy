@@ -19,12 +19,16 @@ angular.module('depthyApp')
       }
 
       appCache.addEventListener('updateready', function(e) {
-        if (appCache.status == window.applicationCache.UPDATEREADY) {
+        if (appCache.status === window.applicationCache.UPDATEREADY) {
           console.log('Got update!');
-          $q.resolve();
+          deferred.resolve(true);
         } else {
-          $q.reject();
+          deferred.resolve(false);
         }
+      }, false);
+
+      appCache.addEventListener('noupdate', function(e) {
+        deferred.resolve(false);
       }, false);
 
     }, false);
