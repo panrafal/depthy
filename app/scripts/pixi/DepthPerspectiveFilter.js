@@ -4,12 +4,12 @@
  * @param texture {Texture} The texture used for the displacemtent map * must be power of 2 texture at the moment
  */
 'use strict';
-PIXI.DepthPerspectiveFilter = function(texture)
+PIXI.DepthPerspectiveFilter = function(texture, quality)
 {
   PIXI.AbstractFilter.call( this );
  
   this.passes = [this];
- 
+
   // set the uniforms
   this.uniforms = {
     displacementMap: {type: 'sampler2D', value:texture},
@@ -46,20 +46,62 @@ PIXI.DepthPerspectiveFilter = function(texture)
 'uniform vec2 offset;',
 'uniform float focus;',
 '',
-'#define METHOD 5',
+'#if !defined(QUALITY)',
+'',
+'    // #define CORRECT',
+'    // #define COLORAVG',
+'',
+'#elif QUALITY == 1',
+'',
+'    #define METHOD 1',
+'    #define CORRECT',
+'//     #define COLORAVG',
+'    #define MAXSTEPS 6.0',
+'    #define ENLARGE 1.0',
+'',
+'#elif QUALITY == 2',
+'',
+'    #define METHOD 1',
+'    #define CORRECT',
+'//     #define COLORAVG',
+'    #define MAXSTEPS 16.0',
+'    #define ENLARGE 1.5',
+'',
+'#elif QUALITY == 3',
+'',
+'    #define METHOD 5',
+'//     #define CORRECT',
+'    #define COLORAVG',
+'    #define MAXSTEPS 32.0',
+'    #define ENLARGE 1.7',
+'#endif',
+'',
 '#define BRANCHLOOP  ',
 '#define BRANCHSAMPLE ',
 '#define DEBUG 0',
 '// #define DEBUGBREAK 15',
-'#define CORRECT',
-'// #define COLORAVG',
 '',
-'const float maxSteps = 8.0;',
+'#ifndef METHOD',
+'    #define METHOD 1',
+'#endif',
+'#ifndef MAXSTEPS',
+'    #define MAXSTEPS 8.0',
+'#endif',
+'#ifndef ENLARGE',
+'    #define ENLARGE 1.2',
+'#endif',
+'#ifndef PERSPECTIVE',
+'    #define PERSPECTIVE 0.0',
+'#endif',
+'#ifndef UPSCALE',
+'    #define UPSCALE 1.06',
+'#endif',
 '',
-'const float perspective = -0.05;',
-'const float upscale = 1.01;',
+'',
+'const float perspective = PERSPECTIVE;',
+'const float upscale = UPSCALE;',
 '// float steps = clamp( ceil( max(abs(offset.x), abs(offset.y)) * maxSteps ), 1.0, maxSteps);',
-'float steps = maxSteps;',
+'float steps = MAXSTEPS;',
 '',
 '#ifdef COLORAVG',
 'float maskPower = steps * 2.0;// 32.0;',
@@ -76,7 +118,7 @@ PIXI.DepthPerspectiveFilter = function(texture)
 'const float confidenceCutoff = 0.2;',
 '',
 'float aspect = dimensions.x / dimensions.y;',
-'vec2 scale2 = vec2(scale * min(1.0, 1.0 / aspect), scale * min(1.0, aspect)) * vec2(1, -1) * vec2(1);',
+'vec2 scale2 = vec2(scale * min(1.0, 1.0 / aspect), scale * min(1.0, aspect)) * vec2(1, -1) * vec2(ENLARGE);',
 '// mat2 baseVector = mat2(vec2(-focus * offset) * scale2, vec2(offset - focus * offset) * scale2);',
 'mat2 baseVector = mat2(vec2((0.5 - focus) * offset - offset/2.0) * scale2, ',
 '                       vec2((0.5 - focus) * offset + offset/2.0) * scale2);',
@@ -102,7 +144,7 @@ PIXI.DepthPerspectiveFilter = function(texture)
 '  float minConfidence = dstep / 2.0;',
 '    ',
 '    ',
-'    for(float i = 0.0; i < maxSteps; ++i) {',
+'    for(float i = 0.0; i < MAXSTEPS; ++i) {',
 '      vec2 vpos = pos + vector[1] - i * vstep;',
 '      float dpos = 0.5 + compression / 2.0 - i * dstep;',
 '      #ifdef BRANCHLOOP',
@@ -113,7 +155,7 @@ PIXI.DepthPerspectiveFilter = function(texture)
 '        float confidence;',
 '',
 '        #if METHOD == 1',
-'          confidence = step(dpos, depth - 0.0);',
+'          confidence = step(dpos, depth + 0.001);',
 '',
 '        #elif METHOD == 2',
 '          confidence = 1.0 - abs(dpos - depth);',
@@ -184,7 +226,13 @@ PIXI.DepthPerspectiveFilter = function(texture)
 '  #endif',
 '',
 '}',
+
   ];
+
+  this.quality = quality;
+  if (quality) {
+    this.fragmentSrc.unshift('#define QUALITY ' + quality);
+  }
 };
  
 PIXI.DepthPerspectiveFilter.prototype = Object.create( PIXI.AbstractFilter.prototype );
