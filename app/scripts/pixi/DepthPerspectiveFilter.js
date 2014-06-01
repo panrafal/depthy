@@ -71,7 +71,7 @@ PIXI.DepthPerspectiveFilter = function(texture)
 'const float confidenceCutoff = 0.2;',
 '',
 'float aspect = dimensions.x / dimensions.y;',
-'vec2 scale2 = vec2(scale / aspect, scale) * vec2(1, -1) * vec2(8);',
+'vec2 scale2 = vec2(scale * min(1.0, 1.0 / aspect), scale * min(1.0, aspect)) * vec2(1, -1) * vec2(1);',
 'mat2 baseVector = mat2(vec2(-focus * offset) * scale2, vec2(offset - focus * offset) * scale2);',
 '',
 '',
