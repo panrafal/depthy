@@ -36,6 +36,13 @@
       <section class="alert alert-warning alert-icon anim-expand" ng-if="depthy.isOffline()">
         <i class="icon icon-powercord"></i>
         You're working offline.<br/>Some feature may not be available!
+      </section>      
+      <section class="alert alert-success alert-icon alert-button anim-expand" ng-if="depthy.gotUpdate">
+        <i class="icon icon-loop"></i>
+        <div class="btn btn-success btn-sm pull-right" ng-click="depthy.reload()">Reload</div>
+        <div class="alert-body">
+          There is a new version available!
+        </div>
       </section>
 
       <section id="gallery">
