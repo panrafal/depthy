@@ -464,9 +464,10 @@ angular.module('depthyApp').provider('depthy', function depthy() {
         });
       },
 
+      _fileId: 0,
       loadLocalImage: function(file) {
 
-        var fileId = _.isObject(file) ? new Date().getTime() + '' : file,
+        var fileId = _.isObject(file) ? (++ this._fileId) + '' : file,
         opened = prepareImage({
           state: 'local',
           stateParams: {id: fileId},

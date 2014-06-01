@@ -433,6 +433,7 @@ module.exports = function (grunt) {
           'styles/**/*.*',
           'images/**/*.*',
           'samples/*.*',
+          'icon.png',
           'favicon.png'
         ],
         dest: '<%= yeoman.dist %>/manifest.appcache'
