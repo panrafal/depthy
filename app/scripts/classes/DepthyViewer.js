@@ -471,7 +471,8 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
     function updateStage() {
       // combine image with depthmap
       if (!depthFilter) {
-        depthFilter = new PIXI.DepthPerspectiveFilter(depthRender);
+        // depthFilter = new PIXI.DepthPerspectiveFilter(depthRender);
+        depthFilter = new PIXI.DepthDisplacementFilter(depthRender);
       } else {
         depthFilter.map = depthRender;
       }
