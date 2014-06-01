@@ -450,4 +450,12 @@
 
 
 
+// ------------------------------------------------------ DEBUG
 
+#stats {
+  position: absolute;
+  left: 50%;
+  top: 0px;
+  margin-left: -50px;
+  z-index: 20000;
+}

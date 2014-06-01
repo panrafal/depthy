@@ -182,4 +182,18 @@ angular.module('depthyApp')
     });
   });
 
+
+  if (window.Stats) {
+    var stats = new Stats();
+    stats.setMode(0); // 0: fps, 1: ms
+    document.body.appendChild( stats.domElement );
+    var runStats = function() {
+        stats.begin();
+        stats.end();
+        requestAnimFrame(runStats);
+    };
+    runStats();
+  }
+
+
 });
