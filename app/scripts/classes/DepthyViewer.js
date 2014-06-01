@@ -20,7 +20,7 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
       // allow 2x upscale
       retina: true,
       // maximum upscaling to fit in viewport (through canvas stretching)
-      upscale: 4,
+      upscale: 1,
 
       // animation options
       animate: false,
