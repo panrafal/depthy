@@ -39,6 +39,8 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
       hover: true,
       // element to control mouse movements
       hoverElement: false,
+
+      alwaysRender: true,
     };
 
   var DepthyViewer = root.DepthyViewer = function(element, options) {
@@ -560,7 +562,7 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
         readyResolver = null;
       }
 
-      if (renderDirty) {
+      if (renderDirty || options.alwaysRender) {
         renderer.render(stage);
         renderDirty = false;
       }
