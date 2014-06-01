@@ -143,6 +143,14 @@ angular.module('depthyApp')
     }
   });
 
+  $scope.$watch('viewer.fit', function(fit) {
+    if (fit === 'cover') {
+      depthy.viewer.upscale = 4;
+    } else if (fit === 'contain') {
+      depthy.viewer.upscale = 1;
+    }
+  });
+
 
   $scope.$on('pixi.webgl.init.exception', function(evt, exception) {
     console.error('WebGL Init Exception', exception);
