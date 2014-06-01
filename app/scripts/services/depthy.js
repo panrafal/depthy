@@ -9,7 +9,7 @@ angular.module('depthyApp').provider('depthy', function depthy() {
     depthScale: Modernizr.mobile ? 2 : 1,
   });
 
-  this.$get = function(ga, $timeout, $rootScope, $document, $window, $q, $modal, $state, StateModal) {
+  this.$get = function(ga, $timeout, $rootScope, $document, $window, $q, $modal, $state, StateModal, UpdateCheck) {
 
     var leftpaneDeferred, depthy,
       history = [];
@@ -313,11 +313,12 @@ angular.module('depthyApp').provider('depthy', function depthy() {
     }
 
     var _storeableViewerKeys = ['fit', 'animate', 'animateDuration', 'animatePosition', 'animateScale', 'depthScale', 'depthFocus', 'tipsState'],
-        _storeableDepthyKeys = ['useOriginalImage', 'exportSize'];
+        _storeableDepthyKeys = ['useOriginalImage', 'exportSize', 'storedDate'];
 
     var storeSettings = _.throttle(function storeSettings() {
       if (!Modernizr.localstorage) return;
       if (depthy.isViewerOverriden()) return;
+      depthy.storedDate = new Date().getTime();
       var store = _.pick(depthy, _storeableDepthyKeys);
       store.viewer = _.pick(viewer, _storeableViewerKeys);
       store.version = depthy.version;
@@ -340,11 +341,41 @@ angular.module('depthyApp').provider('depthy', function depthy() {
       //
     }
 
+    function checkUpdate() {
+      // force the update daily
+      UpdateCheck.check(depthy.storedDate && (new Date().getTime() - depthy.storedDate > 86400000)).then(function() {
+        depthy.gotUpdate = true;
+      });
+    }
+
+    function initialize() {
+      $rootScope.$on('$stateChangeSuccess', function() {
+        depthy.zenMode = false;
+      });
+
+      openImage(createImageInfo({empty: true}));
+
+      restoreSettings();
+      checkUpdate();
+      restoreImageHistory();
+      updateImageGallery();
+
+      $rootScope.$watch(function() {
+        var store = _.pick(depthy, _storeableDepthyKeys);
+        store.viewer = _.pick(viewer, _storeableViewerKeys);
+        return store;
+      }, function(n, o) {
+        if (n === o) return;
+        storeSettings();
+      }, true);
+    }
+
     depthy = {
       viewer: viewer,
 
-      version: 202,
+      version: 203,
       tipsState: {},
+      lastSettingsDate: null,
 
       exportSize: Modernizr.mobile ? 150 : 300,
       exportType: 'gif',
@@ -782,29 +813,16 @@ angular.module('depthyApp').provider('depthy', function depthy() {
           return;
         }
         depthy.zenMode = !depthy.zenMode;
+      },
+
+      reload: function() {
+        $window.location.reload();
       }
 
     };
 
 
-    $rootScope.$on('$stateChangeSuccess', function() {
-      depthy.zenMode = false;
-    });
-
-    openImage(createImageInfo({empty: true}));
-
-    restoreSettings();
-    restoreImageHistory();
-    updateImageGallery();
-
-    $rootScope.$watch(function() {
-      var store = _.pick(depthy, _storeableDepthyKeys);
-      store.viewer = _.pick(viewer, _storeableViewerKeys);
-      return store;
-    }, function(n, o) {
-      if (n === o) return;
-      storeSettings();
-    }, true);
+    initialize();
 
 
     return depthy;

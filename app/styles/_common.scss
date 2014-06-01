@@ -105,6 +105,9 @@ p a {
 .margin-top {
   margin-top: $padding-large-vertical !important;
 }
+.margin-left {
+  margin-left: $padding-large-horizontal !important;
+}
 .margin-lg {
   margin-top: $padding-large-vertical * 2 !important;
   margin-bottom: $padding-large-vertical * 2 !important;
@@ -122,6 +125,10 @@ p a {
 }
 .margin-top-xl {
   margin-top: $padding-large-vertical * 4 !important;
+}
+
+.margin-sm-left {
+  margin-left: $padding-base-horizontal !important;
 }
 
 .margin-top-none {
@@ -423,6 +430,11 @@ logo {
       top: 50%;
       margin-top: -8px;
       left: $padding-base-horizontal;
+    }
+  }
+  &.alert-button {
+    .btn-sm+.alert-body {
+      padding-top: $padding-small-vertical - 1px;
     }
   }
 }
