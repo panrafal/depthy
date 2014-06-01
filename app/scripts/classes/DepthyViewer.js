@@ -29,7 +29,7 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
       animateScale: {x: 1, y: 0.5},
 
       depthScale: 1,
-      depthBlurSize: 4,
+      depthBlurSize: 0,
       depthFocus: 0.5,
 
       easeFactor: isMobile() ? 0.2 : 0.4,
