@@ -29,7 +29,7 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
       animateScale: {x: 1, y: 0.5},
 
       depthScale: 1,
-      depthBlurSize: 0,
+      depthBlurSize: 4,
       depthFocus: 0.5,
 
       easeFactor: isMobile() ? 0.2 : 0.4,
@@ -490,7 +490,7 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
     }
 
     function updateDepthFilter() {
-      depthFilter.scale = (isMobile() ? 0.015 : 0.015) * (options.depthScale || 1);
+      depthFilter.scale = 0.02 * (options.depthScale || 1);
 
       depthFilter.offset = {
         x : easedOffset.x || 0,
