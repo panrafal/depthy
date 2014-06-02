@@ -12,15 +12,20 @@ uniform float focus;
 
 #if !defined(QUALITY)
 
-    // #define CORRECT
-    // #define COLORAVG
-
+    #define METHOD 1
+    #define CORRECT
+//     #define COLORAVG
+    #define ENLARGE 1.7
+    #define ANTIALIAS
+    #define MAXSTEPS 16.0
+    const float antialiasStep = -1.5;
 #elif QUALITY == 1
 
     #define METHOD 1
     #define CORRECT
-//     #define COLORAVG
+    #define COLORAVG
     #define MAXSTEPS 6.0
+    #define ENLARGE 1.0
 
 #elif QUALITY == 2
 
@@ -28,15 +33,17 @@ uniform float focus;
     #define CORRECT
 //     #define COLORAVG
     #define MAXSTEPS 16.0
+    #define ENLARGE 1.5
 
 #elif QUALITY == 3
 
-    #define METHOD 5
-//     #define CORRECT
-    #define COLORAVG
-    #define MAXSTEPS 32.0
-    #define ENLARGE 1.5
+    #define METHOD 1
+    #define CORRECT
+//    #define COLORAVG
+    #define MAXSTEPS 40.0
+    #define ENLARGE 1.7
 #endif
+
 
 #define BRANCHLOOP  
 #define BRANCHSAMPLE 
@@ -50,7 +57,7 @@ uniform float focus;
     #define MAXSTEPS 8.0
 #endif
 #ifndef ENLARGE
-    #define ENLARGE 1.0
+    #define ENLARGE 1.2
 #endif
 #ifndef PERSPECTIVE
     #define PERSPECTIVE 0.0
@@ -104,11 +111,11 @@ void main(void) {
 
   float confidenceSum = 0.0;
   float minConfidence = dstep / 2.0;
-    
+  float j = 0.0;    
     
     for(float i = 0.0; i < MAXSTEPS; ++i) {
-      vec2 vpos = pos + vector[1] - i * vstep;
-      float dpos = 0.5 + compression / 2.0 - i * dstep;
+      vec2 vpos = pos + vector[1] - j * vstep;
+      float dpos = 0.5 + compression / 2.0 - j * dstep;
       #ifdef BRANCHLOOP
       if (dpos >= vectorCutoff && confidenceSum < confidenceCutoff) {
       #endif
@@ -117,7 +124,7 @@ void main(void) {
         float confidence;
 
         #if METHOD == 1
-          confidence = step(dpos, depth - 0.0);
+          confidence = step(dpos, depth + 0.001);
 
         #elif METHOD == 2
           confidence = 1.0 - abs(dpos - depth);
@@ -139,6 +146,16 @@ void main(void) {
         #ifndef BRANCHLOOP
          confidence *= step(vectorCutoff, dpos);
          confidence *= step(confidenceSum, confidenceCutoff);
+        #endif
+          
+        #ifdef ANTIALIAS
+//           if (confidence > 0.8 && i == j) {
+//               j -= 1.5;
+//           }
+          j += step(0.8, confidence) 
+               * step(i, j) 
+               * antialiasStep;
+          confidence *= confidenceCutoff / 3.0;
         #endif
 
         #ifdef BRANCHSAMPLE
@@ -162,6 +179,7 @@ void main(void) {
         }
         #endif
 
+          
         #if DEBUG > 2
           gl_FragColor = vec4(vector[0] / 2.0 + 1.0, vector[1].xy / 2.0 + 1.0);
         #elif DEBUG > 1
@@ -178,7 +196,7 @@ void main(void) {
       #ifdef BRANCHLOOP
       }
       #endif
-
+      j += 1.0;
     };
 
   #if defined(COLORAVG) && DEBUG == 0
