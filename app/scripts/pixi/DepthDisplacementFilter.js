@@ -1,14 +1,14 @@
 /**
  *
- * The DepthmapFilter class uses the pixel values from the specified texture (called the displacement map) to perform a displacement of an object.
+ * The DepthDisplacementFilter class uses the pixel values from the specified texture (called the displacement map) to perform a displacement of an object.
  * You can use this filter to apply all manor of crazy warping effects
  * Currently the r property of the texture is used offset the x and the g propery of the texture is used to offset the y.
- * @class DepthmapFilter
+ * @class DepthDisplacementFilter
  * @contructor
  * @param texture {Texture} The texture used for the displacemtent map * must be power of 2 texture at the moment
  */
 'use strict';
-PIXI.DepthmapFilter = function(texture)
+PIXI.DepthDisplacementFilter = function(texture)
 {
   PIXI.AbstractFilter.call( this );
  
@@ -18,7 +18,7 @@ PIXI.DepthmapFilter = function(texture)
   // set the uniforms
   this.uniforms = {
     displacementMap: {type: 'sampler2D', value:texture},
-    scale:           {type: '2f', value:{x:0.015, y:0.015}},
+    scale:           {type: '1f', value:0.015},
     offset:          {type: '2f', value:{x:0, y:0}},
     mapDimensions:   {type: '2f', value:{x:1, y:5112}},
     dimensions:      {type: '4fv', value:[0,0,0,0]},
@@ -43,20 +43,22 @@ PIXI.DepthmapFilter = function(texture)
     'varying vec4 vColor;',
     'uniform sampler2D displacementMap;',
     'uniform sampler2D uSampler;',
-    'uniform vec2 scale;',
+    'uniform float scale;',
     'uniform vec2 offset;',
     'uniform vec4 dimensions;',
     'uniform vec2 mapDimensions;',
     'uniform float focus;',
  
     'void main(void) {',
+    '   float aspect = dimensions.x / dimensions.y;',
+    '   vec2 scale2 = vec2(scale * min(1.0, 1.0 / aspect), scale * min(1.0, aspect)) * vec2(1, -1) * vec2(1);',
     '   vec2 mapCords = vTextureCoord;',
     '   mapCords.y *= -1.0;',
     '   mapCords.y += 1.0;',
     '   float map = texture2D(displacementMap, mapCords).r;',
     '   map = map * -1.0 + focus;',
     '   vec2 disCords = vTextureCoord;',
-    '   disCords += offset * vec2(1.0, -1.0) * map * scale;',
+    '   disCords += offset * map * scale2;',
     '   gl_FragColor = texture2D(uSampler, disCords) * vColor;',
     // '   gl_FragColor = vec4(1,1,1,0.5);',
     // '   gl_FragColor *= texture2D(displacementMap, mapCords);',
@@ -64,10 +66,10 @@ PIXI.DepthmapFilter = function(texture)
   ];
 };
  
-PIXI.DepthmapFilter.prototype = Object.create( PIXI.AbstractFilter.prototype );
-PIXI.DepthmapFilter.prototype.constructor = PIXI.DepthmapFilter;
+PIXI.DepthDisplacementFilter.prototype = Object.create( PIXI.AbstractFilter.prototype );
+PIXI.DepthDisplacementFilter.prototype.constructor = PIXI.DepthDisplacementFilter;
  
-PIXI.DepthmapFilter.prototype.onTextureLoaded = function()
+PIXI.DepthDisplacementFilter.prototype.onTextureLoaded = function()
 {
   this.uniforms.mapDimensions.value.x = this.uniforms.displacementMap.value.width;
   this.uniforms.mapDimensions.value.y = this.uniforms.displacementMap.value.height;
@@ -81,7 +83,7 @@ PIXI.DepthmapFilter.prototype.onTextureLoaded = function()
  * @property map
  * @type Texture
  */
-Object.defineProperty(PIXI.DepthmapFilter.prototype, 'map', {
+Object.defineProperty(PIXI.DepthDisplacementFilter.prototype, 'map', {
   get: function() {
     return this.uniforms.displacementMap.value;
   },
@@ -96,7 +98,7 @@ Object.defineProperty(PIXI.DepthmapFilter.prototype, 'map', {
  * @property scale
  * @type Point
  */
-Object.defineProperty(PIXI.DepthmapFilter.prototype, 'scale', {
+Object.defineProperty(PIXI.DepthDisplacementFilter.prototype, 'scale', {
   get: function() {
     return this.uniforms.scale.value;
   },
@@ -111,7 +113,7 @@ Object.defineProperty(PIXI.DepthmapFilter.prototype, 'scale', {
  * @property focus
  * @type float
  */
-Object.defineProperty(PIXI.DepthmapFilter.prototype, 'focus', {
+Object.defineProperty(PIXI.DepthDisplacementFilter.prototype, 'focus', {
   get: function() {
     return this.uniforms.focus.value;
   },
@@ -126,7 +128,7 @@ Object.defineProperty(PIXI.DepthmapFilter.prototype, 'focus', {
  * @property offset
  * @type Point
  */
-Object.defineProperty(PIXI.DepthmapFilter.prototype, 'offset', {
+Object.defineProperty(PIXI.DepthDisplacementFilter.prototype, 'offset', {
   get: function() {
     return this.uniforms.offset.value;
   },

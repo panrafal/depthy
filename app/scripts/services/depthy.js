@@ -312,16 +312,16 @@ angular.module('depthyApp').provider('depthy', function depthy() {
       });
     }
 
-    var _storeableViewerKeys = ['fit', 'animate', 'animateDuration', 'animatePosition', 'animateScale', 'depthScale', 'depthFocus', 'tipsState'],
-        _storeableDepthyKeys = ['useOriginalImage', 'exportSize', 'storedDate'];
+    var _storeableViewerKeys = ['fit', 'animate', 'animateDuration', 'animatePosition', 'animateScale', 'depthScale', 'depthFocus', 'tipsState', 'qualityStart'],
+        _storeableDepthyKeys = ['useOriginalImage', 'exportSize'];
 
     var storeSettings = _.throttle(function storeSettings() {
       if (!Modernizr.localstorage) return;
       if (depthy.isViewerOverriden()) return;
-      depthy.storedDate = new Date().getTime();
       var store = _.pick(depthy, _storeableDepthyKeys);
       store.viewer = _.pick(viewer, _storeableViewerKeys);
       store.version = depthy.version;
+      store.storedDate = new Date().getTime();
 
       console.log('storeSettings', store);
       window.localStorage.setItem('settings', JSON.stringify(store));
@@ -337,6 +337,7 @@ angular.module('depthyApp').provider('depthy', function depthy() {
       _.merge(depthy, _.pick(stored, _storeableDepthyKeys));
       _.merge(depthy.viewer, _.pick(stored.viewer, _storeableViewerKeys));
 
+      depthy.storedDate = stored.storedDate;
       if (stored.version !== depthy.version) {
         installNewVersion(stored.version);
       }
@@ -376,6 +377,16 @@ angular.module('depthyApp').provider('depthy', function depthy() {
         return store;
       }, function(n, o) {
         if (n === o) return;
+        storeSettings();
+      }, true);
+
+      // monitor quality
+      $rootScope.$watch(function() {
+        return depthy.getViewer().getQuality();
+      }, function(n, o) {
+        if (n === o) return;
+        viewer.qualityStart = depthy.getViewer().getQuality();
+        ga('set', 'dimension2', viewer.qualityStart);
         storeSettings();
       }, true);
     }
