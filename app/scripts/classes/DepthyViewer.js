@@ -40,8 +40,11 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
       // element to control mouse movements
       hoverElement: false,
 
-      // 1, 2, 3 or false for auto
+      // 1, 2, 3, 4, 5 or false for auto
       quality: false,
+      qualityMin: 1,
+      qualityMax: 5,
+      qualityStart: 4,
 
       alwaysRender: false,
     };
@@ -55,7 +58,7 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
         stageSize, stageSizeCPX,
         // renderUpscale = 1.05,
         readyResolver,
-        quality = {current: 2, dirty: true, provenSlow: {}},
+        quality = {current: options.qualityStart || 4, dirty: true, provenSlow: {}},
 
         imageTextureSprite, imageTextureContainer, imageRender,
         depthTextureSprite, depthTextureContainer, depthRender,
@@ -489,7 +492,9 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
       // combine image with depthmap
       var q = options.quality || quality.current;
       if (!depthFilter || depthFilter.quality !== q) {
-        depthFiltersCache[q] = depthFilter = depthFiltersCache[q] || new PIXI.DepthPerspectiveFilter(depthRender, q);
+        depthFiltersCache[q] = depthFilter = depthFiltersCache[q] || 
+            q === 1 ? new PIXI.DepthDisplacementFilter(depthRender)
+                    : new PIXI.DepthPerspectiveFilter(depthRender, q);
         // depthFilter = new PIXI.DepthDisplacementFilter(depthRender);
       }
       if (depthFilter.map !== depthRender) {
@@ -562,7 +567,7 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
 
     function changeQuality(q) {
       quality.measured = true;
-      q = Math.max(1, Math.min(3, q));
+      q = Math.max(options.qualityMin, Math.min(options.qualityMax, q));
       if (q !== quality.current) {
         if (q > quality.current && quality.provenSlow[q] && stageSize.width * stageSize.height >= quality.provenSlow[q]) {
           console.warn('Quality %d proven to be slow for size %d >= %d', q, stageSize.width * stageSize.height, quality.provenSlow[q]);
@@ -708,6 +713,10 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
 
     this.getSizeCPX = function() {
       return sizeCopy(stageSizeCPX);
+    };
+
+    this.getQuality = function() {
+      return quality.current;
     };
 
     /** Returns a promise resolved when the viewer is ready, or rejected when any of the images are missing or failed on load.

@@ -24,7 +24,17 @@ uniform float focus;
   #define MAXSTEPS 16.0
   #define CONFIDENCE_MAX 2.5
 
-#elif QUALITY == 1
+#elif QUALITY == 2
+
+  #define METHOD 1
+  #define CORRECT
+//     #define COLORAVG
+  #define MAXSTEPS 4.0
+  #define ENLARGE 0.8
+//   #define ANTIALIAS 2
+  #define CONFIDENCE_MAX 2.5
+
+#elif QUALITY == 3
 
   #define METHOD 1
   #define CORRECT
@@ -34,7 +44,7 @@ uniform float focus;
   #define ANTIALIAS 2
   #define CONFIDENCE_MAX 2.5
 
-#elif QUALITY == 2
+#elif QUALITY == 4
 
   #define METHOD 1
   #define CORRECT
@@ -44,7 +54,7 @@ uniform float focus;
   #define ANTIALIAS 2
   #define CONFIDENCE_MAX 2.5
 
-#elif QUALITY == 3
+#elif QUALITY == 5
 
   #define METHOD 1
   #define CORRECT
@@ -60,28 +70,31 @@ uniform float focus;
 #endif
 
 
-// #define BRANCHLOOP  
-// #define BRANCHSAMPLE 
+#define BRANCHLOOP  
+#define BRANCHSAMPLE 
 #define DEBUG 0
 // #define DEBUGBREAK 2
 
 #ifndef METHOD
-    #define METHOD 1
+  #define METHOD 1
 #endif
 #ifndef MAXSTEPS
-    #define MAXSTEPS 8.0
+  #define MAXSTEPS 8.0
 #endif
 #ifndef ENLARGE
-    #define ENLARGE 1.2
+  #define ENLARGE 1.2
 #endif
 #ifndef PERSPECTIVE
-    #define PERSPECTIVE 0.0
+  #define PERSPECTIVE 0.0
 #endif
 #ifndef UPSCALE
-    #define UPSCALE 1.06
+  #define UPSCALE 1.06
 #endif
 #ifndef CONFIDENCE_MAX
-    #define CONFIDENCE_MAX 0.2
+  #define CONFIDENCE_MAX 0.2
+#endif
+#ifndef COMPRESSION
+  #define COMPRESSION 0.8
 #endif
 
 const float perspective = PERSPECTIVE;
@@ -96,7 +109,7 @@ float maskPower = steps * 1.0;// 32.0;
 #endif
 float correctPower = 1.0;//max(1.0, steps / 8.0);
 
-const float compression = 0.8;
+const float compression = COMPRESSION;
 const float dmin = (1.0 - compression) / 2.0;
 const float dmax = (1.0 + compression) / 2.0;
 
