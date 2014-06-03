@@ -1,3 +1,4 @@
+#define QUALITY 3
 precision mediump float;
 
 varying vec2 vTextureCoord;
@@ -15,10 +16,16 @@ uniform float focus;
     #define METHOD 1
     #define CORRECT
 //     #define COLORAVG
-    #define ENLARGE 1.7
-    #define ANTIALIAS
+    #define ENLARGE 1.5
+    #define ANTIALIAS 1
+    #define AA_TRIGGER 0.8
+    #define AA_POWER 1.0
+    #define AA_MAXITER 8.0
     #define MAXSTEPS 16.0
-    const float antialiasStep = -1.5;
+    #define CONFIDENCE_MAX 2.5
+
+
+
 #elif QUALITY == 1
 
     #define METHOD 1
@@ -26,6 +33,8 @@ uniform float focus;
     #define COLORAVG
     #define MAXSTEPS 6.0
     #define ENLARGE 1.0
+    #define ANTIALIAS 1
+    #define CONFIDENCE_MAX 2.5
 
 #elif QUALITY == 2
 
@@ -34,14 +43,23 @@ uniform float focus;
 //     #define COLORAVG
     #define MAXSTEPS 16.0
     #define ENLARGE 1.5
+    #define ANTIALIAS 1
+    #define CONFIDENCE_MAX 2.5
 
 #elif QUALITY == 3
 
     #define METHOD 1
     #define CORRECT
-//    #define COLORAVG
+    #define COLORAVG
     #define MAXSTEPS 40.0
     #define ENLARGE 1.7
+    #define ANTIALIAS 10
+    #define AA_TRIGGER 0.8
+    #define AA_POWER 1.0
+    #define AA_MAXITER 8.0
+    #define CONFIDENCE_MAX 2.0
+
+
 #endif
 
 
@@ -65,7 +83,9 @@ uniform float focus;
 #ifndef UPSCALE
     #define UPSCALE 1.06
 #endif
-
+#ifndef CONFIDENCE_MAX
+    #define CONFIDENCE_MAX 0.2
+#endif
 
 const float perspective = PERSPECTIVE;
 const float upscale = UPSCALE;
@@ -84,7 +104,6 @@ const float dmin = (1.0 - compression) / 2.0;
 const float dmax = (1.0 + compression) / 2.0;
 
 const float vectorCutoff = 0.0 + dmin - 0.0001;
-const float confidenceCutoff = 0.2;
 
 float aspect = dimensions.x / dimensions.y;
 vec2 scale2 = vec2(scale * min(1.0, 1.0 / aspect), scale * min(1.0, aspect)) * vec2(1, -1) * vec2(ENLARGE);
@@ -111,93 +130,121 @@ void main(void) {
 
   float confidenceSum = 0.0;
   float minConfidence = dstep / 2.0;
-  float j = 0.0;    
     
-    for(float i = 0.0; i < MAXSTEPS; ++i) {
-      vec2 vpos = pos + vector[1] - j * vstep;
-      float dpos = 0.5 + compression / 2.0 - j * dstep;
-      #ifdef BRANCHLOOP
-      if (dpos >= vectorCutoff && confidenceSum < confidenceCutoff) {
+  #ifdef ANTIALIAS
+    #ifndef AA_TRIGGER
+      #define AA_TRIGGER 0.8
+    #endif
+    #if ANTIALIAS == 10
+      float loopStep = 1.0;
+    #endif
+    
+    #define LOOP_INDEX j
+    float j = 0.0;
+  #endif
+
+  #ifndef LOOP_INDEX
+    #define LOOP_INDEX i
+  #endif
+
+
+  for(float i = 0.0; i < MAXSTEPS; ++i) {
+    vec2 vpos = pos + vector[1] - LOOP_INDEX * vstep;
+    float dpos = 0.5 + compression / 2.0 - LOOP_INDEX * dstep;
+    #ifdef BRANCHLOOP
+    if (dpos >= vectorCutoff && confidenceSum < CONFIDENCE_MAX) {
+    #endif
+      float depth = 1.0 - texture2D(displacementMap, vpos * vec2(1, -1) + vec2(0, 1)).r;
+      depth = clamp(depth, dmin, dmax);
+      float confidence;
+
+      #if METHOD == 1
+        confidence = step(dpos, depth + 0.001);
+
+      #elif METHOD == 2
+        confidence = 1.0 - abs(dpos - depth);
+        if (confidence < 1.0 - minConfidence * 2.0) confidence = 0.0;
+
+      #elif METHOD == 5
+        confidence = 1.0 - abs(dpos - depth);
+        confidence = pow(confidence, maskPower);
+
       #endif
-        float depth = 1.0 - texture2D(displacementMap, vpos * vec2(1, -1) + vec2(0, 1)).r;
-        depth = clamp(depth, dmin, dmax);
-        float confidence;
 
-        #if METHOD == 1
-          confidence = step(dpos, depth + 0.001);
-
-        #elif METHOD == 2
-          confidence = 1.0 - abs(dpos - depth);
-          if (confidence < 1.0 - minConfidence * 2.0) confidence = 0.0;
-
-        #elif METHOD == 3
-          confidence = 1.0 - abs(dpos - depth);
-          if (confidence < 1.0 - minConfidence * 1.0) confidence = 0.0;
-
-        #elif METHOD == 4
-          confidence = (1.0 - abs(dpos - depth)) / steps;
-
-        #elif METHOD == 5
-          confidence = 1.0 - abs(dpos - depth);
-          confidence = pow(confidence, maskPower);
-
-        #endif
-
-        #ifndef BRANCHLOOP
-         confidence *= step(vectorCutoff, dpos);
-         confidence *= step(confidenceSum, confidenceCutoff);
-        #endif
-          
-        #ifdef ANTIALIAS
-//           if (confidence > 0.8 && i == j) {
-//               j -= 1.5;
-//           }
-          j += step(0.8, confidence) 
-               * step(i, j) 
-               * antialiasStep;
-          confidence *= confidenceCutoff / 3.0;
-        #endif
-
-        #ifdef BRANCHSAMPLE
-        if (confidence > 0.0) {
-        #endif
-          
-          #ifdef CORRECT
-            #define CORRECTION_MATH +( ( vec2((depth - dpos) / (dstep * correctPower)) * vstep ))
-          #else
-            #define CORRECTION_MATH
-          #endif
-            
-          #ifdef COLORAVG    
-            colSum += texture2D(uSampler, vpos CORRECTION_MATH) * confidence;
-          #else
-            posSum += (vpos CORRECTION_MATH) * confidence;    
-          #endif
-            confidenceSum += confidence;
-            
-        #ifdef BRANCHSAMPLE
+      #ifndef BRANCHLOOP
+       confidence *= step(vectorCutoff, dpos);
+       confidence *= step(confidenceSum, CONFIDENCE_MAX);
+      #endif
+        
+      #ifndef ANTIALIAS
+      #elif ANTIALIAS == 1 // go back halfstep, go forward fullstep - branched
+        if (confidence > AA_TRIGGER && i == j && steps - i > 1.0) {
+          j -= 0.5;
+        } else {
+          j += 1.0;
         }
-        #endif
+        // confidence *= CONFIDENCE_MAX / 3.0;
 
+      #elif ANTIALIAS == 2 // go back halfstep, go forward fullstep - mult
+        j += 1.0 + step(AA_TRIGGER, confidence) 
+             * step(i, j) 
+             * antialiasStep;
+        // confidence *= CONFIDENCE_MAX / 3.0;
+
+      #elif ANTIALIAS == 10
+        #ifndef AA_POWER
+          #define AA_POWER 0.5
+        #endif
+        #ifndef AA_MAXITER
+          #define AA_MAXITER 16.0
+        #endif
+        if (confidence > AA_TRIGGER && i == j && steps - i > 1.0) {
+          loopStep = AA_POWER * 2.0 / min(AA_MAXITER, steps - i - 1.0);
+          j -= AA_POWER + loopStep;
+        }
+        confidence *= loopStep;
+        j += loopStep;
+      #endif
+
+      #ifdef BRANCHSAMPLE
+      if (confidence > 0.0) {
+      #endif
+        
+        #ifdef CORRECT
+          #define CORRECTION_MATH +( ( vec2((depth - dpos) / (dstep * correctPower)) * vstep ))
+        #else
+          #define CORRECTION_MATH
+        #endif
           
-        #if DEBUG > 2
-          gl_FragColor = vec4(vector[0] / 2.0 + 1.0, vector[1].xy / 2.0 + 1.0);
-        #elif DEBUG > 1
-          gl_FragColor = vec4(confidenceSum, depth, dpos, 0);
-        #elif DEBUG > 0
-          gl_FragColor = vec4(confidence, depth, dpos, 0);
+        #ifdef COLORAVG    
+          colSum += texture2D(uSampler, vpos CORRECTION_MATH) * confidence;
+        #else
+          posSum += (vpos CORRECTION_MATH) * confidence;    
         #endif
-        #ifdef DEBUGBREAK 
-        if (i == float(DEBUGBREAK)) {
-            dpos = 0.0;
-        }     
-        #endif
-
-      #ifdef BRANCHLOOP
+          confidenceSum += confidence;
+          
+      #ifdef BRANCHSAMPLE
       }
       #endif
-      j += 1.0;
-    };
+
+        
+      #if DEBUG > 2
+        gl_FragColor = vec4(vector[0] / 2.0 + 1.0, vector[1].xy / 2.0 + 1.0);
+      #elif DEBUG > 1
+        gl_FragColor = vec4(confidenceSum, depth, dpos, 0);
+      #elif DEBUG > 0
+        gl_FragColor = vec4(confidence, depth, dpos, 0);
+      #endif
+      #ifdef DEBUGBREAK 
+      if (i == float(DEBUGBREAK)) {
+          dpos = 0.0;
+      }     
+      #endif
+
+    #ifdef BRANCHLOOP
+    }
+    #endif
+  };
 
   #if defined(COLORAVG) && DEBUG == 0
     gl_FragColor = colSum / vec4(confidenceSum);
