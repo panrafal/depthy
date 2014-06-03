@@ -484,13 +484,15 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
     }
 
 
+    var depthFiltersCache = {};
     function updateStage() {
       // combine image with depthmap
       var q = options.quality || quality.current;
       if (!depthFilter || depthFilter.quality !== q) {
-        depthFilter = new PIXI.DepthPerspectiveFilter(depthRender, q);
+        depthFiltersCache[q] = depthFilter = depthFiltersCache[q] || new PIXI.DepthPerspectiveFilter(depthRender, q);
         // depthFilter = new PIXI.DepthDisplacementFilter(depthRender);
-      } else {
+      }
+      if (depthFilter.map !== depthRender) {
         depthFilter.map = depthRender;
       }
 
@@ -591,7 +593,7 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
       quality.fps = 1000 / quality.ms;
       quality.sum += quality.fps;
       quality.avg = quality.sum / quality.count;
-      if (quality.fps < 20) { // 20fps
+      if (quality.fps < 10) { // 20fps
         quality.slow++;
       } else if (quality.fps > 58) { // 50fps
         quality.fast++;
