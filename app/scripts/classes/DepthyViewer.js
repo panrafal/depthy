@@ -44,7 +44,7 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
       quality: false,
       qualityMin: 1,
       qualityMax: 5,
-      qualityStart: 4,
+      qualityStart: isMobile ? 3 : 4,
 
       alwaysRender: false,
     };

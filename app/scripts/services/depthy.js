@@ -394,7 +394,7 @@ angular.module('depthyApp').provider('depthy', function depthy() {
     depthy = {
       viewer: viewer,
 
-      version: 203,
+      version: 204,
       tipsState: {},
       lastSettingsDate: null,
 
