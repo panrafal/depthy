@@ -458,4 +458,13 @@
   top: 0px;
   margin-left: -40px;
   z-index: 20000;
+
+  .info {
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 9px;
+    font-weight: bold;
+    background: #000;
+    padding: 3px;
+    text-align: center;    
+  }
 }

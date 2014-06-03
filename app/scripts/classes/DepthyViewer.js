@@ -40,18 +40,22 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
       // element to control mouse movements
       hoverElement: false,
 
-      alwaysRender: true,
+      // 1, 2, 3 or false for auto
+      quality: false,
+
+      // alwaysRender: true,
     };
 
   var DepthyViewer = root.DepthyViewer = function(element, options) {
     var //self = this,
-        canvas, stage, renderer,
+        canvas, stage, renderer, stats,
         image = {}, depth = {},
-        sizeDirty = true, stageDirty = true, renderDirty = true, depthFilterDirty,
+        sizeDirty = true, stageDirty = true, renderDirty = true, depthFilterDirty = true, 
         discardAlphaFilter, invertedAlphaToRGBFilter, invertedRGBToAlphaFilter, depthBlurFilter,
         stageSize, stageSizeCPX,
         // renderUpscale = 1.05,
         readyResolver,
+        quality = {current: 2, dirty: true, provenSlow: {}},
 
         imageTextureSprite, imageTextureContainer, imageRender,
         depthTextureSprite, depthTextureContainer, depthRender,
@@ -68,9 +72,10 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
       canvas = element.getElementsByTagName('canvas')[0];
       if (!canvas) {
         canvas = element.ownerDocument.createElement('canvas');
-        element.appendChild(canvas);
-      }
+        element.appendChild(canvas)
+;      }
 
+      initDebug();
       initHover();
       initOrient();
       initRenderer();
@@ -78,7 +83,7 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
       if (renderer) requestAnimFrame( renderLoop );
 
     }
-    
+
     function initHover() {
       var hoverElement = options.hoverElement || element;
       if (typeof(hoverElement) === 'string') hoverElement = element.ownerDocument.querySelector(hoverElement);
@@ -193,8 +198,19 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
         if (Modernizr) Modernizr.webgl = false;
       }
 
-
     }
+
+    function initDebug() {
+      if (window.Stats) {
+        stats = new window.Stats();
+        stats.setMode(0); // 0: fps, 1: ms
+        stats.infoElement = document.createElement( 'div' );
+        stats.infoElement.className = 'info';
+        stats.domElement.appendChild(stats.infoElement);
+        document.body.appendChild( stats.domElement );
+      }
+    }    
+
 
     function createDiscardAlphaFilter() {
       var filter = new PIXI.ColorMatrixFilter2();
@@ -470,8 +486,9 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
 
     function updateStage() {
       // combine image with depthmap
-      if (!depthFilter) {
-        depthFilter = new PIXI.DepthPerspectiveFilter(depthRender, 2);
+      var q = options.quality || quality.current;
+      if (!depthFilter || depthFilter.quality !== q) {
+        depthFilter = new PIXI.DepthPerspectiveFilter(depthRender, q);
         // depthFilter = new PIXI.DepthDisplacementFilter(depthRender);
       } else {
         depthFilter.map = depthRender;
@@ -488,6 +505,7 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
 
       stageDirty = false;
       renderDirty = depthFilterDirty = true;
+      quality.dirty = true;
     }
 
     function updateDepthFilter() {
@@ -540,6 +558,66 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
       }
     }
 
+    function changeQuality(q) {
+      quality.measured = true;
+      q = Math.max(1, Math.min(3, q));
+      if (q !== quality.current) {
+        if (q > quality.current && quality.provenSlow[q] && stageSize.width * stageSize.height >= quality.provenSlow[q]) {
+          console.warn('Quality %d proven to be slow for size %d >= %d', q, stageSize.width * stageSize.height, quality.provenSlow[q]);
+        } else {
+          console.warn('Quality change %d -> %d at %d fps', quality.current, q, quality.avg);
+          quality.current = q;
+          stageDirty = true;
+        }
+      }
+      if (stats) {
+        stats.domElement.className = 'q' + quality.current;
+        stats.infoElement.textContent = 'Q' + quality.current + ' <' + quality.slow + ' >' + quality.fast + ' n' + quality.count + ' ~' + Math.round(quality.avg);
+      }
+    }
+
+    function updateQuality() {
+      if (quality.dirty) {
+        // console.log('Quality assesment start');
+        quality.count = quality.slow = quality.fast = quality.sum = 0;
+        quality.measured = false;
+        quality.dirty = false;
+        if (stats) {
+          stats.domElement.className = 'q' + quality.current + ' qm';
+          stats.infoElement.textContent = 'Q' + quality.current + ' ???';
+        }
+      }
+      quality.count++;
+      quality.fps = 1000 / quality.ms;
+      quality.sum += quality.fps;
+      quality.avg = quality.sum / quality.count;
+      if (quality.fps < 20) { // 20fps
+        quality.slow++;
+      } else if (quality.fps > 58) { // 50fps
+        quality.fast++;
+      }
+      
+      // console.log('Quality ', quality);
+
+      if (quality.slow > 5 || (quality.count > 15 && quality.avg < 25)) {
+        // log this stagesize as slow...
+        quality.provenSlow[quality.current] = stageSize.width * stageSize.height;
+        changeQuality(quality.current - 1);
+      } else if (/*quality.fast > 30 ||*/ quality.count > 40 && quality.avg > 50) {
+        changeQuality(quality.current + 1);
+      } else if (quality.count > 60) {
+        changeQuality(quality.current);
+      } else {
+        // render a bit more please...
+        renderDirty = true;
+      }
+    }
+
+    function renderStage() {
+      renderer.render(stage);
+      renderDirty = false;
+    }
+
     function render() {
       if (!isReady()) return;
       if (sizeDirty) updateSize();
@@ -564,13 +642,23 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
       }
 
       if (renderDirty || options.alwaysRender) {
-        renderer.render(stage);
-        renderDirty = false;
+        renderStage();
       }
+
+      if (!options.quality && (quality.dirty || !quality.measured)) {
+        updateQuality();
+      }
+      
     }
 
+    var lastLoopTime = 0;
     function renderLoop() {
+      quality.ms = lastLoopTime && (performance.now() - lastLoopTime);
+      lastLoopTime = performance.now();
+
+      stats && stats.begin();
       render();
+      stats && stats.end();
       requestAnimFrame( renderLoop );
     }
 
@@ -713,7 +801,7 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
     };
 
 
-    /** Exports depthmap as is, or converts it to JPG. Returns promise */
+    /** Exports depthmap as is, or converts it to JGP. Returns promise */
     this.exportDepthmap = function() {
 
       return this.getPromise().then(
