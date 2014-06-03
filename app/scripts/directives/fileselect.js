@@ -49,7 +49,8 @@ angular.module('depthyApp')
       element.on('dragover', onDrag);
       element.on('drop', onDrop);
       fileInput.addEventListener('change', function() {
-        handleFiles(this.files);
+        handleFiles(_.filter(this.files));
+        fileInput.value = '';
         scope.$apply();
       }, false);
 
