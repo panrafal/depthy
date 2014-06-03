@@ -584,6 +584,7 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
     }
 
     function updateQuality() {
+      if (!hasDepthmap() || !hasImage()) return;
       if (quality.dirty) {
         // console.log('Quality assesment start');
         quality.count = quality.slow = quality.fast = quality.sum = 0;
