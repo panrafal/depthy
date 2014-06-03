@@ -1,7 +1,32 @@
 /**
- * @class DepthPerspectiveFilter
- * @contructor
- * @param texture {Texture} The texture used for the displacemtent map * must be power of 2 texture at the moment
+
+  Experimental shader giving perspective effect on image with depthmap.
+
+  Quality is controlled by defined profiles 1, 2 and 3.
+
+  ---------------
+  The MIT License
+
+  Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in
+  all copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+  THE SOFTWARE.
+
  */
 'use strict';
 PIXI.DepthPerspectiveFilter = function(texture, quality)
@@ -35,6 +60,7 @@ PIXI.DepthPerspectiveFilter = function(texture, quality)
   this.fragmentSrc = [
 
 
+'// Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy',
 'precision mediump float;',
 '',
 'varying vec2 vTextureCoord;',
@@ -49,60 +75,57 @@ PIXI.DepthPerspectiveFilter = function(texture, quality)
 '',
 '#if !defined(QUALITY)',
 '',
-'    #define METHOD 1',
-'    #define CORRECT',
+'  #define METHOD 1',
+'  #define CORRECT',
 '//     #define COLORAVG',
-'    #define ENLARGE 1.5',
-'    #define ANTIALIAS 1',
-'    #define AA_TRIGGER 0.8',
-'    #define AA_POWER 1.0',
-'    #define AA_MAXITER 8.0',
-'    #define MAXSTEPS 16.0',
-'    #define CONFIDENCE_MAX 2.5',
-'',
-'',
+'  #define ENLARGE 1.5',
+'  #define ANTIALIAS 1',
+'  #define AA_TRIGGER 0.8',
+'  #define AA_POWER 1.0',
+'  #define AA_MAXITER 8.0',
+'  #define MAXSTEPS 16.0',
+'  #define CONFIDENCE_MAX 2.5',
 '',
 '#elif QUALITY == 1',
 '',
-'    #define METHOD 1',
-'    #define CORRECT',
-'    #define COLORAVG',
-'    #define MAXSTEPS 6.0',
-'    #define ENLARGE 1.0',
-'    #define ANTIALIAS 1',
-'    #define CONFIDENCE_MAX 2.5',
+'  #define METHOD 1',
+'  #define CORRECT',
+'//     #define COLORAVG',
+'  #define MAXSTEPS 6.0',
+'  #define ENLARGE 1.0',
+'  #define ANTIALIAS 2',
+'  #define CONFIDENCE_MAX 2.5',
 '',
 '#elif QUALITY == 2',
 '',
-'    #define METHOD 1',
-'    #define CORRECT',
+'  #define METHOD 1',
+'  #define CORRECT',
 '//     #define COLORAVG',
-'    #define MAXSTEPS 16.0',
-'    #define ENLARGE 1.5',
-'    #define ANTIALIAS 1',
-'    #define CONFIDENCE_MAX 2.5',
+'  #define MAXSTEPS 16.0',
+'  #define ENLARGE 1.5',
+'  #define ANTIALIAS 2',
+'  #define CONFIDENCE_MAX 2.5',
 '',
 '#elif QUALITY == 3',
 '',
-'    #define METHOD 1',
-'    #define CORRECT',
-'    #define COLORAVG',
-'    #define MAXSTEPS 40.0',
-'    #define ENLARGE 1.7',
-'    #define ANTIALIAS 12',
-'    #define AA_TRIGGER 0.8',
-'    #define AA_POWER 1.0',
-'    #define AA_MAXITER 8.0',
-'    #define CONFIDENCE_MAX 2.0',
-'',
+'  #define METHOD 1',
+'  #define CORRECT',
+'  #define COLORAVG',
+'  #define MAXSTEPS 40.0',
+'  #define ENLARGE 1.5',
+'//     #define ANTIALIAS 2',
+'  #define AA_TRIGGER 0.8',
+'  #define AA_POWER 1.0',
+'  #define AA_MAXITER 8.0',
+'  #define CONFIDENCE_MAX 4.5',
 '',
 '#endif',
 '',
 '',
-'#define BRANCHLOOP  ',
-'#define BRANCHSAMPLE ',
+'// #define BRANCHLOOP  ',
+'// #define BRANCHSAMPLE ',
 '#define DEBUG 0',
-'// #define DEBUGBREAK 15',
+'// #define DEBUGBREAK 2',
 '',
 '#ifndef METHOD',
 '    #define METHOD 1',
@@ -201,7 +224,7 @@ PIXI.DepthPerspectiveFilter = function(texture, quality)
 '      float confidence;',
 '',
 '      #if METHOD == 1',
-'        confidence = step(dpos, depth );',
+'        confidence = step(dpos, depth + 0.001);',
 '',
 '      #elif METHOD == 2',
 '        confidence = 1.0 - abs(dpos - depth);',
@@ -229,11 +252,11 @@ PIXI.DepthPerspectiveFilter = function(texture, quality)
 '',
 '      #elif ANTIALIAS == 2 // go back halfstep, go forward fullstep - mult',
 '        j += 1.0 + step(AA_TRIGGER, confidence) ',
-'             * step(i, j); ',
+'             * step(i, j) * -1.5; ',
 '        // confidence *= CONFIDENCE_MAX / 3.0;',
 '',
 '      #elif ANTIALIAS == 11',
-'        if (confidence > AA_TRIGGER && i == j && steps - i > 1.0) {',
+'        if (confidence >= AA_TRIGGER && i == j && steps - i > 1.0) {',
 '          loopStep = AA_POWER * 2.0 / min(AA_MAXITER, steps - i - 1.0);',
 '          j -= AA_POWER + loopStep;',
 '        }',
@@ -242,8 +265,8 @@ PIXI.DepthPerspectiveFilter = function(texture, quality)
 '      #elif ANTIALIAS == 12',
 '        float _if_aa = step(AA_TRIGGER, confidence)',
 '                     * step(i, j)',
-'                     * step(2.0, steps - i);',
-'        loopStep = _if_aa * (AA_POWER * 2.0 / min(AA_MAXITER, max(1.0, steps - i - 1.0)) - 1.0) + 1.0;',
+'                     * step(1.5, steps - i);',
+'        loopStep = _if_aa * (AA_POWER * 2.0 / min(AA_MAXITER, max(0.1, steps - i - 1.0)) - 1.0) + 1.0;',
 '        confidence *= loopStep;',
 '        j += _if_aa * -(AA_POWER + loopStep) + loopStep;',
 '      #endif',

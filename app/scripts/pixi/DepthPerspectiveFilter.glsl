@@ -1,4 +1,4 @@
-#define QUALITY 3
+// Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
 precision mediump float;
 
 varying vec2 vTextureCoord;
@@ -13,60 +13,57 @@ uniform float focus;
 
 #if !defined(QUALITY)
 
-    #define METHOD 1
-    #define CORRECT
+  #define METHOD 1
+  #define CORRECT
 //     #define COLORAVG
-    #define ENLARGE 1.5
-    #define ANTIALIAS 1
-    #define AA_TRIGGER 0.8
-    #define AA_POWER 1.0
-    #define AA_MAXITER 8.0
-    #define MAXSTEPS 16.0
-    #define CONFIDENCE_MAX 2.5
-
-
+  #define ENLARGE 1.5
+  #define ANTIALIAS 1
+  #define AA_TRIGGER 0.8
+  #define AA_POWER 1.0
+  #define AA_MAXITER 8.0
+  #define MAXSTEPS 16.0
+  #define CONFIDENCE_MAX 2.5
 
 #elif QUALITY == 1
 
-    #define METHOD 1
-    #define CORRECT
-    #define COLORAVG
-    #define MAXSTEPS 6.0
-    #define ENLARGE 1.0
-    #define ANTIALIAS 1
-    #define CONFIDENCE_MAX 2.5
+  #define METHOD 1
+  #define CORRECT
+//     #define COLORAVG
+  #define MAXSTEPS 6.0
+  #define ENLARGE 1.0
+  #define ANTIALIAS 2
+  #define CONFIDENCE_MAX 2.5
 
 #elif QUALITY == 2
 
-    #define METHOD 1
-    #define CORRECT
+  #define METHOD 1
+  #define CORRECT
 //     #define COLORAVG
-    #define MAXSTEPS 16.0
-    #define ENLARGE 1.5
-    #define ANTIALIAS 1
-    #define CONFIDENCE_MAX 2.5
+  #define MAXSTEPS 16.0
+  #define ENLARGE 1.5
+  #define ANTIALIAS 2
+  #define CONFIDENCE_MAX 2.5
 
 #elif QUALITY == 3
 
-    #define METHOD 1
-    #define CORRECT
-    #define COLORAVG
-    #define MAXSTEPS 40.0
-    #define ENLARGE 1.7
-    #define ANTIALIAS 10
-    #define AA_TRIGGER 0.8
-    #define AA_POWER 1.0
-    #define AA_MAXITER 8.0
-    #define CONFIDENCE_MAX 2.0
-
+  #define METHOD 1
+  #define CORRECT
+  #define COLORAVG
+  #define MAXSTEPS 40.0
+  #define ENLARGE 1.5
+//     #define ANTIALIAS 2
+  #define AA_TRIGGER 0.8
+  #define AA_POWER 1.0
+  #define AA_MAXITER 8.0
+  #define CONFIDENCE_MAX 4.5
 
 #endif
 
 
-#define BRANCHLOOP  
-#define BRANCHSAMPLE 
+// #define BRANCHLOOP  
+// #define BRANCHSAMPLE 
 #define DEBUG 0
-// #define DEBUGBREAK 15
+// #define DEBUGBREAK 2
 
 #ifndef METHOD
     #define METHOD 1
@@ -135,7 +132,13 @@ void main(void) {
     #ifndef AA_TRIGGER
       #define AA_TRIGGER 0.8
     #endif
-    #if ANTIALIAS == 10
+    #if ANTIALIAS == 11 || ANTIALIAS == 12
+      #ifndef AA_POWER
+        #define AA_POWER 0.5
+      #endif
+      #ifndef AA_MAXITER
+        #define AA_MAXITER 16.0
+      #endif
       float loopStep = 1.0;
     #endif
     
@@ -178,7 +181,7 @@ void main(void) {
         
       #ifndef ANTIALIAS
       #elif ANTIALIAS == 1 // go back halfstep, go forward fullstep - branched
-        if (confidence > AA_TRIGGER && i == j && steps - i > 1.0) {
+        if (confidence > AA_TRIGGER && i == j) {
           j -= 0.5;
         } else {
           j += 1.0;
@@ -187,25 +190,26 @@ void main(void) {
 
       #elif ANTIALIAS == 2 // go back halfstep, go forward fullstep - mult
         j += 1.0 + step(AA_TRIGGER, confidence) 
-             * step(i, j) 
-             * antialiasStep;
+             * step(i, j) * -1.5; 
         // confidence *= CONFIDENCE_MAX / 3.0;
 
-      #elif ANTIALIAS == 10
-        #ifndef AA_POWER
-          #define AA_POWER 0.5
-        #endif
-        #ifndef AA_MAXITER
-          #define AA_MAXITER 16.0
-        #endif
-        if (confidence > AA_TRIGGER && i == j && steps - i > 1.0) {
+      #elif ANTIALIAS == 11
+        if (confidence >= AA_TRIGGER && i == j && steps - i > 1.0) {
           loopStep = AA_POWER * 2.0 / min(AA_MAXITER, steps - i - 1.0);
           j -= AA_POWER + loopStep;
         }
         confidence *= loopStep;
         j += loopStep;
+      #elif ANTIALIAS == 12
+        float _if_aa = step(AA_TRIGGER, confidence)
+                     * step(i, j)
+                     * step(1.5, steps - i);
+        loopStep = _if_aa * (AA_POWER * 2.0 / min(AA_MAXITER, max(0.1, steps - i - 1.0)) - 1.0) + 1.0;
+        confidence *= loopStep;
+        j += _if_aa * -(AA_POWER + loopStep) + loopStep;
       #endif
 
+        
       #ifdef BRANCHSAMPLE
       if (confidence > 0.0) {
       #endif

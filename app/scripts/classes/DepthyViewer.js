@@ -43,7 +43,7 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
       // 1, 2, 3 or false for auto
       quality: false,
 
-      // alwaysRender: true,
+      alwaysRender: false,
     };
 
   var DepthyViewer = root.DepthyViewer = function(element, options) {
