@@ -366,7 +366,8 @@ module.exports = function (grunt) {
             'samples/*',
             'styles/fonts/*',
             'CNAME',
-            'bower_components/gif.js/dist/*.js'
+            'bower_components/gif.js/dist/*.js',
+            'bower_components/stats.js/build/*.js',
           ]
         }, {
           expand: true,
@@ -428,8 +429,8 @@ module.exports = function (grunt) {
           master: ['index.html']
         },
         src: [
-          'bower_components/gif.js/dist/*.*',
-          'bower_components/stats.js/build/*.*',
+          'bower_components/gif.js/dist/*.js',
+          'bower_components/stats.js/build/*.js',
           'scripts/**/*.*',
           'styles/**/*.*',
           'images/**/*.*',
