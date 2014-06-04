@@ -493,8 +493,9 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
       var q = options.quality || quality.current;
       if (!depthFilter || depthFilter.quality !== q) {
         depthFiltersCache[q] = depthFilter = depthFiltersCache[q] || 
-            q === 1 ? new PIXI.DepthDisplacementFilter(depthRender)
-                    : new PIXI.DepthPerspectiveFilter(depthRender, q);
+            (q === 1 ? new PIXI.DepthDisplacementFilter(depthRender)
+                    : new PIXI.DepthPerspectiveFilter(depthRender, q));
+        depthFilter.quality = q;
         // depthFilter = new PIXI.DepthDisplacementFilter(depthRender);
       }
       if (depthFilter.map !== depthRender) {
