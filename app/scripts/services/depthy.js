@@ -421,6 +421,7 @@ angular.module('depthyApp').provider('depthy', function depthy() {
       useOriginalImage: false,
 
       modalWait: 700,
+      debug: false,
 
       gallery: [],
 

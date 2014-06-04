@@ -683,6 +683,9 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
           case 'upscale':
             sizeDirty = true;
             break;
+          case 'quality':
+            stageDirty = true;
+            break;
           case 'depthScale':
           case 'depthFocus':
             depthFilterDirty = true;
