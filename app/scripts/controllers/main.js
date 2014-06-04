@@ -130,6 +130,11 @@ angular.module('depthyApp')
     });
   };
 
+  $scope.debugClicksLeft = 2;
+  $scope.debugClicked = function() {
+    if (--$scope.debugClicksLeft === 0) depthy.enableDebug();
+  };
+
   $scope.$watch('(depthy.activePopup.state === "export.gif.options" || depthy.exportActive) && depthy.exportSize', function(size) {
     if (size) {
       depthy.isViewerOverriden(true);

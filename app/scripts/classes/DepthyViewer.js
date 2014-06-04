@@ -78,7 +78,6 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
         element.appendChild(canvas)
 ;      }
 
-      initDebug();
       initHover();
       initOrient();
       initRenderer();
@@ -202,17 +201,6 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
       }
 
     }
-
-    function initDebug() {
-      if (window.Stats) {
-        stats = new window.Stats();
-        stats.setMode(0); // 0: fps, 1: ms
-        stats.infoElement = document.createElement( 'div' );
-        stats.infoElement.className = 'info';
-        stats.domElement.appendChild(stats.infoElement);
-        document.body.appendChild( stats.domElement );
-      }
-    }    
 
 
     function createDiscardAlphaFilter() {
@@ -571,30 +559,26 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
       q = Math.max(options.qualityMin, Math.min(options.qualityMax, q));
       if (q !== quality.current) {
         if (q > quality.current && quality.provenSlow[q] && stageSize.width * stageSize.height >= quality.provenSlow[q]) {
-          console.warn('Quality %d proven to be slow for size %d >= %d', q, stageSize.width * stageSize.height, quality.provenSlow[q]);
+          console.warn('Quality %d proven to be slow for size %d >= %d at %d', q, stageSize.width * stageSize.height, quality.provenSlow[q], quality.avg);
         } else {
           console.warn('Quality change %d -> %d at %d fps', quality.current, q, quality.avg);
           quality.current = q;
           stageDirty = true;
         }
+      } else {
+        console.warn('Quality %d is ok at %d fps', q, quality.avg);
       }
-      if (stats) {
-        stats.domElement.className = 'q' + quality.current;
-        stats.infoElement.textContent = 'Q' + quality.current + ' <' + quality.slow + ' >' + quality.fast + ' n' + quality.count + ' ~' + Math.round(quality.avg);
-      }
+      updateDebug();
     }
 
     function updateQuality() {
       if (!hasDepthmap() || !hasImage()) return;
       if (quality.dirty) {
-        // console.log('Quality assesment start');
+        console.log('Quality reset');
         quality.count = quality.slow = quality.fast = quality.sum = 0;
         quality.measured = false;
         quality.dirty = false;
-        if (stats) {
-          stats.domElement.className = 'q' + quality.current + ' qm';
-          stats.infoElement.textContent = 'Q' + quality.current + ' ???';
-        }
+        updateDebug();
       }
       quality.count++;
       quality.fps = 1000 / quality.ms;
@@ -619,6 +603,13 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
       } else {
         // render a bit more please...
         renderDirty = true;
+      }
+    }
+
+    function updateDebug() {
+      if (stats) {
+        stats.domElement.className = 'q' + quality.current + (quality.measured ? '' : ' qm');
+        stats.infoElement.textContent = 'Q' + (options.quality || quality.current) + (quality.measured ? '' : '?') + ' <' + quality.slow + ' >' + quality.fast + ' n' + quality.count + ' ~' + Math.round(quality.avg);
       }
     }
 
@@ -654,7 +645,7 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
         renderStage();
       }
 
-      if (!options.quality && (quality.dirty || !quality.measured)) {
+      if (quality.dirty || !quality.measured) {
         updateQuality();
       }
       
@@ -686,6 +677,7 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
             break;
           case 'quality':
             stageDirty = true;
+            updateDebug();
             break;
           case 'depthScale':
           case 'depthFocus':
@@ -882,6 +874,17 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
     };
 
 
+    this.enableDebug = function() {
+      if (window.Stats) {
+        stats = new window.Stats();
+        stats.setMode(0); // 0: fps, 1: ms
+        stats.infoElement = document.createElement( 'div' );
+        stats.infoElement.className = 'info';
+        stats.domElement.appendChild(stats.infoElement);
+        document.body.appendChild( stats.domElement );
+        updateDebug();
+      }
+    };
 
     this.isReady = isReady;
 

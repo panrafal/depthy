@@ -429,6 +429,7 @@ module.exports = function (grunt) {
         },
         src: [
           'bower_components/gif.js/dist/*.*',
+          'bower_components/stats.js/build/*.*',
           'scripts/**/*.*',
           'styles/**/*.*',
           'images/**/*.*',

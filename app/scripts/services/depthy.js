@@ -839,6 +839,17 @@ angular.module('depthyApp').provider('depthy', function depthy() {
 
       reload: function() {
         $window.location.reload();
+      },
+
+      enableDebug: function() {
+        depthy.debug = true;
+        Modernizr.load({
+          test: window.Stats,
+          nope: 'bower_components/stats.js/build/stats.min.js',
+          complete: function() {
+            depthy.getViewer().enableDebug();
+          }
+        })
       }
 
     };
