@@ -758,9 +758,8 @@ angular.module('depthyApp').provider('depthy', function depthy() {
 
 
       exportWebmAnimation: function() {
-        var deferred = $q.defer(), promise = deferred.promise, encoder;
-        // no other progress beyond this point... everything is blocking
-        deferred.notify(1);
+        var deferred = $q.defer(), promise = deferred.promise, encoder, aborted = false;
+
         Modernizr.load({
           test: window.Whammy,
           nope: 'bower_components/whammy/whammy.js',
@@ -772,36 +771,55 @@ angular.module('depthyApp').provider('depthy', function depthy() {
                 viewerObj = depthy.getViewer(),
                 oldOptions = viewerObj.getOptions();
 
-            encoder = new Whammy.Video(fps, 0.9);
+            encoder = new Whammy.Video(fps, 0.2);
             console.log('FPS %d Frames %d Scale %d Size %d Duration %d', fps, frames, viewer.depthScale, depthy.exportSize, duration);
 
             promise.finally(function() {
               viewerObj.setOptions(oldOptions);
             });
 
-            try {
-              for(var frame = 0; frame < frames; ++frame) {
-                viewerObj.setOptions({
-                  size: size,
-                  animate: true,
-                  fit: false,
-                  animatePosition: frame / frames,
-                  quality: 5,
-                });
-                viewerObj.render(true);
-                encoder.add(viewerObj.getCanvas());
+            var frame = 0;
+            function worker() {
+              if (aborted) {
+                encoder = null;
+                return;
               }
-
-              var blob = encoder.compile();
-              deferred.resolve(blob);
-              depthy.viewer.overrideStageSize = null;
-              $rootScope.$safeApply();
-            } catch (e) {
-              deferred.reject(e);
+              try {
+                if (frame < frames) {
+                  deferred.notify(frame/frames);
+                  viewerObj.setOptions({
+                    size: size,
+                    animate: true,
+                    fit: false,
+                    animatePosition: frame / frames,
+                    quality: 5,
+                  });
+                  viewerObj.render(true);
+                  encoder.add(viewerObj.getCanvas());
+                  ++frame;
+                  // wait every 4 frames
+                  if (frame % 4 == 0) {
+                    setTimeout(worker, 0);
+                  } else {
+                    worker();
+                  }
+                } else {
+                  var blob = encoder.compile();
+                  deferred.resolve(blob);
+                  depthy.viewer.overrideStageSize = null;
+                  $rootScope.$safeApply();
+                }
+              } catch (e) {
+                deferred.reject(e);
+              }
             }
+            setTimeout(worker, 0);
 
           }
         });
+        promise.abort = function() {
+          aborted = true;
+        };
         return promise;
       },
 

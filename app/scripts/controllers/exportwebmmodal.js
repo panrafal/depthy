@@ -2,7 +2,7 @@
 
 angular.module('depthyApp')
 .controller('ExportWebmModalCtrl', function ($scope, $modalInstance, $rootElement, depthy, ga, $timeout, $sce) {
-  $scope.exportProgress = 1;
+  $scope.exportProgress = 0;
   $scope.imageReady = false;
   $scope.shareUrl = '';
   $scope.tweetUrl = null;
@@ -37,7 +37,7 @@ angular.module('depthyApp')
     );
 
     $modalInstance.result.finally(function() {
-      console.log('close');
+      if (exportPromise) exportPromise.abort();
       if ($scope.videoUrl) URL.revokeObjectURL($scope.videoUrl.toString());
     });
   }, depthy.modalWait);
