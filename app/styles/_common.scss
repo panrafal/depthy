@@ -357,9 +357,14 @@ logo {
   display: inline-block;
   margin-bottom: $padding-base-vertical;
   border-width: $border-width;
-  img {
-    background: $thumbnail-matte;
+  img, video {
+    display: block;
+    height: auto;
+    max-width: 100%;
     max-height: 90vh;
+    margin-left: auto;
+    margin-right: auto;
+    background: $thumbnail-matte;
   }
   h3, h4, h5 {
     font-size: 1rem;
@@ -467,7 +472,7 @@ logo {
   }
 }
 .progress-bar {
-  transition: width 0.1s ease;
+  transition: none;//width 0.1s linear;
 }
 
 

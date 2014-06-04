@@ -123,6 +123,15 @@ angular.module('depthyApp', [
   .state('export.gif.run', {
     url: '/run',
   })
+  .state('export.webm', {
+    url: '/webm',
+  })
+  .state('export.webm.options', {
+    url: '/options',
+  })
+  .state('export.webm.run', {
+    url: '/run',
+  })
   .state('share', {
     url: '/share',
   })
