@@ -771,7 +771,7 @@ angular.module('depthyApp').provider('depthy', function depthy() {
                 viewerObj = depthy.getViewer(),
                 oldOptions = viewerObj.getOptions();
 
-            encoder = new Whammy.Video(fps, 0.2);
+            encoder = new Whammy.Video(fps, 0.9);
             console.log('FPS %d Frames %d Scale %d Size %d Duration %d', fps, frames, viewer.depthScale, depthy.exportSize, duration);
 
             promise.finally(function() {
