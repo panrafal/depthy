@@ -105,7 +105,9 @@
     <!-- <div class="clicker"  ng-show="!!getActivePopup()" ng-click="getActivePopup().reject()"></div> -->
     <div class="popup options-popup" ng-show="depthy.activePopup.state === 'image.options'" ng-include="'views/options-popup.html'">
     </div>
-    <div class="popup export-popup" ng-if="depthy.activePopup.state === 'export.gif.options'" ng-include="'views/export-popup.html'">
+    <div class="popup export-popup" ng-include="depthy.activePopup.state === 'export.gif.options' ? 'views/export-gif-popup.html' : null">
+    </div>
+    <div class="popup export-popup" ng-include="depthy.activePopup.state === 'export.webm.options' ? 'views/export-webm-popup.html' : null">
     </div>
     <div class="popup share-popup" ng-show="depthy.activePopup.state === 'share.options'" ng-include="'views/share-popup.html'">
     </div>

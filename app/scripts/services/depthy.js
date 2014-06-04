@@ -696,7 +696,7 @@ angular.module('depthyApp').provider('depthy', function depthy() {
 
       },
 
-      exportAnimation: function() {
+      exportGifAnimation: function() {
         var deferred = $q.defer(), promise = deferred.promise, gif;
         Modernizr.load({
           test: window.GIF,
@@ -704,7 +704,7 @@ angular.module('depthyApp').provider('depthy', function depthy() {
           complete: function() {
             var size = {width: depthy.exportSize, height: depthy.exportSize},
                 duration = viewer.animateDuration,
-                fps = Math.min(25, Math.max(8, (viewer.depthScale * (size < 300 ? 0.5 : 1) * 15) / duration)),
+                fps = Math.min(25, Math.max(8, (viewer.depthScale * (size < 300 ? 0.5 : 1) * 20) / duration)),
                 frames = Math.max(4, Math.round(duration * fps)),
                 delay = Math.round(duration * 1000 / frames),
                 viewerObj = depthy.getViewer(),
@@ -723,6 +723,7 @@ angular.module('depthyApp').provider('depthy', function depthy() {
                 animate: true,
                 fit: false,
                 animatePosition: frame / frames,
+                quality: 5,
               });
               viewerObj.render(true);
               gif.addFrame(viewerObj.getCanvas(), {copy: true, delay: delay});
@@ -754,6 +755,56 @@ angular.module('depthyApp').provider('depthy', function depthy() {
         };
         return promise;
       },
+
+
+      exportWebmAnimation: function() {
+        var deferred = $q.defer(), promise = deferred.promise, encoder;
+        // no other progress beyond this point... everything is blocking
+        deferred.notify(1);
+        Modernizr.load({
+          test: window.Whammy,
+          nope: 'bower_components/whammy/whammy.js',
+          complete: function() {
+            var size = {width: depthy.exportSize, height: depthy.exportSize},
+                duration = viewer.animateDuration,
+                fps = Math.min(30),
+                frames = Math.max(4, Math.round(duration * fps)),
+                viewerObj = depthy.getViewer(),
+                oldOptions = viewerObj.getOptions();
+
+            encoder = new Whammy.Video(fps, 0.9);
+            console.log('FPS %d Frames %d Scale %d Size %d Duration %d', fps, frames, viewer.depthScale, depthy.exportSize, duration);
+
+            promise.finally(function() {
+              viewerObj.setOptions(oldOptions);
+            });
+
+            try {
+              for(var frame = 0; frame < frames; ++frame) {
+                viewerObj.setOptions({
+                  size: size,
+                  animate: true,
+                  fit: false,
+                  animatePosition: frame / frames,
+                  quality: 5,
+                });
+                viewerObj.render(true);
+                encoder.add(viewerObj.getCanvas());
+              }
+
+              var blob = encoder.compile();
+              deferred.resolve(blob);
+              depthy.viewer.overrideStageSize = null;
+              $rootScope.$safeApply();
+            } catch (e) {
+              deferred.reject(e);
+            }
+
+          }
+        });
+        return promise;
+      },
+
 
       // credit goes to http://stackoverflow.com/questions/4998908/convert-data-uri-to-file-then-append-to-formdata
       dataURItoBlob: function(dataURI) {

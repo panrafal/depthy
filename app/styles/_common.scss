@@ -357,7 +357,8 @@ logo {
   display: inline-block;
   margin-bottom: $padding-base-vertical;
   border-width: $border-width;
-  img {
+  img, video {
+    display: block;
     background: $thumbnail-matte;
     max-height: 90vh;
   }
