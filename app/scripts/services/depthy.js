@@ -733,12 +733,15 @@ angular.module('depthyApp').provider('depthy', function depthy() {
                 oldOptions = viewerObj.getOptions();
 
             gif = new GIF({
-              workers: 2,
+              workers: 4,
               quality: 10,
               workerScript: 'bower_components/gif.js/dist/gif.worker.js',
+              dither: true,
+              globalPalette: true,
             });
             console.log('FPS %d Frames %d Delay %d Scale %d Size %d Duration %d', fps, frames, delay, viewer.depthScale, depthy.exportSize, duration);
 
+            console.time('gif.addFrames');
             for(var frame = 0; frame < frames; ++frame) {
               viewerObj.setOptions({
                 size: size,
@@ -751,6 +754,7 @@ angular.module('depthyApp').provider('depthy', function depthy() {
               viewerObj.render(true);
               gif.addFrame(viewerObj.getCanvas(), {copy: true, delay: delay});
             }
+            console.timeEnd('gif.addFrames');
 
             gif.on('progress', function(p) {
               deferred.notify(p);
@@ -767,10 +771,12 @@ angular.module('depthyApp').provider('depthy', function depthy() {
             });
 
             promise.finally(function() {
+              console.timeEnd('gif.render');
               oldOptions.pauseRender = false;
               viewerObj.setOptions(oldOptions);
             });
 
+            console.time('gif.render');
             gif.render();
           }
         });
