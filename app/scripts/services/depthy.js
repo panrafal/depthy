@@ -733,9 +733,8 @@ angular.module('depthyApp').provider('depthy', function depthy() {
                 oldOptions = viewerObj.getOptions();
 
             gif = new GIF({
-              workers: 1,
+              workers: 2,
               quality: 10,
-              dither: true,
               workerScript: 'bower_components/gif.js/dist/gif.worker.js',
             });
             console.log('FPS %d Frames %d Delay %d Scale %d Size %d Duration %d', fps, frames, delay, viewer.depthScale, depthy.exportSize, duration);
