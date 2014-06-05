@@ -142,10 +142,14 @@ angular.module('depthyApp')
     if (size) {
       depthy.isViewerOverriden(true);
       depthy.viewer.size = {width: size, height: size};
-      $scope.oldFit = depthy.viewer.fit;
+      if (depthy.viewer.fit) $scope.oldFit = depthy.viewer.fit;
       depthy.viewer.fit = false;
+      console.log('Store fit ' + $scope.oldFit)
     } else {
-      if ($scope.oldFit) depthy.viewer.fit = $scope.oldFit;
+      if ($scope.oldFit) {
+        depthy.viewer.fit = $scope.oldFit;
+        console.log('Restore fit ' + $scope.oldFit)
+      }
       $($window).resize();
       depthy.isViewerOverriden(false);
     }

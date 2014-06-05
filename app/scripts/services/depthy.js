@@ -358,7 +358,8 @@ angular.module('depthyApp').provider('depthy', function depthy() {
 
     function showNewStuff() {
       var newStuff = {
-        205: 'Export high quality videos on chrome!',
+        205: 'Export high quality videos on chrome.',
+        206: 'GIFs look waaay better now.',
       };
       depthy.newStuff = [];
       _.each(newStuff, function(txt, v) {
@@ -415,7 +416,7 @@ angular.module('depthyApp').provider('depthy', function depthy() {
     depthy = {
       viewer: viewer,
 
-      version: 205,
+      version: 206,
       tipsState: {},
       lastSettingsDate: null,
 
