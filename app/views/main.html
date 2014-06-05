@@ -44,6 +44,14 @@
           There is a new version available!
         </div>
       </section>
+      <section class="alert alert-success alert-icon alert-button anim-expand" ng-if="depthy.newStuff.length">
+        <i class="icon icon-trophy"></i>
+        <div class="btn btn-success btn-sm pull-right" ng-click="depthy.hideNewStuff()">Got it!</div>
+        <div class="alert-body">
+          New stuff in this version:
+          <div ng-repeat="info in depthy.newStuff">{{info}}</div>
+        </div>
+      </section>
 
       <section id="gallery">
         <ul>

@@ -313,7 +313,7 @@ angular.module('depthyApp').provider('depthy', function depthy() {
     }
 
     var _storeableViewerKeys = ['fit', 'animate', 'animateDuration', 'animatePosition', 'animateScale', 'depthScale', 'depthFocus', 'tipsState', 'qualityStart'],
-        _storeableDepthyKeys = ['useOriginalImage', 'exportSize'];
+        _storeableDepthyKeys = ['useOriginalImage', 'exportSize', 'tipsState'];
 
     var storeSettings = _.throttle(function storeSettings() {
       if (!Modernizr.localstorage) return;
@@ -341,6 +341,7 @@ angular.module('depthyApp').provider('depthy', function depthy() {
       if (stored.version !== depthy.version) {
         installNewVersion(stored.version);
       }
+      showNewStuff();
 
       console.log('restoreSettings', stored);
       //
@@ -348,6 +349,26 @@ angular.module('depthyApp').provider('depthy', function depthy() {
 
     function installNewVersion(old) {
       console.log('New version %s -> %s', old, depthy.version);
+
+      // assume that new users know everything that is new...
+      if (!old) hideNewStuff();
+
+      storeSettings();
+    }
+
+    function showNewStuff() {
+      var newStuff = {
+        205: 'Export high quality videos on chrome!',
+      };
+      depthy.newStuff = [];
+      _.each(newStuff, function(txt, v) {
+        if (v > (depthy.tipsState.newStuff || 0)) depthy.newStuff.push(txt);
+      });
+    }
+
+    function hideNewStuff() {
+      depthy.newStuff = [];
+      depthy.tipsState.newStuff = depthy.version;
       storeSettings();
     }
 
@@ -394,7 +415,7 @@ angular.module('depthyApp').provider('depthy', function depthy() {
     depthy = {
       viewer: viewer,
 
-      version: 204,
+      version: 205,
       tipsState: {},
       lastSettingsDate: null,
 
@@ -491,6 +512,7 @@ angular.module('depthyApp').provider('depthy', function depthy() {
       },
 
       storeSettings: storeSettings,
+      hideNewStuff: hideNewStuff,
 
       // sets proper image according to opened image and useOriginalImage setting
       refreshOpenedImage: function() {
@@ -711,8 +733,9 @@ angular.module('depthyApp').provider('depthy', function depthy() {
                 oldOptions = viewerObj.getOptions();
 
             gif = new GIF({
-              workers: 2,
+              workers: 1,
               quality: 10,
+              dither: true,
               workerScript: 'bower_components/gif.js/dist/gif.worker.js',
             });
             console.log('FPS %d Frames %d Delay %d Scale %d Size %d Duration %d', fps, frames, delay, viewer.depthScale, depthy.exportSize, duration);
