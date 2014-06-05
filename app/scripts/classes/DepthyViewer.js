@@ -15,6 +15,7 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
   var defaultOptions = {
       // preferred viewport size {width, height}
       size: null,
+      sizeDivisible: 1,
       // auto fitting: false, 'cover', 'contain'. False will disable retina and upscale
       fit: 'contain',
       // allow 2x upscale
@@ -383,6 +384,10 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
       stageSize = sizeFit(stageSize, image.size);
       stageSize = sizeRound(stageSize);
 
+      if (options.sizeDivisible > 1) {
+        stageSize.width -= stageSize.width % options.sizeDivisible;
+        stageSize.height -= stageSize.height % options.sizeDivisible;
+      }
       // console.log('Stage %dx%d StageCPX %dx%d', stageSize.width, stageSize.height, stageSizeCPX.width, stageSizeCPX.height);
 
       canvas.style.width = stageSizeCPX.width + 'px';

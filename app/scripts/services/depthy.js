@@ -793,6 +793,8 @@ angular.module('depthyApp').provider('depthy', function depthy() {
                     fit: false,
                     animatePosition: frame / frames,
                     quality: 5,
+                    // make it 8, so it converts nicely to other video formats...
+                    sizeDivisible: 8,
                   });
                   viewerObj.render(true);
                   encoder.add(viewerObj.getCanvas());
