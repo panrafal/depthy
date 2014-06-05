@@ -48,6 +48,7 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
       qualityStart: isMobile ? 3 : 4,
 
       alwaysRender: false,
+      pauseRender: false,
     };
 
   var DepthyViewer = root.DepthyViewer = function(element, options) {
@@ -661,12 +662,14 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
 
     var lastLoopTime = 0;
     function renderLoop() {
-      quality.ms = lastLoopTime && (performance.now() - lastLoopTime);
-      lastLoopTime = performance.now();
+      if (!options.pauseRender) {
+        quality.ms = lastLoopTime && (performance.now() - lastLoopTime);
+        lastLoopTime = performance.now();
 
-      stats && stats.begin();
-      render();
-      stats && stats.end();
+        stats && stats.begin();
+        render();
+        stats && stats.end();
+      }
       requestAnimFrame( renderLoop );
     }
 

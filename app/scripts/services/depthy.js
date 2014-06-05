@@ -746,6 +746,7 @@ angular.module('depthyApp').provider('depthy', function depthy() {
                 fit: false,
                 animatePosition: frame / frames,
                 quality: 5,
+                pauseRender: true,
               });
               viewerObj.render(true);
               gif.addFrame(viewerObj.getCanvas(), {copy: true, delay: delay});
@@ -766,6 +767,7 @@ angular.module('depthyApp').provider('depthy', function depthy() {
             });
 
             promise.finally(function() {
+              oldOptions.pauseRender = false;
               viewerObj.setOptions(oldOptions);
             });
 
@@ -797,6 +799,7 @@ angular.module('depthyApp').provider('depthy', function depthy() {
             console.log('FPS %d Frames %d Scale %d Size %d Duration %d', fps, frames, viewer.depthScale, depthy.exportSize, duration);
 
             promise.finally(function() {
+              oldOptions.pauseRender = false;
               viewerObj.setOptions(oldOptions);
             });
 
@@ -817,6 +820,7 @@ angular.module('depthyApp').provider('depthy', function depthy() {
                     quality: 5,
                     // make it 8, so it converts nicely to other video formats...
                     sizeDivisible: 8,
+                    pauseRender: true,
                   });
                   viewerObj.render(true);
                   encoder.add(viewerObj.getCanvas());
