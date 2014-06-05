@@ -2,7 +2,8 @@
 <div class="popup-content scrollable">
 
   <button class="btn btn-primary btn-block btn-lg" ng-click="sharePngRun()">Share</button>
-  <button class="btn btn-default btn-block btn-lg" ng-click="exportGifOptions()">Create GIF</button>
+  <button class="btn btn-default btn-block btn-lg" ng-click="exportAnimationOptions('gif')">Create GIF</button>
+  <button class="btn btn-default btn-block btn-lg" ng-if="Modernizr.webp" ng-click="exportAnimationOptions('webm')">Create Video</button>
   <button class="btn btn-default btn-block btn-lg" ng-click="exportPngRun()">Save</button>
 </div>
 <div class="popup-footer">

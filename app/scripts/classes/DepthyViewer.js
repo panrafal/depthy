@@ -15,6 +15,7 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
   var defaultOptions = {
       // preferred viewport size {width, height}
       size: null,
+      sizeDivisible: 1,
       // auto fitting: false, 'cover', 'contain'. False will disable retina and upscale
       fit: 'contain',
       // allow 2x upscale
@@ -383,6 +384,10 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
       stageSize = sizeFit(stageSize, image.size);
       stageSize = sizeRound(stageSize);
 
+      if (options.sizeDivisible > 1) {
+        stageSize.width -= stageSize.width % options.sizeDivisible;
+        stageSize.height -= stageSize.height % options.sizeDivisible;
+      }
       // console.log('Stage %dx%d StageCPX %dx%d', stageSize.width, stageSize.height, stageSizeCPX.width, stageSizeCPX.height);
 
       canvas.style.width = stageSizeCPX.width + 'px';
@@ -572,7 +577,7 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
     }
 
     function updateQuality() {
-      if (!hasDepthmap() || !hasImage()) return;
+      if (!hasDepthmap() || !hasImage() || options.quality) return;
       if (quality.dirty) {
         console.log('Quality reset');
         quality.count = quality.slow = quality.fast = quality.sum = 0;
@@ -595,7 +600,7 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
       if (quality.slow > 5 || (quality.count > 15 && quality.avg < (quality.current > 4 ? 55 : 25))) {
         // quality 5 is slow below 55
         // log this stagesize as slow...
-        quality.provenSlow[quality.current] = stageSize.width * stageSize.height;
+        if (!options.quality) quality.provenSlow[quality.current] = stageSize.width * stageSize.height;
         changeQuality(quality.current - 1);
       } else if (/*quality.fast > 30 ||*/ quality.count > 40 && quality.avg > (quality.current > 3 ? 55 : 50)) {
         // quality 4 is fast above 55

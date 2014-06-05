@@ -44,6 +44,14 @@
           There is a new version available!
         </div>
       </section>
+      <section class="alert alert-success alert-icon alert-button anim-expand" ng-if="depthy.newStuff.length">
+        <i class="icon icon-trophy"></i>
+        <div class="btn btn-success btn-sm pull-right" ng-click="depthy.hideNewStuff()">Got it!</div>
+        <div class="alert-body">
+          New stuff in this version:
+          <div ng-repeat="info in depthy.newStuff">{{info}}</div>
+        </div>
+      </section>
 
       <section id="gallery">
         <ul>
@@ -105,7 +113,9 @@
     <!-- <div class="clicker"  ng-show="!!getActivePopup()" ng-click="getActivePopup().reject()"></div> -->
     <div class="popup options-popup" ng-show="depthy.activePopup.state === 'image.options'" ng-include="'views/options-popup.html'">
     </div>
-    <div class="popup export-popup" ng-if="depthy.activePopup.state === 'export.gif.options'" ng-include="'views/export-popup.html'">
+    <div class="popup export-popup" ng-include="depthy.activePopup.state === 'export.gif.options' ? 'views/export-gif-popup.html' : null">
+    </div>
+    <div class="popup export-popup" ng-include="depthy.activePopup.state === 'export.webm.options' ? 'views/export-webm-popup.html' : null">
     </div>
     <div class="popup share-popup" ng-show="depthy.activePopup.state === 'share.options'" ng-include="'views/share-popup.html'">
     </div>

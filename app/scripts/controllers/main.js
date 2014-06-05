@@ -84,25 +84,28 @@ angular.module('depthyApp')
     });
   };
 
-  $scope.exportGifOptions = function() {
+  $scope.exportAnimationOptions = function(type) {
     var oldAnimate = depthy.viewer.animate;
     depthy.viewer.animate = true;
     
-    depthy.openPopup('export.gif.options').promise.finally(function() {
+    if (type === 'gif') {
+      depthy.exportSize = Math.min(500, depthy.exportSize);
+    }
+    
+    depthy.openPopup('export.' + type + '.options').promise.finally(function() {
       depthy.viewer.animate = oldAnimate;
     });
 
   };
 
-  $scope.exportGifRun = function() {
+  $scope.exportAnimationRun = function(type) {
     depthy.exportActive = true;
-    StateModal.showModal('export.gif.run', {
+    StateModal.showModal('export.' + type + '.run', {
       // stateOptions: {location: 'replace'},
-      templateUrl: 'views/export-modal.html',
-      controller: 'ExportModalCtrl',
+      templateUrl: 'views/export-' + type + '-modal.html',
+      controller: 'Export' + type.substr(0,1).toUpperCase() + type.substr(1) + 'ModalCtrl',
       // backdrop: 'static',
-      keyboard: false,
-      windowClass: 'export-modal',
+      windowClass: 'export-' + type + '-modal',
     }).result.finally(function() {
       depthy.exportActive = false;
     });
@@ -135,7 +138,7 @@ angular.module('depthyApp')
     if (--$scope.debugClicksLeft === 0) depthy.enableDebug();
   };
 
-  $scope.$watch('(depthy.activePopup.state === "export.gif.options" || depthy.exportActive) && depthy.exportSize', function(size) {
+  $scope.$watch('(depthy.activePopup.state === "export.gif.options" || depthy.activePopup.state === "export.webm.options" || depthy.exportActive) && depthy.exportSize', function(size) {
     if (size) {
       depthy.isViewerOverriden(true);
       depthy.viewer.size = {width: size, height: size};

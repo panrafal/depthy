@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('depthyApp')
-.controller('ExportModalCtrl', function ($scope, $modalInstance, $rootElement, depthy, ga, $timeout) {
+.controller('ExportGifModalCtrl', function ($scope, $modalInstance, $rootElement, depthy, ga, $timeout) {
   $scope.exportProgress = -1;
   $scope.imageReady = false;
   $scope.shareUrl = '';
@@ -9,7 +9,7 @@ angular.module('depthyApp')
   $scope.imageOverLimit = false;
 
   $timeout(function() {
-    var exportPromise = depthy.exportAnimation(),
+    var exportPromise = depthy.exportGifAnimation(),
         sharePromise = null,
         imageDataUri = null,
         exportStarted = new Date(),

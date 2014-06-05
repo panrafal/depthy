@@ -367,6 +367,7 @@ module.exports = function (grunt) {
             'styles/fonts/*',
             'CNAME',
             'bower_components/gif.js/dist/*.js',
+            'bower_components/whammy/whammy.js',
             'bower_components/stats.js/build/*.js',
           ]
         }, {
@@ -430,6 +431,7 @@ module.exports = function (grunt) {
         },
         src: [
           'bower_components/gif.js/dist/*.js',
+          'bower_components/whammy/whammy.js',
           'bower_components/stats.js/build/*.js',
           'scripts/**/*.*',
           'styles/**/*.*',

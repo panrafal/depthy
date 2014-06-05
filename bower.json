@@ -21,7 +21,8 @@
     "promise": "http://s3.amazonaws.com/es6-promises/promise-1.0.0.js",
     "screenfull": "~1.2.1",
     "iscroll": "~5.1.1",
-    "stats.js": "*"
+    "stats.js": "*",
+    "whammy": "antimatter15/whammy"
   },
   "devDependencies": {
     "angular-mocks": "1.2.15",
