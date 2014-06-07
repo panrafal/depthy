@@ -5,7 +5,7 @@
 <div class="modal-body" >
   <div class="text-center">
     <div class="thumbnails-set margin-top-none">
-      <div class="thumbnail" ng-class="{empty: !depthy.hasDepthmap(), loading: loading}">
+      <div class="thumbnail"  ng-if="depthy.hasDepthmap()" ng-class="{loading: loading}">
         <a image-source="depth" target="_blank" download="{{depthy.opened.getFilename() + '-depthmap.jpg'}}"><img image-source="depth"></a>
         <h4>Depthmap</h4>
       </div><div class="thumbnail" ng-if="depthy.hasOriginalImage()" ng-class="{loading: loading}">
@@ -14,10 +14,10 @@
       </div>
     </div>
   </div>
-  <p class="text-muted text-center" ng-if="depthy.hasDepthmap() || depthy.hasAlternativeImage()">
+  <p class="text-muted text-center" ng-if="depthy.hasDepthmap() || depthy.hasOriginalImage()">
     {{depthy.downloadInstructions}} to save it.
   </p>
-  <div class="text-center" ng-if="depthy.hasDepthmap()">
+  <div class="text-center">
     <button class="btn btn-success" ng-click="selectFile($event)"><i class="icon" ng-class="isDepthmapProcessing ? 'icon-loading' : 'icon-open'"></i>{{depthy.hasDepthmap() ? 'Replace' : 'Open'}} depthmap</button>
   </div>
   <div class="alert alert-info alert-icon margin-top-xl">
