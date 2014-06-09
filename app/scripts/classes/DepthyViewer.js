@@ -56,7 +56,7 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
         canvas, stage, renderer, stats,
         image = {}, depth = {},
         sizeDirty = true, stageDirty = true, renderDirty = true, depthFilterDirty = true, 
-        discardAlphaFilter, invertedAlphaToRGBFilter, invertedRGBToAlphaFilter, depthBlurFilter,
+        discardAlphaFilter, resetAlphaFilter, invertedAlphaToRGBFilter, discardRGBFilter, invertedRGBToAlphaFilter, depthBlurFilter,
         stageSize, stageSizeCPX,
         // renderUpscale = 1.05,
         readyResolver,
@@ -193,7 +193,9 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
         renderer = new PIXI.WebGLRenderer(800, 600, canvas, false, true);
 
         discardAlphaFilter = createDiscardAlphaFilter();
+        resetAlphaFilter = createDiscardAlphaFilter(1.0);
         invertedAlphaToRGBFilter = createInvertedAlphaToRGBFilter();
+        discardRGBFilter = createDiscardRGBFilter();
         invertedRGBToAlphaFilter = createInvertedRGBToAlphaFilter();
         depthBlurFilter = createDepthBlurFilter();
       } catch (e) {
@@ -205,13 +207,13 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
     }
 
 
-    function createDiscardAlphaFilter() {
+    function createDiscardAlphaFilter(alphaConst) {
       var filter = new PIXI.ColorMatrixFilter2();
       filter.matrix = [1.0, 0.0, 0.0, 0.0,
                        0.0, 1.0, 0.0, 0.0,
                        0.0, 0.0, 1.0, 0.0,
                        0.0, 0.0, 0.0, 0.0];
-      filter.shift =  [0.0, 0.0, 0.0, 0.0];
+      filter.shift =  [0.0, 0.0, 0.0, alphaConst || 0.0];
       return filter;
     }
 
@@ -787,30 +789,32 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
           var size = sizeRound(sizeFit(image.size, maxSize || image.size)),
               localstage = new PIXI.Stage(),
               scale = size.width / image.size.width,
-              localrenderer = new PIXI.WebGLRenderer(size.width, size.height, null, 'notMultiplied', true);
+              renderTexture = new PIXI.RenderTexture(size.width, size.height);
+              // localrenderer = new PIXI.WebGLRenderer(size.width, size.height, null, 'notMultiplied', true);
 
           var imageSprite = new PIXI.Sprite(image.texture);
           imageSprite.scale = new PIXI.Point(scale, scale);
           localstage.addChild(imageSprite);
 
           // discard alpha channel
-          imageSprite.filters = [createDiscardAlphaFilter()];
+          imageSprite.filters = [discardAlphaFilter];
 
           var depthSprite = new PIXI.Sprite(depth.texture);
           depthSprite.scale = new PIXI.Point(scale, scale);
-          depthSprite.filters = [depth.useAlpha ? createDiscardRGBFilter() : createInvertedRGBToAlphaFilter()];
+          depthSprite.filters = [depth.useAlpha ? discardRGBFilter : invertedRGBToAlphaFilter];
 
           // copy alpha using custom blend mode
-          PIXI.blendModesWebGL['one.one'] = [localrenderer.gl.ONE, localrenderer.gl.ONE];
+          PIXI.blendModesWebGL['one.one'] = [renderer.gl.ONE, renderer.gl.ONE];
           depthSprite.blendMode = 'one.one';
 
           localstage.addChild(depthSprite);
 
-          localrenderer.render(localstage);
-          var dataUrl = localrenderer.view.toDataURL('image/png');
+          renderTexture.render(localstage, null, true);
+          var canvas = PIXI.glReadPixelsToCanvas(renderer.gl, renderTexture, renderTexture.width, renderTexture.height),
+              dataUrl = canvas.toDataURL('image/png');
 
           try {
-            localrenderer.destroy();
+            renderTexture.destroy();
           } catch(e) {
             console.error('Render destroy error', e);
           }
@@ -831,18 +835,19 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
             return depth.url;
           } else {
             var localstage = new PIXI.Stage(),
-                localrenderer = new PIXI.WebGLRenderer(depth.size.width, depth.size.height, null, false, true);
+                renderTexture = new PIXI.RenderTexture(depth.size.width, depth.size.height);
 
             var depthSprite = new PIXI.Sprite(depth.texture);
             if (depth.useAlpha) depthSprite.filters = [createInvertedAlphaToRGBFilter()];
 
             localstage.addChild(depthSprite);
 
-            localrenderer.render(localstage);
-            var dataUrl = localrenderer.view.toDataURL('image/jpeg');
+            renderTexture.render(localstage, null, true);
+            var canvas = PIXI.glReadPixelsToCanvas(renderer.gl, renderTexture, renderTexture.width, renderTexture.height),
+                dataUrl = canvas.toDataURL('image/jpeg');
 
             try {
-              localrenderer.destroy();
+              renderTexture.destroy();
             } catch(e) {
               console.error('Render destroy error', e);
             }
@@ -860,7 +865,7 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
         function() {
           var localstage = new PIXI.Stage(),
               scale = sizeFitScale(image.size, size, true),
-              localrenderer = new PIXI.WebGLRenderer(size.width, size.height, null, false, true);
+              renderTexture = new PIXI.RenderTexture(size.width, size.height);
 
           var imageSprite = new PIXI.Sprite(image.texture);
           imageSprite.scale = new PIXI.Point(scale, scale);
@@ -869,13 +874,15 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
           localstage.addChild(imageSprite);
 
           // discard alpha channel
-          imageSprite.filters = [createDiscardAlphaFilter()];
+          imageSprite.filters = [resetAlphaFilter];
 
-          localrenderer.render(localstage);
-          var dataUrl = localrenderer.view.toDataURL('image/jpeg', quality);
+          renderTexture.render(localstage, null, true);
+          var canvas = PIXI.glReadPixelsToCanvas(renderer.gl, renderTexture, renderTexture.width, renderTexture.height),
+              dataUrl = canvas.toDataURL('image/jpeg', quality);
+
 
           try {
-            localrenderer.destroy();
+            renderTexture.destroy();
           } catch(e) {
             console.error('Render destroy error', e);
           }
