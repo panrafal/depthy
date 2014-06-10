@@ -133,6 +133,10 @@ angular.module('depthyApp')
     });
   };
 
+  $scope.drawDepthmap = function() {
+    $state.go('draw');
+  };
+
   $scope.debugClicksLeft = 2;
   $scope.debugClicked = function() {
     if (--$scope.debugClicksLeft === 0) depthy.enableDebug();

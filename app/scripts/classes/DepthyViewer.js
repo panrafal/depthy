@@ -22,6 +22,8 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
       retina: true,
       // maximum upscaling to fit in viewport (through canvas stretching)
       upscale: 1,
+      // image enlargment to protect from overflowing edges
+      enlarge: 1.06,
 
       // animation options
       animate: false,
@@ -32,6 +34,7 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
       depthScale: 1,
       depthBlurSize: 4,
       depthFocus: 0.5,
+      depthPreview: 0,
 
       easeFactor: isMobile() ? 0.2 : 0.4,
 
@@ -65,7 +68,7 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
         imageTextureSprite, imageTextureContainer, imageRender,
         depthTextureSprite, depthTextureContainer, depthRender,
 
-        depthFilter, compoundSprite,
+        depthFilter, compoundSprite, previewSprite,
 
         depthOffset = {x: 0, y: 0}, easedOffset = depthOffset;
 
@@ -310,14 +313,18 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
 
 
     function changeTexture(old, source) {
-      if (old.url === source) return old;
+      if ((old.texture === source)|| old.url === source) return old;
       var current = {
         dirty: true
       };
       current.promise = new Promise(function(resolve, reject) {
         if (source) {
-          current.url = source;
-          current.texture = PIXI.Texture.fromImage(source);
+          if (source instanceof PIXI.RenderTexture) {
+            current.texture = source;
+          } else {
+            current.texture = PIXI.Texture.fromImage(source);
+            current.url = source;
+          }
           current.texture.baseTexture.premultipliedAlpha = false;
           if (current.texture.baseTexture.hasLoaded) {
             current.size = current.texture.frame;
@@ -438,6 +445,7 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
     function renderImageTexture() {
       imageRender.render(imageTextureContainer, null, true);
       image.renderDirty = false;
+      renderDirty = true;
     }
 
     function updateDepthTexture() {
@@ -478,8 +486,9 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
 
     function renderDepthTexture() {
       depthBlurFilter.blur = options.depthBlurSize;
-      depthRender.render(depthTextureContainer);
+      depthRender.render(depthTextureContainer, null, true);
       depth.renderDirty = false;
+      renderDirty = true;
     }
 
 
@@ -507,6 +516,11 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
 
       stage.addChild(compoundSprite);
 
+      if (previewSprite) stage.removeChild(previewSprite);
+      previewSprite = new PIXI.Sprite(depthRender);
+      previewSprite.blendMode = PIXI.blendModes.OVERLAY;
+      stage.addChild(previewSprite);
+
       stageDirty = false;
       renderDirty = depthFilterDirty = true;
       quality.dirty = true;
@@ -520,6 +534,10 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
         y : easedOffset.y || 0
       };
       depthFilter.focus = options.depthFocus;
+      depthFilter.enlarge = options.enlarge;
+
+      previewSprite.visible = options.depthPreview != 0;
+      previewSprite.alpha = options.depthPreview;
 
       depthFilterDirty = false;
       renderDirty = true;
@@ -694,6 +712,7 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
             break;
           case 'depthScale':
           case 'depthFocus':
+          case 'depthPreview':
             depthFilterDirty = true;
             break;
           case 'depthBlurSize':
@@ -706,7 +725,9 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
     };
 
     this.getOptions = function() {
-      return options;
+      var oc = {};
+      for(var k in options) oc[k] = options[k];
+      return oc;
     };
 
     this.getElement = function() {
@@ -754,10 +775,18 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
       return image.promise;
     };
 
+    this.getImage = function() {
+      return image;
+    };
+
     this.setDepthmap = function(source, useAlpha) {
       depth = changeTexture(depth, source);
       depth.useAlpha = !!useAlpha;
       return depth.promise;
+    };
+
+    this.getDepthmap = function() {
+      return depth;
     };
 
     this.render = render;
@@ -777,6 +806,18 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
 
     this.setOffset = function(offset) {
       depthOffset = offset;
+    };
+
+    this.screenToImagePos = function(pos, clamp) {
+      var rect = canvas.getBoundingClientRect();
+      pos = {x: pos.x, y: pos.y};
+      pos.x = (pos.x - rect.left) / rect.width;
+      pos.y = (pos.y - rect.top) / rect.height;
+      if (clamp) {
+        pos.x = Math.max(0, Math.min(1, pos.x));
+        pos.y = Math.max(0, Math.min(1, pos.y));
+      }
+      return pos;
     };
 
     /** Exports image + depthmap as PNG file. Returns promise */
@@ -857,6 +898,36 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
       );
     };
 
+    this.exportDepthmapAsTexture = function(maxSize) {
+      var size = sizeCopy(image.size);
+      if (maxSize) size = sizeFit(size, maxSize);
+      size = sizeRound(size);
+
+      var texture = new PIXI.RenderTexture(size.width, size.height);
+
+      var container = new PIXI.DisplayObjectContainer();
+      if (hasDepthmap()) {
+        var scale = sizeFitScale(depth.size, size, true);
+        
+        var sprite = new PIXI.Sprite(depth.texture);
+        sprite.scale = new PIXI.Point(scale, scale);
+        sprite.anchor = {x: 0.5, y: 0.5};
+        sprite.position = {x: size.width / 2, y: size.height / 2};
+        if (depth.useAlpha) {
+          sprite.filters = [invertedAlphaToRGBFilter];
+        }
+        container.addChild(sprite);
+      } else {
+        // flat is in the back
+        var graphics = new PIXI.Graphics();
+        graphics.beginFill(0xFFFFFF, 1);
+        graphics.drawRect(0, 0, size.width, size.height);
+        container.addChild(graphics);
+      }
+
+      texture.render(container, null, true);
+      return texture;
+    };
 
     /** Exports thumbnail as JPG file. Returns promise */
     this.exportThumbnail = function(size, quality) {
