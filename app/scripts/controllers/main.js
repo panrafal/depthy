@@ -33,16 +33,6 @@ angular.module('depthyApp')
     // depthy.leftpaneOpen(true);
   };
 
-  $scope.animateOption = function(obj, option, duration) {
-    $(obj).animate(option, {
-      duration: duration || 250,
-      step: function() {$scope.$safeApply();},
-      complete: function() {
-        _.extend(obj, option);
-        $scope.$safeApply();
-      }
-    });
-  };
 
 
   $scope.$watch('compoundFiles', function(files) {

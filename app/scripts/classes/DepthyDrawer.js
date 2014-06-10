@@ -10,6 +10,7 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
 
     var self = this,
         texture, undoTexture,
+        lastUndoTime, redoMode = false,
         brush, brushCanvas, brushTexture, brushContainer, brushLastPos, brushDirty,
         options = {
           depth: 0.5,
@@ -18,7 +19,8 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
           opacity: 1.0,
           spacing: 0.1,
           slope: 0.5,
-          blend: PIXI.blendModes.NORMAL
+          blend: PIXI.blendModes.NORMAL,
+          undoTimeout: 1000, 
         },
         renderer = viewer.getRenderer(),
         depthmap = viewer.getDepthmap(),
@@ -86,6 +88,37 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
       brushDirty = false;
     };
 
+    function throttledStoreUndo(force) {
+      if (force || redoMode || !lastUndoTime || new Date() - lastUndoTime > options.undoTimeout) {
+        storeUndo();
+      }
+      lastUndoTime = new Date();
+    }
+
+    function storeUndo() {
+      if (!undoTexture) {
+        undoTexture = new PIXI.RenderTexture(texture.width, texture.height);
+      }
+      console.log('Undo stored!');
+      redoMode = false;
+      var sprite = new PIXI.Sprite(texture);
+      undoTexture.render(sprite, null, true);
+    }
+
+    function toggleUndo() {
+      if (!undoTexture) return;
+      
+      var tmp = undoTexture;
+      undoTexture = texture;
+      texture = tmp;
+      redoMode = !redoMode;
+
+      console.log('Toggle undo!', texture);
+
+      depthmap.shared = true; // won't be destroyed
+      viewer.setDepthmap(texture);
+      depthmap = viewer.getDepthmap();
+    }
 
     this.setOptions = function(newOptions) {
       for(var k in newOptions) {
@@ -110,8 +143,16 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
       return oc;
     };    
 
+    /* -1 undo, 1 redo, 0 no history */
+    this.getUndoMode = function() {
+      return redoMode ? 1 : undoTexture ? -1 : 0;
+    }
+
+    this.toggleUndo = toggleUndo;
+
     this.drawBrush = function(pos) {
       if (brushDirty) updateBrush();
+      throttledStoreUndo();
       brushLastPos = {x: pos.x, y: pos.y};
       brush.x = pos.x * depthmap.size.width;
       brush.y = pos.y * depthmap.size.height;
@@ -135,8 +176,13 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
       }
     };
 
+    this.getDepthAtPos = function(pos) {
+      return PIXI.glReadPixels(renderer.gl, texture, pos.x * depthmap.size.width, pos.y * depthmap.size.height, 1, 1)[0] / 255;
+    };
+
     this.destroy = function() {
       if (undoTexture) undoTexture.destroy();
+      depthmap.shared = true;
     };
 
     initialize();

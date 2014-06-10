@@ -352,7 +352,7 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
         }
         // free up mem...
         if (old) {
-          if (old.texture && !isTextureShared()) {
+          if (old.texture && !isTextureShared() && !old.shared) {
             old.texture.destroy(true);
           }
           old.texture = null;
@@ -518,7 +518,6 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
 
       if (previewSprite) stage.removeChild(previewSprite);
       previewSprite = new PIXI.Sprite(depthRender);
-      previewSprite.blendMode = PIXI.blendModes.OVERLAY;
       stage.addChild(previewSprite);
 
       stageDirty = false;
@@ -527,7 +526,7 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
     }
 
     function updateDepthFilter() {
-      depthFilter.scale = 0.02 * (options.depthScale || 1);
+      depthFilter.scale = 0.02 * (options.depthScale);
 
       depthFilter.offset = {
         x : easedOffset.x || 0,
@@ -834,6 +833,7 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
           var size = sizeRound(sizeFit(image.size, maxSize || image.size)),
               localstage = new PIXI.Stage(),
               scale = size.width / image.size.width,
+              depthScale = size.width / depth.size.width,
               renderTexture = new PIXI.RenderTexture(size.width, size.height);
               // localrenderer = new PIXI.WebGLRenderer(size.width, size.height, null, 'notMultiplied', true);
 
@@ -845,7 +845,7 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
           imageSprite.filters = [discardAlphaFilter];
 
           var depthSprite = new PIXI.Sprite(depth.texture);
-          depthSprite.scale = new PIXI.Point(scale, scale);
+          depthSprite.scale = new PIXI.Point(depthScale, depthScale);
           depthSprite.filters = [depth.useAlpha ? discardRGBFilter : invertedRGBToAlphaFilter];
 
           // copy alpha using custom blend mode
@@ -855,7 +855,7 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
           localstage.addChild(depthSprite);
 
           renderTexture.render(localstage, null, true);
-          var canvas = PIXI.glReadPixelsToCanvas(renderer.gl, renderTexture, renderTexture.width, renderTexture.height),
+          var canvas = PIXI.glReadPixelsToCanvas(renderer.gl, renderTexture, 0, 0, renderTexture.width, renderTexture.height),
               dataUrl = canvas.toDataURL('image/png');
 
           try {
@@ -888,7 +888,7 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
             localstage.addChild(depthSprite);
 
             renderTexture.render(localstage, null, true);
-            var canvas = PIXI.glReadPixelsToCanvas(renderer.gl, renderTexture, renderTexture.width, renderTexture.height),
+            var canvas = PIXI.glReadPixelsToCanvas(renderer.gl, renderTexture, 0, 0, renderTexture.width, renderTexture.height),
                 dataUrl = canvas.toDataURL('image/jpeg');
 
             try {
@@ -952,7 +952,7 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
           imageSprite.filters = [resetAlphaFilter];
 
           renderTexture.render(localstage, null, true);
-          var canvas = PIXI.glReadPixelsToCanvas(renderer.gl, renderTexture, renderTexture.width, renderTexture.height),
+          var canvas = PIXI.glReadPixelsToCanvas(renderer.gl, renderTexture, 0, 0, renderTexture.width, renderTexture.height),
               dataUrl = canvas.toDataURL('image/jpeg', quality);
 
 

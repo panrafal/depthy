@@ -2,8 +2,17 @@
   <div class="options">
     <div class="btn-group">
       <button class="btn btn-default btn-control" ng-click="close()" title="Finish drawing"><i class="icon icon-yes"></i></button>
-    </div>
 
+      <button class="btn btn-default btn-control" ng-click="drawer.toggleUndo()" ng-disabled="drawer.getUndoMode() == 0" title="Undo"><i class="icon icon-{{drawer.getUndoMode() <= 0 ? 'undo' : 'redo'}}"></i></button>
+
+      <button class="btn btn-default btn-control" ng-click="togglePreview()" title="Preview"><i class="icon icon-eye"></i></button>
+
+      <button class="btn btn-default btn-control" ng-model="picker" btn-checkbox btn-checkbox-true="'once'" title="Picker"><i class="icon icon-meter"></i></button>
+
+      <button class="btn btn-default btn-control"  ng-model="picker" btn-checkbox  btn-checkbox-true="'keep'" title="Picker"><i class="icon icon-expand"></i></button>
+
+    </div>
+    <br/>
     Depth
     <div class="option">
       <div class="btn-group btn-group-justified">
@@ -79,6 +88,16 @@
         <div class="btn btn-default" ng-model="drawOpts.slope" btn-radio="0.5" ga>0.5</div>
         <div class="btn btn-default" ng-model="drawOpts.slope" btn-radio="0.6" ga>0.6</div>
         <div class="btn btn-default" ng-model="drawOpts.slope" btn-radio="0.7" ga>0.7</div>
+      </div>
+    </div>
+
+    Blend
+    <div class="option">
+      <div class="btn-group btn-group-justified">
+        <div class="btn btn-default" ng-model="drawOpts.blend" btn-radio="0" ga>N</div>
+        <div class="btn btn-default" ng-model="drawOpts.blend" btn-radio="1" ga>+</div>
+        <div class="btn btn-default" ng-model="drawOpts.blend" btn-radio="2" ga>*</div>
+        <div class="btn btn-default" ng-model="drawOpts.blend" btn-radio="3" ga>S</div>
       </div>
     </div>
 

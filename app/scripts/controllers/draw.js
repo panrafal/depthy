@@ -1,24 +1,28 @@
 'use strict';
 
 angular.module('depthyApp')
-.controller('DrawCtrl', function ($scope, $element, depthy, $window) {
+.controller('DrawCtrl', function ($scope, $element, depthy, $window, $timeout) {
 
   var drawer = depthy.drawMode,
       viewer = depthy.getViewer(),
-      lastPointerPos = null
+      lastPointerPos = null,
+      oldViewerOpts = angular.extend({}, depthy.viewer),
+      modified = false
 
   angular.extend(depthy.viewer, {
     animate: false,
     fit: 'contain',
     upscale: 2,
-    depthBlurSize: 0,
-    depthPreview: 0.75,
-    enlarge: 1.0,
+    // depthPreview: 0.75,
     // orient: false,
     // hover: false,
   });
 
+  $scope.drawer = drawer;
   $scope.drawOpts = drawer.getOptions();
+
+  $scope.preview = 1;
+  $scope.picker = false;
 
   $scope.$watch('drawOpts', function(options) {
     if (drawer && options) {
@@ -26,9 +30,26 @@ angular.module('depthyApp')
     }
   }, true);
 
+  $scope.$watch('preview', function(preview) {
+    depthy.viewer.orient = preview == 2;
+    depthy.viewer.hover = preview == 2;
+    depthy.viewer.animate = preview == 2 && oldViewerOpts.animate;
+    depthy.animateOption(depthy.viewer, {
+      depthPreview: preview == 0 ? 1 : preview == 1 ? 0.6 : 0,
+      depthScale: preview == 2 ? 1 : 0,
+      depthBlurSize: 0,
+      enlarge: 1.0,
+    }, 250)
+  });
+
+  $scope.togglePreview = function() {
+    $scope.preview = ++$scope.preview % 3;
+  };
+
   $scope.close = function() {
     $window.history.back();
   };
+
 
   $element.on('touchstart mousedown', function(e) {
     var event = e.originalEvent,
@@ -38,7 +59,21 @@ angular.module('depthyApp')
 
     lastPointerPos = viewer.screenToImagePos({x: pointerEvent.pageX, y: pointerEvent.pageY});
 
+    if ($scope.picker) {
+      $scope.drawOpts.depth = drawer.getDepthAtPos(lastPointerPos);
+      console.log('Picked %s', $scope.drawOpts.depth);
+      if ($scope.picker === 'once') {
+        $scope.picker = false;
+        lastPointerPos = null;
+        $scope.$safeApply();
+        return;
+      } else {
+        $scope.$safeApply();
+      }
+    }
+
     drawer.drawBrush(lastPointerPos);
+    modified = true;    
     event.preventDefault();
     event.stopPropagation();
   });
@@ -57,11 +92,32 @@ angular.module('depthyApp')
 
   $element.on('touchend mouseup', function(event) {
     // console.log(event);
-    lastPointerPos = null;
+    if (lastPointerPos) {
+      lastPointerPos = null;
+      $scope.$safeApply();    
+    }
   });
 
   $element.on('$destroy', function() {
-    console.log('DESTROY!');
+    drawer.destroy();
+
+    depthy.animateOption(depthy.viewer, {
+      depthPreview: oldViewerOpts.depthPreview,
+      depthScale: oldViewerOpts.depthScale,
+      depthBlurSize: oldViewerOpts.depthBlurSize,
+      enlarge: oldViewerOpts.enlarge,
+    }, 250);
+
+    $timeout(function() {
+      angular.extend(depthy.viewer, oldViewerOpts);
+    }, 251);
+
+    if (modified) {
+      depthy.opened.markAsModified();
+      depthy.opened.depthSource = viewer.getDepthmap().texture;
+      depthy.opened.onDepthmapOpened();
+    }
+
   });
 
 

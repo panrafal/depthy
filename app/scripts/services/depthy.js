@@ -883,6 +883,19 @@ angular.module('depthyApp').provider('depthy', function depthy() {
         return new Blob([ab],{type: mimeString});
       },
 
+
+      animateOption: function(obj, option, duration) {
+        $(obj).animate(option, {
+          duration: duration || 250,
+          step: function() {$rootScope.$safeApply();},
+          complete: function() {
+            _.extend(obj, option);
+            $rootScope.$safeApply();
+          }
+        });
+      },
+
+
       isLeftpaneOpened: function() {
         return this.leftpaneOpened || this.isFullLayout();
       },
@@ -947,7 +960,7 @@ angular.module('depthyApp').provider('depthy', function depthy() {
         depthy.leftpaneClose();
         depthy.zenMode = true;
         depthy.drawMode = new DepthyDrawer(depthy.getViewer());
-        depthy.drawMode.oldOptions = angular.extend({}, depthy.viewer);
+        // depthy.drawMode.oldOptions = angular.extend({}, depthy.viewer);
         depthy.isViewerOverriden(true);
       },
 
@@ -955,9 +968,10 @@ angular.module('depthyApp').provider('depthy', function depthy() {
         if (!depthy.drawMode) return;
         depthy.zenMode = false;
         depthy.isViewerOverriden(false);
-        angular.extend(depthy.viewer, depthy.drawMode.oldOptions);
+        // depthy.extend(depthy.viewer, depthy.drawMode.oldOptions);
         depthy.drawMode.destroy();
         depthy.drawMode = false;
+
       },
 
 
