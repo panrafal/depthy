@@ -42,8 +42,8 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
 
       // setup brush
       brushCanvas = document.createElement('canvas');
-      brushCanvas.id = 'draw-brushcanvas';
-      viewer.getElement().appendChild(brushCanvas);
+      // brushCanvas.id = 'draw-brushcanvas';
+      // viewer.getElement().appendChild(brushCanvas);
       brushDirty = true;
     }
 
@@ -66,7 +66,7 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
       ctx.fillStyle = grd;
       ctx.fillRect(0, 0, size, size);
 
-      console.log('updateBrush!', options, color, grd);
+      // console.log('updateBrush!', options, color, grd);
 
       if (!brushTexture) {
         brushTexture = PIXI.Texture.fromCanvas(brushCanvas);
@@ -128,7 +128,7 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
           dst = Math.sqrt(Math.pow((to.x - from.x) * depthmap.size.width, 2) + Math.pow((to.y - from.y) * depthmap.size.height, 2)),
           step = Math.round(Math.max(1, options.spacing * options.size * unit)),
           steps = dst / step;
-      console.log(dst, step, steps/*, from, to*/);
+      // console.log(dst, step, steps/*, from, to*/);
       for (var i = 1; i <= steps; ++i) {
         var prg = i / steps;
         this.drawBrush({x: from.x + (to.x - from.x) * prg, y: from.y + (to.y - from.y) * prg});
