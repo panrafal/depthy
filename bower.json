@@ -12,7 +12,7 @@
     "angular-ui-bootstrap": "~0.11.0",
     "angular-ui-router": "~0.2.10",
     "bootstrap-sass-official": "~3.1.0",
-    "gif.js": "*",
+    "gif.js": "panrafal/gif.js#master",
     "is-jpg": "~0.1.2",
     "is-png": "~0.1.1",
     "jquery": "~1.11.0",
