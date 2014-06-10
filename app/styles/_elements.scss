@@ -400,7 +400,7 @@
     top: 50%;
     display: block;
     pointer-events: none;
-    box-shadow: 1px 1px 1px rgba(0,0,0,0.5);
+    // box-shadow: 1px 1px 1px rgba(0,0,0,0.5);
 
     transition: all 0.2s ease-in-out;
     opacity: 0;
@@ -457,6 +457,15 @@
   right: 0px;
   bottom: 0px;
   z-index: 100;
+
+  .options {
+    width: 300px;
+  }
+
+}
+#draw-brushcanvas {
+  left: auto;
+  right: 0px;
 }
 
 // ------------------------------------------------------ DEBUG

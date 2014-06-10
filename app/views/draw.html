@@ -1,6 +1,88 @@
 <section id="draw" ng-controller="DrawCtrl">
-  <div class="btn-group">
-    <button class="btn btn-default btn-control" ng-click="close()" title="Finish drawing"><i class="icon icon-yes"></i></button>
+  <div class="options">
+    <div class="btn-group">
+      <button class="btn btn-default btn-control" ng-click="close()" title="Finish drawing"><i class="icon icon-yes"></i></button>
+    </div>
+
+    Depth
+    <div class="option">
+      <div class="btn-group btn-group-justified">
+        <div class="btn btn-default" ng-model="drawOpts.depth" btn-radio="0.0" ga>0.0</div>
+        <div class="btn btn-default" ng-model="drawOpts.depth" btn-radio="0.25" ga>0.25</div>
+        <div class="btn btn-default" ng-model="drawOpts.depth" btn-radio="0.5" ga>0.5</div>
+        <div class="btn btn-default" ng-model="drawOpts.depth" btn-radio="0.75" ga>0.75</div>
+        <div class="btn btn-default" ng-model="drawOpts.depth" btn-radio="1.0" ga>1.0</div>
+      </div>
+    </div>
+
+    Size
+    <div class="option">
+      <div class="btn-group btn-group-justified">
+        <div class="btn btn-default" ng-model="drawOpts.size" btn-radio="0.01" ga>.01</div>
+        <div class="btn btn-default" ng-model="drawOpts.size" btn-radio="0.02" ga>.02</div>
+        <div class="btn btn-default" ng-model="drawOpts.size" btn-radio="0.05" ga>.05</div>
+        <div class="btn btn-default" ng-model="drawOpts.size" btn-radio="0.1" ga>.1</div>
+        <div class="btn btn-default" ng-model="drawOpts.size" btn-radio="0.2" ga>.2</div>
+      </div>
+    </div>
+
+    Hardness
+    <div class="option">
+      <div class="btn-group btn-group-justified">
+        <div class="btn btn-default" ng-model="drawOpts.hardness" btn-radio="0.0" ga>0.0</div>
+        <div class="btn btn-default" ng-model="drawOpts.hardness" btn-radio="0.25" ga>0.25</div>
+        <div class="btn btn-default" ng-model="drawOpts.hardness" btn-radio="0.5" ga>0.5</div>
+        <div class="btn btn-default" ng-model="drawOpts.hardness" btn-radio="0.75" ga>0.75</div>
+        <div class="btn btn-default" ng-model="drawOpts.hardness" btn-radio="1.0" ga>1.0</div>
+      </div>
+    </div>
+
+    Opacity
+    <div class="option">
+      <div class="btn-group btn-group-justified">
+        <div class="btn btn-default" ng-model="drawOpts.opacity" btn-radio="0.1" ga>0.1</div>
+        <div class="btn btn-default" ng-model="drawOpts.opacity" btn-radio="0.25" ga>0.25</div>
+        <div class="btn btn-default" ng-model="drawOpts.opacity" btn-radio="0.5" ga>0.5</div>
+        <div class="btn btn-default" ng-model="drawOpts.opacity" btn-radio="0.75" ga>0.75</div>
+        <div class="btn btn-default" ng-model="drawOpts.opacity" btn-radio="1.0" ga>1.0</div>
+      </div>
+    </div>
+
+    Preview
+    <div class="option">
+      <div class="btn-group btn-group-justified">
+        <div class="btn btn-default" ng-model="viewer.depthPreview" btn-radio="0.0" ga>0.0</div>
+        <div class="btn btn-default" ng-model="viewer.depthPreview" btn-radio="0.25" ga>0.25</div>
+        <div class="btn btn-default" ng-model="viewer.depthPreview" btn-radio="0.50" ga>0.5</div>
+        <div class="btn btn-default" ng-model="viewer.depthPreview" btn-radio="0.75" ga>0.75</div>
+        <div class="btn btn-default" ng-model="viewer.depthPreview" btn-radio="1.0" ga>1.0</div>
+      </div>
+    </div>
+
+    Spacing
+    <div class="option">
+      <div class="btn-group btn-group-justified">
+        <div class="btn btn-default" ng-model="drawOpts.spacing" btn-radio="0.0" ga>0.0</div>
+        <div class="btn btn-default" ng-model="drawOpts.spacing" btn-radio="0.01" ga>0.01</div>
+        <div class="btn btn-default" ng-model="drawOpts.spacing" btn-radio="0.05" ga>0.05</div>
+        <div class="btn btn-default" ng-model="drawOpts.spacing" btn-radio="0.1" ga>0.1</div>
+        <div class="btn btn-default" ng-model="drawOpts.spacing" btn-radio="0.2" ga>0.2</div>
+        <div class="btn btn-default" ng-model="drawOpts.spacing" btn-radio="0.5" ga>0.5</div>
+      </div>
+    </div>
+
+    Slope
+    <div class="option">
+      <div class="btn-group btn-group-justified">
+        <div class="btn btn-default" ng-model="drawOpts.slope" btn-radio="0.3" ga>0.3</div>
+        <div class="btn btn-default" ng-model="drawOpts.slope" btn-radio="0.4" ga>0.4</div>
+        <div class="btn btn-default" ng-model="drawOpts.slope" btn-radio="0.5" ga>0.5</div>
+        <div class="btn btn-default" ng-model="drawOpts.slope" btn-radio="0.6" ga>0.6</div>
+        <div class="btn btn-default" ng-model="drawOpts.slope" btn-radio="0.7" ga>0.7</div>
+      </div>
+    </div>
+
   </div>
+
 
 </section>

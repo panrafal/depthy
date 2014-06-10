@@ -738,6 +738,10 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
       return canvas;
     };
 
+    this.getRenderer = function() {
+      return renderer;
+    };
+
     this.getSize = function() {
       return sizeCopy(stageSize);
     };

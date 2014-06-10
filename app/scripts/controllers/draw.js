@@ -18,6 +18,14 @@ angular.module('depthyApp')
     // hover: false,
   });
 
+  $scope.drawOpts = drawer.getOptions();
+
+  $scope.$watch('drawOpts', function(options) {
+    if (drawer && options) {
+      drawer.setOptions(options);
+    }
+  }, true);
+
   $scope.close = function() {
     $window.history.back();
   };
