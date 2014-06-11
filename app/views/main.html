@@ -6,8 +6,6 @@
     'offline': depthy.isOffline(),
     'depthy-ready': depthy.isReady(),
     'depthy-loading': depthy.isLoading()}"
-  ng-swipe-right="depthy.leftpaneOpen()"
-  ng-swipe-left="depthy.leftpaneClose()"
 >
   <div id="hamburger" class="icon icon-navicon-bold" ng-click="depthy.leftpaneToggle()"></div>
   <nav id="navbar" class="text-right">
@@ -18,7 +16,7 @@
     </div>
   </nav>
 
-  <div id="leftpane">
+  <div id="leftpane" ng-swipe-left="depthy.leftpaneClose()">
     <div class="scroll">
 
       <section id="about">
@@ -96,7 +94,9 @@
 
     </div>
 
-    <div class="depthy-viewer" depthy-viewer="depthy.viewer" ng-click="depthy.zenModeToggle()" >
+    <div class="depthy-viewer" depthy-viewer="depthy.viewer" ng-click="depthy.zenModeToggle()" 
+      ng-swipe-right="depthy.leftpaneOpen()"
+    >
       <canvas></canvas>
       <div class="icon icon-loading"></div>
     </div>

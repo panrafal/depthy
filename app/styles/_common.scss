@@ -287,6 +287,41 @@ p a {
   font-size: $font-size-large !important;
 }
 
+
+// range stepper
+
+.range-stepper {
+  overflow: hidden;
+  position: relative;
+
+  background: $brand-neutral-vdark;
+
+  .rs-value, .rs-thumb {
+    padding: $padding-base-vertical $padding-base-vertical;
+    text-align: center;
+  }
+  .rs-value {
+    cursor: pointer;
+    float: left;
+    color: $brand-neutral-bright;
+  }
+  .rs-thumb {
+    cursor: ew-resize;
+    background: $brand-neutral-dark;
+    position: absolute;
+    color: #fff;
+    box-shadow: 0px 0px 16px 8px fade-out($brand-neutral-vdark, 0.0);
+    transition: transform 0.1s linear;
+    &:active {
+      background: lighten($brand-primary-dark, $contrast);
+    }
+  }
+  &.rs-dragging .rs-thumb {
+    transition-duration: 0s;
+  }
+}
+
+
 // ------------------------------------------------------ components
 
 logo {

@@ -190,7 +190,6 @@ angular.module('depthyApp')
     // refresh on every digest...
     $scope.$watch(function() {
       setTimeout(function() {
-        console.log('scroll refresh');
         $scope.scroll.refresh();
       }, 100);
     });

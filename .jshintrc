@@ -32,6 +32,6 @@
     "_": true,
     "requestAnimFrame": true,
     "screenfull": true,
-    'IScroll': true
+    "IScroll": true
   }
 }
