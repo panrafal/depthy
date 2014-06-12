@@ -12,24 +12,28 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
         texture, undoTexture,
         lastUndoTime, redoMode = false,
         brush, brushCanvas, brushTexture, brushContainer, brushLastPos, brushDirty,
-        options = {
-          depth: 0.5,
-          size: 0.02,
-          hardness: 0.0,
-          opacity: 1.0,
-          spacing: 0.1,
-          slope: 0.5,
-          blend: PIXI.blendModes.NORMAL,
-          undoTimeout: 1000, 
-        },
+        options,
         renderer = viewer.getRenderer(),
         depthmap = viewer.getDepthmap(),
         image = viewer.getImage(),
+        modified = false, canceled = false,
         unit;
+
+    options = {
+      depth: 0.5,
+      size: 0.02,
+      hardness: 0.0,
+      opacity: 1.0,
+      spacing: 0.1,
+      slope: 0.5,
+      blend: PIXI.blendModes.NORMAL,
+      undoTimeout: 4000,
+    };
 
     function initialize() {
 
-      if (depthmap.texture instanceof PIXI.RenderTexture === false) {
+      // always start with a new one...
+      if (true || depthmap.texture instanceof PIXI.RenderTexture === false) {
         // replace the texture
         viewer.setDepthmap(viewer.exportDepthmapAsTexture({width: 1000, height: 1000}));
         depthmap = viewer.getDepthmap();
@@ -86,7 +90,7 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
       }
       brush.width = brush.height = size;
       brushDirty = false;
-    };
+    }
 
     function throttledStoreUndo(force) {
       if (force || redoMode || !lastUndoTime || new Date() - lastUndoTime > options.undoTimeout) {
@@ -161,6 +165,7 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
       // console.log('Draw', brush.x, brush.y);
       texture.render(brushContainer, null, false);
       depthmap.renderDirty = true;
+      modified = true;
     };
 
     this.drawBrushTo = function(pos) {
@@ -180,12 +185,26 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
       return PIXI.glReadPixels(renderer.gl, texture, pos.x * depthmap.size.width, pos.y * depthmap.size.height, 1, 1)[0] / 255;
     };
 
-    this.destroy = function() {
+    this.isModified = function() {
+      return modified;
+    };
+
+    this.isCanceled = function() {
+      return canceled;
+    };
+
+    this.cancel = function() {
+      canceled = true;
+    };
+
+    this.destroy = function(destroyTexture) {
       if (undoTexture) undoTexture.destroy();
-      depthmap.shared = true;
+      if (brushTexture) brushTexture.destroy();
+      if (destroyTexture && texture) texture.destroy();
+      depthmap.shared = false;
     };
 
     initialize();
-  }
+  };
 
 })(window);

@@ -172,6 +172,8 @@ angular.module('depthyApp')
 
         function setPosition(pos) {
           position = positionClamp(pos);
+          $scope.position = position;
+
           $element.find('.rs-thumb').css('transform', 'translateX('+(position * 100)+'%)');
 
           if (pos === false) {

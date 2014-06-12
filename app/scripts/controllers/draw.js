@@ -6,8 +6,8 @@ angular.module('depthyApp')
   var drawer = depthy.drawMode,
       viewer = depthy.getViewer(),
       lastPointerPos = null,
-      oldViewerOpts = angular.extend({}, depthy.viewer),
-      modified = false
+      oldViewerOpts = angular.extend({}, depthy.viewer)
+      
 
   angular.extend(depthy.viewer, {
     animate: false,
@@ -36,25 +36,30 @@ angular.module('depthyApp')
     depthy.viewer.animate = preview === 2 && oldViewerOpts.animate;
     depthy.viewer.quality = preview === 2 ? false : 1;
     depthy.animateOption(depthy.viewer, {
-      depthPreview: preview === 0 ? 1 : preview === 1 ? 0.6 : 0,
+      depthPreview: preview === 0 ? 1 : preview === 1 ? 0.75 : 0,
       depthScale: preview === 2 ? 2 : 0,
       depthBlurSize: 0,
       enlarge: 1.0,
-    }, 250)
+    }, 250);
   });
 
   $scope.togglePreview = function() {
     $scope.preview = ++$scope.preview % 3;
   };
 
-  $scope.close = function() {
+  $scope.done = function() {
+    $window.history.back();
+  };
+
+  $scope.cancel = function() {
+    drawer.cancel();
     $window.history.back();
   };
 
 
   $element.on('touchstart mousedown', function(e) {
     var event = e.originalEvent,
-        pointerEvent = event.touches ? event.touches[0] : event
+        pointerEvent = event.touches ? event.touches[0] : event;
 
     if (event.target.id !== 'draw') return;
 
@@ -67,6 +72,8 @@ angular.module('depthyApp')
         $scope.picker = false;
         lastPointerPos = null;
         $scope.$safeApply();
+        event.preventDefault();
+        event.stopPropagation();
         return;
       } else {
         $scope.$safeApply();
@@ -74,7 +81,6 @@ angular.module('depthyApp')
     }
 
     drawer.drawBrush(lastPointerPos);
-    modified = true;    
     event.preventDefault();
     event.stopPropagation();
   });
@@ -100,7 +106,6 @@ angular.module('depthyApp')
   });
 
   $element.on('$destroy', function() {
-    drawer.destroy();
 
     depthy.animateOption(depthy.viewer, {
       depthPreview: oldViewerOpts.depthPreview,
@@ -113,11 +118,21 @@ angular.module('depthyApp')
       angular.extend(depthy.viewer, oldViewerOpts);
     }, 251);
 
-    if (modified) {
-      depthy.opened.markAsModified();
-      depthy.opened.depthSource = viewer.getDepthmap().texture;
-      depthy.opened.onDepthmapOpened();
+    if (drawer.isCanceled()) {
+      // restore opened depthmap
+      viewer.setDepthmap(depthy.opened.depthSource, depthy.opened.depthUsesAlpha);
+    } else if (drawer.isModified()) {
+      // remember drawn depthmap
+      // store it as jpg
+      viewer.exportDepthmap().then(function(url) {
+        depthy.opened.markAsModified();
+        depthy.opened.depthSource = url; //viewer.getDepthmap().texture;
+        depthy.opened.depthUsesAlpha = false;
+        depthy.opened.onDepthmapOpened();
+      });
     }
+
+    drawer.destroy(true);
 
   });
 
