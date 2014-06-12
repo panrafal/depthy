@@ -9,19 +9,15 @@
   <!-- <label>Animation</label> -->
 
   <div class="range-stepper" ng-model="viewer.animateScale" range-stepper data-values="[
-    {value:{x:1, y:0}},
-    {value:{x:1, y:1}},
-    {value:{x:0, y:1}}
+    {value:{x:1, y:0}, label: 'Horizontal'},
+    {value:{x:1, y:1}, label: 'Circular'},
+    {value:{x:0, y:1}, label: 'Vertical'}
   ]">
-    
-  </div>
-
-  <div class="btn-group btn-group-justified" ng-model="viewer.animateScale" bs-radio-group>
-    <div class="btn btn-default btn-icon" ng-model="viewer.animateScale" btn-radio="{x:1, y:0}" title="Left-right movement" ga><i class="icon icon-loop-flat"></i></div>
-    <div class="btn btn-default btn-icon" ng-model="viewer.animateScale" btn-radio="{x:1, y:0.5}" title="Wide ellipse movement" ga><i class="icon icon-loop-ellipse"></i></div>
-    <div class="btn btn-default btn-icon" ng-model="viewer.animateScale" btn-radio="{x:1, y:1}" title="Circle movement" ga><i class="icon icon-loop-circle"></i></div>
-    <div class="btn btn-default btn-icon" ng-model="viewer.animateScale" btn-radio="{x:0.5, y:1}" title="Narrow ellipse movement" ga><i class="icon icon-loop-ellipse icon-rotate-90"></i></div>
-    <div class="btn btn-default btn-icon" ng-model="viewer.animateScale" btn-radio="{x:0, y:1}" title="Top-bottom movement" ga><i class="icon icon-loop-flat icon-rotate-90"></i></div>
+    <div class="rs-thumb">
+      <svg width="16" height="16">
+        <ellipse cx="8" cy="8" rx="{{Math.max(0.5, v.value.x * 7)}}" ry="{{Math.max(0.5, v.value.y * 7)}}" fill="none" stroke="white" stroke-width="2"></ellipse>
+      </svg>
+    </div>
   </div>
 </div>
 

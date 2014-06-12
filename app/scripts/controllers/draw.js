@@ -31,12 +31,13 @@ angular.module('depthyApp')
   }, true);
 
   $scope.$watch('preview', function(preview) {
-    depthy.viewer.orient = preview == 2;
-    depthy.viewer.hover = preview == 2;
-    depthy.viewer.animate = preview == 2 && oldViewerOpts.animate;
+    depthy.viewer.orient = preview === 2;
+    depthy.viewer.hover = preview === 2;
+    depthy.viewer.animate = preview === 2 && oldViewerOpts.animate;
+    depthy.viewer.quality = preview === 2 ? false : 1;
     depthy.animateOption(depthy.viewer, {
-      depthPreview: preview == 0 ? 1 : preview == 1 ? 0.6 : 0,
-      depthScale: preview == 2 ? 1 : 0,
+      depthPreview: preview === 0 ? 1 : preview === 1 ? 0.6 : 0,
+      depthScale: preview === 2 ? 2 : 0,
       depthBlurSize: 0,
       enlarge: 1.0,
     }, 250)

@@ -290,13 +290,13 @@ p a {
 
 // range stepper
 
-.range-stepper {
+.range-stepper, .range-slider {
   overflow: hidden;
   position: relative;
 
   background: $brand-neutral-vdark;
 
-  .rs-value, .rs-thumb {
+  .rs-value, .rs-thumb, .rs-title {
     padding: $padding-base-vertical $padding-base-vertical;
     text-align: center;
   }
@@ -304,21 +304,42 @@ p a {
     cursor: pointer;
     float: left;
     color: $brand-neutral-bright;
+    &:empty {
+      &:before {
+        content: ' ';
+      }
+    }
   }
-  .rs-thumb {
+  .rs-title {
+    position: absolute;
+    width: 100%;
+    pointer-events: none;
     z-index: 1;
+    color: $brand-neutral;
+  }  
+  .rs-thumb {
+    z-index: 2;
     cursor: ew-resize;
     background: $brand-neutral-dark;
     position: absolute;
     color: #fff;
     box-shadow: 0px 0px 16px 8px fade-out($brand-neutral-vdark, 0.0);
     transition: transform 0.1s linear;
-    &:active {
-      background: lighten($brand-primary-dark, $contrast);
-    }
+    // &:active {
+    // }
   }
   &.rs-dragging .rs-thumb {
     transition-duration: 0s;
+    background: lighten($brand-primary-dark, $contrast);
+  }
+}
+
+.range-slider {
+  .rs-value:first-of-type, .rs-thumb+.rs-value {
+    text-align: left;
+  }
+  .rs-value:last-of-type {
+    text-align: right;
   }
 }
 

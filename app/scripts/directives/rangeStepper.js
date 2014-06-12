@@ -21,8 +21,12 @@ angular.module('depthyApp')
             position, defaultFormatter;
         
         options = angular.extend({
-          // snap to values - 0.0 - 1.0
+          // snap to defined values - 0.0 - 1.0
           snap: 0.1,
+          // step between defined values - 0.0 - 1.0
+          step: 0,
+          // interpolated values will have this precision
+          precision: 0.001,
           labelTemplate: labelTemplate || '{{getLabel(v)}}',
           valuesTemplate: '<div ng-repeat="v in values" class="rs-value"><placeholder /></div>',
           thumbTemplate: '<div class="rs-thumb"><placeholder /></div>',
@@ -35,7 +39,7 @@ angular.module('depthyApp')
         } else if (angular.isNumber(options.format)) {
           var precision = options.format;
           defaultFormatter = function(v) {
-            return Math.round(Math.round(v / precision) * precision * 10000) / 10000;
+            return precise(v, precision);
           };
         } else if (options.format === '%') {
           defaultFormatter = function(v) {return Math.round(v * 100);};
@@ -60,13 +64,18 @@ angular.module('depthyApp')
           $timeout(updateValues);
         }
 
+        function precise(v, precision) {
+          if (!precision) return v;
+          return +(Math.round(v / precision) * precision).toFixed(8);
+        }
+
         function pxToPosition(px) {
           var rect = $element[0].getBoundingClientRect();
           return (px - rect.left) / rect.width * (values.length);
         }
 
         function positionClamp(pos) {
-          return Math.max(0, Math.min( values.length - 1, pos ));
+          return Math.max(0, Math.min( values.length - 1, (pos >> 0) + precise(pos % 1, options.step) ));
         }
 
         function getValueAt(i) {
@@ -95,7 +104,7 @@ angular.module('depthyApp')
             }
             return result;
           } else {
-            return a + ((b || 0) - a) * t;
+            return precise(a + (b - a) * t, options.precision);
           }
         }
 
@@ -126,6 +135,10 @@ angular.module('depthyApp')
           }
         }
 
+        function equals(a, b) {
+          return locate(a, b, b) === true;
+        }
+
         function positionToValue(pos) {
           pos = positionClamp(pos);
           if (options.snap && Math.abs(pos - Math.round(pos)) <= options.snap / 2) pos = Math.round(pos);
@@ -150,7 +163,7 @@ angular.module('depthyApp')
           }
           if (v >= getValueAt(values.length - 1)) return values.length - 1;
           console.warn('Value %s is out of bounds!', v);
-          return 0;
+          return false;
         }
 
         function updateValues() {
@@ -158,16 +171,20 @@ angular.module('depthyApp')
         }
 
         function setPosition(pos) {
-          pos = positionClamp(pos);
-          position = pos;
+          position = positionClamp(pos);
           $element.find('.rs-thumb').css('transform', 'translateX('+(position * 100)+'%)');
 
-          var value = positionToValue(pos),
+          if (pos === false) {
+            $scope.v = ngModel.$viewValue;
+            return;
+          }
+
+          var value = positionToValue(position),
               valueValue = getValue(value);
 
           $scope.v = value;
-          console.log('setPosition', pos, valueValue, value);
-          if (ngModel.$viewValue !== valueValue) {
+          console.log('setPosition pos %s (%s) value %o getValue %o', pos, position, value, valueValue);
+          if (!equals(ngModel.$viewValue, valueValue)) {
             ngModel.$setViewValue(valueValue);
           }
         }
@@ -176,6 +193,7 @@ angular.module('depthyApp')
         $scope.values = values;
 
         $scope.getLabel = getLabel;
+        $scope.getValue = getValue;
 
         ngModel.$render = function() {
           setPosition(valueToPosition(ngModel.$viewValue));
