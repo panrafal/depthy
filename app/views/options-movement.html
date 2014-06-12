@@ -1,7 +1,7 @@
 <div class="option">
   <!-- <label>Scale</label> -->
 
-  <div class="range-stepper" ng-model="viewer.depthScale" range-stepper data-values="[
+  <div class="range-stepper" ng-model="viewer.depthScale" range-stepper="{units:'%', format:'%'}" data-values="[
     {value:0.5, label:'Calm'}, 
     {value:1.0, label:'Normal'}, 
     {value:2.0, label:'Dramatic'}
@@ -10,7 +10,7 @@
 </div>
 <div class="option">
   <!-- <label>Speed</label> -->
-  <div class="range-stepper" ng-model="viewer.depthFocus" range-stepper data-values="[
+  <div class="range-stepper" ng-model="viewer.depthFocus" range-stepper="{units:'%', format:'%'}" data-values="[
     {value:0.0, label:'Near'}, 
     {value:0.5, label:'Middle'}, 
     {value:1.0, label:'Far'}

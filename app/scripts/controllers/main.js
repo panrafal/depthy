@@ -6,6 +6,7 @@ angular.module('depthyApp')
   $rootScope.depthy = depthy;
   $rootScope.viewer = depthy.viewer; // shortcut
   $rootScope.Modernizr = window.Modernizr;
+  $rootScope.Math = window.Math;
   $rootScope.screenfull = screenfull;
 
   $scope.version = depthy.getVersion();

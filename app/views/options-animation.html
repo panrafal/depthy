@@ -1,17 +1,21 @@
 <div class="option">
   <!-- <label>Speed</label> -->
-  <div class="btn-group btn-group-justified">
-    <div class="btn btn-default" ng-model="viewer.animateDuration" btn-radio="0.07" ga>x_X</div>
-    <!-- <div class="btn btn-default" ng-model="viewer.animateDuration" btn-radio="0.128" ga>.128s</div> -->
-    <!-- <div class="btn btn-default" ng-model="viewer.animateDuration" btn-radio="0.5" ga>.5s</div> -->
-    <div class="btn btn-default" ng-model="viewer.animateDuration" btn-radio="1" ga>1s</div>
-    <div class="btn btn-default" ng-model="viewer.animateDuration" btn-radio="2" ga>2s</div>
-    <div class="btn btn-default" ng-model="viewer.animateDuration" btn-radio="4" ga>4s</div>
-    <div class="btn btn-default" ng-model="viewer.animateDuration" btn-radio="6" ga>6s</div>
-  </div>
+  <div class="range-stepper" ng-model="viewer.animateDuration" range-stepper="{units:'s'}" data-values="[
+    {value:0.07, label:'x_X'}, 1, 2, 4, 6
+  ]"></div>
+
 </div>
 <div class="option">
   <!-- <label>Animation</label> -->
+
+  <div class="range-stepper" ng-model="viewer.animateScale" range-stepper data-values="[
+    {value:{x:1, y:0}},
+    {value:{x:1, y:1}},
+    {value:{x:0, y:1}}
+  ]">
+    
+  </div>
+
   <div class="btn-group btn-group-justified" ng-model="viewer.animateScale" bs-radio-group>
     <div class="btn btn-default btn-icon" ng-model="viewer.animateScale" btn-radio="{x:1, y:0}" title="Left-right movement" ga><i class="icon icon-loop-flat"></i></div>
     <div class="btn btn-default btn-icon" ng-model="viewer.animateScale" btn-radio="{x:1, y:0.5}" title="Wide ellipse movement" ga><i class="icon icon-loop-ellipse"></i></div>

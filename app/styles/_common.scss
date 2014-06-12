@@ -306,6 +306,7 @@ p a {
     color: $brand-neutral-bright;
   }
   .rs-thumb {
+    z-index: 1;
     cursor: ew-resize;
     background: $brand-neutral-dark;
     position: absolute;
