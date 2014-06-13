@@ -166,10 +166,12 @@ angular.module('depthyApp')
   });
 
   $($window).on('resize', function() {
+    var $viewer = $('#viewer');
     depthy.viewer.size = {
-      width: $window.innerWidth,
-      height: $window.innerHeight,
+      width:  $viewer.width(),
+      height: $viewer.height(),
     };
+    console.log('Resize %dx%d', $viewer.width(), $viewer.height());
     $scope.$safeApply();
   });
   $($window).resize();

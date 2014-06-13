@@ -962,6 +962,7 @@ angular.module('depthyApp').provider('depthy', function depthy() {
         depthy.drawMode = new DepthyDrawer(depthy.getViewer());
         // depthy.drawMode.oldOptions = angular.extend({}, depthy.viewer);
         depthy.isViewerOverriden(true);
+        $timeout(function() {$($window).resize();});
       },
 
       drawModeDisable: function() {
@@ -971,7 +972,7 @@ angular.module('depthyApp').provider('depthy', function depthy() {
         // depthy.extend(depthy.viewer, depthy.drawMode.oldOptions);
         depthy.drawMode.destroy();
         depthy.drawMode = false;
-
+        $timeout(function() {$($window).resize();});
       },
 
 

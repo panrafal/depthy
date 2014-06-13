@@ -395,7 +395,7 @@ logo {
     display: block;
   }
 
-  .btn-default {
+  .btn-default, &.btn-default {
     // background: transparent; //fade-out($btn-default-bg, 0.9);
     color: $brand-neutral-bright;
     &:hover {

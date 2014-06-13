@@ -1,88 +1,94 @@
-<section id="draw" ng-controller="DrawCtrl">
-  <div class="options">
-    <div class="btn-group option">
-      <button class="btn btn-success btn-control" ng-click="done()" title="Finish drawing"><i class="icon icon-yes"></i></button>
-      <button class="btn btn-danger btn-control" ng-click="cancel()" title="Cancel drawing"><i class="icon icon-no"></i></button>
+<section id="draw" ng-controller="DrawCtrl" ng-class="{'brush-opened': brushOpened}">
+  <div class="draw-options">
 
-      <button class="btn btn-default btn-control" ng-click="drawer.toggleUndo()" ng-class="{active:drawer.getUndoMode() != 0}" title="Undo"><i class="icon icon-{{drawer.getUndoMode() <= 0 ? 'undo' : 'redo'}}"></i></button>
+    <button class="draw-done btn btn-success btn-control" ng-click="done()" title="Finish"><i class="icon icon-yes"></i></button>
+    <button class="draw-cancel btn btn-danger btn-control" ng-click="cancel()" title="Cancel"><i class="icon icon-no"></i></button>
 
-      <button class="btn btn-default btn-control" ng-click="togglePreview()" ng-class="{active:preview == 2}" title="Preview"><i class="icon icon-eye"></i></button>
+    <button class="draw-undo btn btn-default btn-control" ng-click="drawer.toggleUndo()" ng-class="{active:drawer.getUndoMode() != 0}" title="Undo"><i class="icon icon-{{drawer.getUndoMode() <= 0 ? 'undo' : 'redo'}}"></i></button>
 
-      <button class="btn btn-default btn-control" ng-model="picker" btn-checkbox btn-checkbox-true="'once'" title="Picker"><i class="icon icon-target"></i></button>
+    <button class="draw-preview btn btn-default btn-control" ng-click="togglePreview()" ng-class="{active:preview == 2}" title="Preview"><i class="icon icon-eye"></i></button>
 
-      <button class="btn btn-default btn-control"  ng-model="picker" btn-checkbox  btn-checkbox-true="'keep'" title="Picker"><i class="icon icon-magnet"></i></button>
+    <button class="draw-brush btn btn-default btn-control" ng-click="brushOpened = !brushOpened" ng-class="{active:brushOpened}" title="Brush options"><i class="icon icon-draw"></i></button>
 
-    </div>
-    <br/>
-    <div class="option">
-      <div class="range-slider" ng-model="drawOpts.depth" range-stepper="{snap: 0}" data-values="[
-        {value:0, label: 'Close'},
-        {value:0.25, label: ''},
-        {value:0.5, label: ''},
-        {value:0.75, label: ''},
-        {value:1, label: 'Far'}
-      ]">
-        <div class="rs-title"><i class="icon icon-arrow-sm-left"></i>depth<i class="icon icon-arrow-sm-right"></i></div>
-        <div class="rs-thumb">
-          <svg width="16" height="16">
-            <circle cx="8" cy="8" r="7" fill="black" stroke="#ffffff" stroke-width="1.5"></circle>
-            <circle cx="8" cy="8" r="7" opacity="{{getValue(v)}}" fill="white" stroke="#ffffff" stroke-width="1.5"></circle>
-          </svg>
+    <div class="brush-options">
+      <button class="draw-picker btn btn-default btn-control" ng-model="picker" btn-checkbox btn-checkbox-true="'once'" title="Picker"><i class="icon icon-target"></i></button>
+      <button class="draw-level btn btn-default btn-control"  ng-model="picker" btn-checkbox  btn-checkbox-true="'keep'" title="Picker"><i class="icon icon-magnet"></i></button>
+      <div class="brush-sliders">
+
+        <div class="option">
+          <div class="range-slider" ng-model="drawOpts.depth" range-stepper="{snap: 0}" data-values="[
+            {value:0, label: 'Close'},
+            {value:0.25, label: ''},
+            {value:0.5, label: ''},
+            {value:0.75, label: ''},
+            {value:1, label: 'Far'}
+          ]">
+            <div class="rs-title"><i class="icon icon-arrow-sm-left"></i>depth<i class="icon icon-arrow-sm-right"></i></div>
+            <div class="rs-thumb">
+              <svg width="16" height="16">
+                <circle cx="8" cy="8" r="7" fill="black" stroke="#ffffff" stroke-width="1.5"></circle>
+                <circle cx="8" cy="8" r="7" opacity="{{getValue(v)}}" fill="white" stroke="#ffffff" stroke-width="1.5"></circle>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="option">
+          <div class="range-slider" ng-model="drawOpts.size" range-stepper="{snap: 0}" data-values="[
+            {value:.005, label: 'Small'},
+            {value:.025, label: ''},
+            {value:.05, label: ''},
+            {value:.2, label: ''},
+            {value:.4, label: 'Large'}
+          ]">
+            <div class="rs-title"><i class="icon icon-arrow-sm-left"></i>size<i class="icon icon-arrow-sm-right"></i></div>
+            <div class="rs-thumb">
+              <svg width="16" height="16">
+                <circle cx="8" cy="8" r="{{Math.max(1, Math.min(8, position / 4 * 8))}}" fill="white" stroke="none"></circle>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="option">
+          <div class="range-slider" ng-model="drawOpts.hardness" range-stepper="{snap: 0}" data-values="[
+            {value:0.0, label: 'Soft'},
+            {value:0.25, label: ''},
+            {value:0.5, label: ''},
+            {value:0.75, label: ''},
+            {value:1.0, label: 'Hard'}
+          ]">
+            <div class="rs-title"><i class="icon icon-arrow-sm-left"></i>hardness<i class="icon icon-arrow-sm-right"></i></div>
+            <div class="rs-thumb">
+              <svg width="16" height="16">
+                <circle cx="8" cy="8" r="{{Math.max(1, Math.min(7, getValue(v) * 7))}}" fill="white" stroke="none"></circle>
+                <circle cx="8" cy="8" r="7" fill="none" stroke="#ffffff" stroke-width="1.5"></circle>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="option">
+          <div class="range-slider" ng-model="drawOpts.opacity" range-stepper="{snap: 0}" data-values="[
+            {value:0.01, label: 'Transparent'},
+            {value:0.1, label: ''},
+            {value:0.25, label: ''},
+            {value:0.5, label: ''},
+            {value:1, label: 'Opaque'}
+          ]">
+            <div class="rs-title"><i class="icon icon-arrow-sm-left"></i>opacity<i class="icon icon-arrow-sm-right"></i></div>
+            <div class="rs-thumb">
+              <svg width="16" height="16">
+                <circle cx="8" cy="8" r="7" opacity="{{(getValue(v) + 0.1) / 0.9}}" fill="white"></circle>
+              </svg>
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="option">
-      <div class="range-slider" ng-model="drawOpts.size" range-stepper="{snap: 0}" data-values="[
-        {value:.005, label: 'Small'},
-        {value:.025, label: ''},
-        {value:.05, label: ''},
-        {value:.2, label: ''},
-        {value:.4, label: 'Large'}
-      ]">
-        <div class="rs-title"><i class="icon icon-arrow-sm-left"></i>size<i class="icon icon-arrow-sm-right"></i></div>
-        <div class="rs-thumb">
-          <svg width="16" height="16">
-            <circle cx="8" cy="8" r="{{Math.max(1, Math.min(8, position / 4 * 8))}}" fill="white" stroke="none"></circle>
-          </svg>
-        </div>
-      </div>
-    </div>
-
-    <div class="option">
-      <div class="range-slider" ng-model="drawOpts.hardness" range-stepper="{snap: 0}" data-values="[
-        {value:0.0, label: 'Soft'},
-        {value:0.25, label: ''},
-        {value:0.5, label: ''},
-        {value:0.75, label: ''},
-        {value:1.0, label: 'Hard'}
-      ]">
-        <div class="rs-title"><i class="icon icon-arrow-sm-left"></i>hardness<i class="icon icon-arrow-sm-right"></i></div>
-        <div class="rs-thumb">
-          <svg width="16" height="16">
-            <circle cx="8" cy="8" r="{{Math.max(1, Math.min(7, getValue(v) * 7))}}" fill="white" stroke="none"></circle>
-            <circle cx="8" cy="8" r="7" fill="none" stroke="#ffffff" stroke-width="1.5"></circle>
-          </svg>
-        </div>
-      </div>
-    </div>
-
-    <div class="option">
-      <div class="range-slider" ng-model="drawOpts.opacity" range-stepper="{snap: 0}" data-values="[
-        {value:0.01, label: 'Transparent'},
-        {value:0.1, label: ''},
-        {value:0.25, label: ''},
-        {value:0.5, label: ''},
-        {value:1, label: 'Opaque'}
-      ]">
-        <div class="rs-title"><i class="icon icon-arrow-sm-left"></i>opacity<i class="icon icon-arrow-sm-right"></i></div>
-        <div class="rs-thumb">
-          <svg width="16" height="16">
-            <circle cx="8" cy="8" r="7" opacity="{{(getValue(v) + 0.1) / 0.9}}" fill="white"></circle>
-          </svg>
-        </div>
-      </div>
-    </div>
+  </div>
+    
 
 <!--
     Preview
