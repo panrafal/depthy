@@ -171,9 +171,9 @@ p a {
   &.btn-default {
     border-color: $btn-default-color;
     background: $brand-neutral-vdark;
-    &:hover {
+    html.no-touch &:hover {
       background: $brand-primary-dark;
-      color: #fff;
+      // color: #fff;
     }
     &:active {
       background: lighten($brand-primary-dark, $contrast);
