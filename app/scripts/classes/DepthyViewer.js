@@ -59,7 +59,7 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
         canvas, stage, renderer, stats,
         image = {}, depth = {},
         sizeDirty = true, stageDirty = true, renderDirty = true, depthFilterDirty = true, 
-        discardAlphaFilter, resetAlphaFilter, invertedAlphaToRGBFilter, discardRGBFilter, invertedRGBToAlphaFilter, depthBlurFilter,
+        discardAlphaFilter, resetAlphaFilter, invertedAlphaToRGBFilter, discardRGBFilter, invertedRGBToAlphaFilter, depthBlurFilter, grayscaleFilter,
         stageSize, stageSizeCPX,
         // renderUpscale = 1.05,
         readyResolver,
@@ -201,6 +201,7 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
         discardRGBFilter = createDiscardRGBFilter();
         invertedRGBToAlphaFilter = createInvertedRGBToAlphaFilter();
         depthBlurFilter = createDepthBlurFilter();
+        grayscaleFilter = createGrayscaleFilter();
       } catch (e) {
         console.error('WebGL failed', e);
         renderer = false;
@@ -249,6 +250,16 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
                        0.0, 0.0, 0.0, 0.0,
                       -1.0, 0.0, 0.0, 0.0];
       filter.shift =  [0.0, 0.0, 0.0, 1.0];
+      return filter;
+    }
+
+    function createGrayscaleFilter() {
+      // move inverted alpha to rgb, set alpha to 1
+      var filter = new PIXI.ColorMatrixFilter();
+      filter.matrix = [0.333, 0.333, 0.333, 0.0,
+                       0.333, 0.333, 0.333, 0.0,
+                       0.333, 0.333, 0.333, 0.0,
+                       0.0, 0.0, 0.0, 1.0];
       return filter;
     }
 
@@ -883,7 +894,11 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
                 renderTexture = new PIXI.RenderTexture(depth.size.width, depth.size.height);
 
             var depthSprite = new PIXI.Sprite(depth.texture);
-            if (depth.useAlpha) depthSprite.filters = [createInvertedAlphaToRGBFilter()];
+            if (depth.useAlpha) {
+              depthSprite.filters = [invertedAlphaToRGBFilter];
+            } else {
+              depthSprite.filters = [grayscaleFilter];
+            }
 
             localstage.addChild(depthSprite);
 
@@ -919,6 +934,8 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
         sprite.position = {x: size.width / 2, y: size.height / 2};
         if (depth.useAlpha) {
           sprite.filters = [invertedAlphaToRGBFilter];
+        } else {
+          sprite.filters = [grayscaleFilter];
         }
         container.addChild(sprite);
       } else {
