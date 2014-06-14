@@ -6,8 +6,14 @@ angular.module('depthyApp')
   var drawer = depthy.drawMode,
       viewer = depthy.getViewer(),
       lastPointerPos = null,
-      oldViewerOpts = angular.extend({}, depthy.viewer)
+      oldViewerOpts = angular.extend({}, depthy.viewer);
       
+  drawer.setOptions(depthy.drawOptions || {
+    depth: 0.5,
+    size: 0.05,
+    hardness: 0.5,
+    opacity: 0.25,
+  });
 
   angular.extend(depthy.viewer, {
     animate: false,
@@ -22,7 +28,7 @@ angular.module('depthyApp')
   $scope.drawOpts = drawer.getOptions();
 
   $scope.preview = 1;
-  $scope.picker = false;
+  $scope.brushMode = false;
 
   $scope.$watch('drawOpts', function(options) {
     if (drawer && options) {
@@ -56,6 +62,17 @@ angular.module('depthyApp')
     $window.history.back();
   };
 
+  $scope.brushIcon = function() {
+    switch($scope.brushMode) {
+      case 'picker':
+        return 'target';
+      case 'level':
+        return 'magnet';
+      default:
+        return 'draw';
+    }
+  };
+
 
   $element.on('touchstart mousedown', function(e) {
     var event = e.originalEvent,
@@ -65,11 +82,11 @@ angular.module('depthyApp')
 
     lastPointerPos = viewer.screenToImagePos({x: pointerEvent.pageX, y: pointerEvent.pageY});
 
-    if ($scope.picker) {
+    if ($scope.brushMode === 'picker' || $scope.brushMode === 'level') {
       $scope.drawOpts.depth = drawer.getDepthAtPos(lastPointerPos);
       console.log('Picked %s', $scope.drawOpts.depth);
-      if ($scope.picker === 'once') {
-        $scope.picker = false;
+      if ($scope.brushMode === 'picker') {
+        $scope.brushMode = false;
         lastPointerPos = null;
         $scope.$safeApply();
         event.preventDefault();
@@ -121,15 +138,19 @@ angular.module('depthyApp')
     if (drawer.isCanceled()) {
       // restore opened depthmap
       viewer.setDepthmap(depthy.opened.depthSource, depthy.opened.depthUsesAlpha);
-    } else if (drawer.isModified()) {
-      // remember drawn depthmap
-      // store it as jpg
-      viewer.exportDepthmap().then(function(url) {
-        depthy.opened.markAsModified();
-        depthy.opened.depthSource = url; //viewer.getDepthmap().texture;
-        depthy.opened.depthUsesAlpha = false;
-        depthy.opened.onDepthmapOpened();
-      });
+    } else {
+      if (drawer.isModified()) {
+        depthy.drawOptions = drawer.getOptions();
+
+        // remember drawn depthmap
+        // store it as jpg
+        viewer.exportDepthmap().then(function(url) {
+          depthy.opened.markAsModified();
+          depthy.opened.depthSource = url; //viewer.getDepthmap().texture;
+          depthy.opened.depthUsesAlpha = false;
+          depthy.opened.onDepthmapOpened();
+        });
+      }
     }
 
     drawer.destroy(true);

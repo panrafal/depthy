@@ -27,7 +27,7 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
       spacing: 0.1,
       slope: 0.5,
       blend: PIXI.blendModes.NORMAL,
-      undoTimeout: 4000,
+      undoTimeout: 2000,
     };
 
     function initialize() {

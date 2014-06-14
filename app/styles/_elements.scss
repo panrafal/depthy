@@ -477,12 +477,90 @@
   }
 
   .draw-options {
+    z-index: 10;
     display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    align-items: flex-end;
+    height: 50px;
+    background: $brand-neutral-vdark;
 
+    position: absolute;
+    bottom: 0px;
+    width:100%;
+
+
+    >button {
+      @extend .btn-control;
+      flex: 1 0 60px;
+      padding: $padding-large-vertical;
+    }
+  }
+
+  .brush-options {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    transform: translateY(0px);
+    z-index: -1;
+    transition: transform 0.5s ease-in-out;
+    background: $body-bg;
+    max-width: 400px;
+
+    display: flex;
+    flex-flow: row wrap;
+    flex: 1 1 50%;
+
+    >button {
+      flex: 1;
+      @extend .btn-expanded;
+    }
+  }
+
+  .brush-sliders {
+    flex: 1 1 100%;
+    .option {
+      margin:$border-width 0;
+    }
+  }
+
+  &.brush-opened {
+    .brush-options {
+      transform: translateY(-100%);
+    }
+  }
+
+  @media (min-width: 640px) and (max-width: #{$screen-desktop - 1px}) {
+    .draw-options {
+      align-items: flex-start;
+    }
+    .brush-options {
+      position: relative;
+      background: $brand-neutral-vdark;
+      transform: translateY($border-width);
+      button {
+        padding: $padding-large-vertical;
+      }
+    }
+    .brush-sliders {
+      order:-1;
+      .option {
+        margin-top:0;
+      }      
+    }
+    &.brush-opened {
+      .brush-options {
+        background: $body-bg;
+        transform: translateY(-100%) translateY(50px);
+      }
+    }
 
   }
 
 
+  @media #{$media-desktop} {
+
+  }
 
   .draw-undo {
     .icon {

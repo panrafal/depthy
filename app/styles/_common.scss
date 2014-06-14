@@ -235,8 +235,25 @@ p a {
     // content: attr(title);
   }
 
+  &.btn-success {
+    background: $brand-neutral-vdark;
+    color: $brand-success;
+  }
+  &.btn-danger {
+    background: $brand-neutral-vdark;
+    color: $brand-danger;
+  }
+
 }
 
+.btn-expanded {
+  i.icon {
+    margin-right: 0.5em;
+  }
+  &:after {
+    content: attr(title);
+  }
+}
 
 // links
 .link-icon {
@@ -316,6 +333,10 @@ p a {
     pointer-events: none;
     z-index: 1;
     color: $brand-neutral;
+    span {
+      display: inline-block;
+      min-width: 80px;      
+    }
   }  
   .rs-thumb {
     z-index: 2;
@@ -325,8 +346,12 @@ p a {
     color: #fff;
     box-shadow: 0px 0px 16px 8px fade-out($brand-neutral-vdark, 0.0);
     transition: transform 0.1s linear;
+    height:100%;
     // &:active {
     // }
+    svg {
+      overflow:visible;
+    }
   }
   &.rs-dragging .rs-thumb {
     transition-duration: 0s;
@@ -398,6 +423,9 @@ logo {
   .btn-default, &.btn-default {
     // background: transparent; //fade-out($btn-default-bg, 0.9);
     color: $brand-neutral-bright;
+    &[disabled] {
+      color: $brand-neutral-dark;
+    }
     &:hover {
       // background: fade-out($btn-default-color, 0.5);
       // color: $te;
