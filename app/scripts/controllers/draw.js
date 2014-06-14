@@ -43,8 +43,8 @@ angular.module('depthyApp')
     depthy.viewer.quality = preview === 2 ? false : 1;
     depthy.animateOption(depthy.viewer, {
       depthPreview: preview === 0 ? 1 : preview === 1 ? 0.75 : 0,
-      depthScale: preview === 2 ? 2 : 0,
-      depthBlurSize: 0,
+      depthScale: preview === 2 ? oldViewerOpts.depthScale : 0,
+      depthBlurSize: preview === 2 ? oldViewerOpts.depthBlurSize : 0,
       enlarge: 1.0,
     }, 250);
   });

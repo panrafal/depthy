@@ -448,10 +448,10 @@
   }
 
   .draw-mode & {
-    bottom: 50px;
+    bottom: $draw-pane-height;
 
-    @media #{$media-desktop} {
-      left: remify($leftpane-width);
+    @media (min-width: $draw-lg-size) {
+      left: $draw-pane-width;
       bottom: 0px;
     }
   }
@@ -489,11 +489,15 @@
     bottom: 0px;
     width:100%;
 
+    animation: slide-from-bottom 0.5s ease-out 0.0s backwards;
 
     >button {
       @extend .btn-control;
       flex: 1 0 60px;
       padding: $padding-large-vertical;
+    }
+    button {
+      @extend .btn-expanded;
     }
   }
 
@@ -511,9 +515,10 @@
     flex-flow: row wrap;
     flex: 1 1 50%;
 
+
+
     >button {
       flex: 1;
-      @extend .btn-expanded;
     }
   }
 
@@ -530,14 +535,14 @@
     }
   }
 
-  @media (min-width: 640px) and (max-width: #{$screen-desktop - 1px}) {
+  @media (min-width: $draw-sm-size) and (max-width: $draw-lg-size - 1px) {
     .draw-options {
       align-items: flex-start;
     }
     .brush-options {
       position: relative;
       background: $brand-neutral-vdark;
-      transform: translateY($border-width);
+      transform: translateY(4px);
       button {
         padding: $padding-large-vertical;
       }
@@ -557,9 +562,72 @@
 
   }
 
+  @media (max-width: $draw-lg-size - 1px) {
 
-  @media #{$media-desktop} {
+    .draw-options>button {
+      &::after {
+        content: ''!important;
+      }
+      i.icon {margin: 0!important;}
+    }
 
+    .draw-instructions {
+      display: none;
+    }
+  }
+
+  @media (max-height:500px) {
+    .draw-instructions {
+      display: none;
+    }
+  }
+
+  @media (min-width: $draw-lg-size) {
+    .draw-options {
+      height: 100%;
+      width: $draw-pane-width;
+      left: 0px;
+      top: 0px;
+
+      background: $body-bg;
+
+      flex-flow: row wrap;
+      align-content: center;
+
+      animation: slide-from-left 0.5s ease-out 0.0s backwards;
+      
+      button {
+        flex: 0 0 50%;
+        margin: 0 0 $border-width * 2 0;
+        padding: $padding-large-vertical $padding-large-horizontal;
+      }
+    }
+    .draw-options-toggle {
+      display: none;
+    }
+    .draw-preview, .draw-undo {
+      // order: 1;
+    }
+    .brush-options {
+      position: relative;
+      flex: 0 0 100%;
+    }
+    .brush-sliders {
+      // order: -1;
+      .option {
+        margin-top: 0;
+      }
+    }
+    .draw-instructions {
+      padding: $padding-large-vertical;
+      color: $brand-neutral-bright;
+      text-align: left;
+    }    
+    &.brush-opened {
+      .brush-options {
+        transform: none;
+      }
+    }
   }
 
   .draw-undo {
