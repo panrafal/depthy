@@ -148,6 +148,7 @@ angular.module('depthyApp')
           depthy.opened.markAsModified();
           depthy.opened.depthSource = url; //viewer.getDepthmap().texture;
           depthy.opened.depthUsesAlpha = false;
+          viewer.setDepthmap(url);
           depthy.opened.onDepthmapOpened();
         });
       }

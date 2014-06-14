@@ -834,32 +834,32 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
               localstage = new PIXI.Stage(),
               scale = size.width / image.size.width,
               depthScale = size.width / depth.size.width,
-              renderTexture = new PIXI.RenderTexture(size.width, size.height);
-              // localrenderer = new PIXI.WebGLRenderer(size.width, size.height, null, 'notMultiplied', true);
+              // we need unmultiplied canvas for this... 
+              // it uploads images to the GPU once again, and won't work with local textures, but... well...
+              localrenderer = new PIXI.WebGLRenderer(size.width, size.height, null, 'notMultiplied', true);
 
           var imageSprite = new PIXI.Sprite(image.texture);
           imageSprite.scale = new PIXI.Point(scale, scale);
           localstage.addChild(imageSprite);
 
           // discard alpha channel
-          imageSprite.filters = [discardAlphaFilter];
-
+          imageSprite.filters = [createDiscardAlphaFilter()];
+          console.log(depth.texture);
           var depthSprite = new PIXI.Sprite(depth.texture);
           depthSprite.scale = new PIXI.Point(depthScale, depthScale);
-          depthSprite.filters = [depth.useAlpha ? discardRGBFilter : invertedRGBToAlphaFilter];
+          depthSprite.filters = [depth.useAlpha ? createDiscardRGBFilter() : createInvertedRGBToAlphaFilter()];
 
           // copy alpha using custom blend mode
-          PIXI.blendModesWebGL['one.one'] = [renderer.gl.ONE, renderer.gl.ONE];
+          PIXI.blendModesWebGL['one.one'] = [localrenderer.gl.ONE, localrenderer.gl.ONE];
           depthSprite.blendMode = 'one.one';
 
           localstage.addChild(depthSprite);
 
-          renderTexture.render(localstage, null, true);
-          var canvas = PIXI.glReadPixelsToCanvas(renderer.gl, renderTexture, 0, 0, renderTexture.width, renderTexture.height),
-              dataUrl = canvas.toDataURL('image/png');
+          localrenderer.render(localstage);
+          var dataUrl = localrenderer.view.toDataURL('image/png');
 
           try {
-            renderTexture.destroy();
+            localrenderer.destroy();
           } catch(e) {
             console.error('Render destroy error', e);
           }
