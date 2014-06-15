@@ -118,11 +118,66 @@ angular.module('depthyApp')
     // console.log(event);
     if (lastPointerPos) {
       lastPointerPos = null;
-      $scope.$safeApply();    
+      $scope.$safeApply();
     }
   });
 
+  function getSliderForKey(e) {
+    var id = 'draw-brush-depth';
+    if (e.shiftKey && e.altKey) {
+      id = 'draw-brush-hardness';
+    } else if (e.altKey) {
+      id = 'draw-brush-opacity';
+    } else if (e.shiftKey) {
+      id = 'draw-brush-size';
+    }
+    return $element.find('.' + id + ' [range-stepper]').controller('rangeStepper');
+  }
+
+  function onKeyDown(e) {
+    var s, handled = false;
+    console.log('keydown which %d shift %s alt %s ctrl %s', e.which, e.shiftKey, e.altKey, e.ctrlKey);
+    if (e.which === 48) { // 0
+      getSliderForKey(e).percent(0.5);
+      handled = true;
+    } else if (e.which >= 49 && e.which <= 57) { // 1-9
+      getSliderForKey(e).percent((e.which - 49) / 8);
+      handled = true;
+    } else if (e.which === 189) { // -
+      s = getSliderForKey(e);
+      s.percent(s.percent() - 0.025);
+      handled = true;
+    } else if (e.which === 187) { // +
+      s = getSliderForKey(e);
+      s.percent(s.percent() + 0.025);
+      handled = true;
+    } else if (e.which === 32) {
+      $element.find('.draw-preview').click();
+      handled = true;
+    } else if (e.which === 90) { // z
+      $element.find('.draw-undo').click();
+      handled = true;
+    } else if (e.which === 80) { // p
+      $element.find('.draw-picker').click();
+      handled = true;
+    } else if (e.which === 76) { // l
+      $element.find('.draw-level').click();
+      handled = true;
+    }
+
+    if (handled) {
+      e.preventDefault();
+      $scope.$safeApply();
+    }
+
+  }
+
+  $($window).on('keydown', onKeyDown);
+
   $element.on('$destroy', function() {
+    $element.off('touchstart mousedown');
+    $element.off('touchmove mousemove');
+    $($window).off('keydown', onKeyDown);
 
     depthy.animateOption(depthy.viewer, {
       depthPreview: oldViewerOpts.depthPreview,

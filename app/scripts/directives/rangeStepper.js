@@ -5,21 +5,25 @@ angular.module('depthyApp')
   return {
     restrict: 'A',
     scope: true,
-    require: 'ngModel',
+    require: ['rangeStepper', 'ngModel'],
     // template: '<div ng-transclude></div>',
     // transclude: true,
+    controller: function() {
+    },
     compile: function($element, $attrs) {
-      console.log($element);
+      // console.log($element);
       var labelTemplate;
       if (!$element.find('.rs-value, .rs-thumb').length) {
         labelTemplate = $element.html();
         $element.html('');
       }
-      return function postLink($scope, $element, $attrs, ngModel) {
+      return function postLink($scope, $element, $attrs, ctrls) {
         var values = $scope.$parent.$eval($attrs.values),
             options,
-            position, defaultFormatter;
-        
+            position, defaultFormatter,
+            rangeStepper = ctrls[0],
+            ngModel = ctrls[1];
+
         options = angular.extend({
           // snap to defined values - 0.0 - 1.0
           snap: 0.1,
@@ -162,7 +166,7 @@ angular.module('depthyApp')
             }
           }
           if (v >= getValueAt(values.length - 1)) return values.length - 1;
-          console.warn('Value %s is out of bounds!', v);
+          // console.warn('Value %s is out of bounds!', v);
           return false;
         }
 
@@ -185,7 +189,7 @@ angular.module('depthyApp')
               valueValue = getValue(value);
 
           $scope.v = value;
-          console.log('setPosition pos %s (%s) value %o getValue %o', pos, position, value, valueValue);
+          // console.log('setPosition pos %s (%s) value %o getValue %o', pos, position, value, valueValue);
           if (!equals(ngModel.$viewValue, valueValue)) {
             ngModel.$setViewValue(valueValue);
           }
@@ -206,7 +210,7 @@ angular.module('depthyApp')
           if (event.touches && event.touches.length > 1) return;
 
           event.preventDefault();
-          console.log(event);
+          // console.log(event);
 
           setPosition(Math.floor(positionClamp( pxToPosition(pointer.pageX) )));
           $scope.$apply();
@@ -246,6 +250,14 @@ angular.module('depthyApp')
             .on('mouseup touchend', onEnd);
 
         });
+
+        // setup API
+        rangeStepper.percent = function(p) {
+          if (p !== undefined) {
+            setPosition(p * (values.length - 1));
+          }
+          return position / (values.length - 1);
+        };
 
 
         initialize();

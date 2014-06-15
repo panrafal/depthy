@@ -1,4 +1,4 @@
-<section id="draw" ng-controller="DrawCtrl" ng-class="{'brush-opened': brushOpened}">
+<section id="draw" ng-controller="DrawCtrl" class="draw-mode-{{brushMode}}" ng-class="{'brush-opened': brushOpened}">
   <div class="draw-options">
 
     <div class="draw-instructions">
@@ -23,7 +23,7 @@
       <button class="draw-level btn btn-default option"  ng-model="brushMode" btn-checkbox  btn-checkbox-true="'level'" title="Level"><i class="icon icon-magnet"></i></button>
       <div class="brush-sliders">
 
-        <div class="option">
+        <div class="option draw-brush-depth">
           <div class="range-slider" ng-model="drawOpts.depth" range-stepper="{snap: 0}" data-values="[
             {value:0, label: 'Near'},
             {value:0.25, label: ''},
@@ -41,7 +41,7 @@
           </div>
         </div>
 
-        <div class="option">
+        <div class="option draw-brush-size">
           <div class="range-slider" ng-model="drawOpts.size" range-stepper="{snap: 0}" data-values="[
             {value:.005, label: 'Small'},
             {value:.025, label: ''},
@@ -58,7 +58,7 @@
           </div>
         </div>
 
-        <div class="option">
+        <div class="option draw-brush-hardness">
           <div class="range-slider" ng-model="drawOpts.hardness" range-stepper="{snap: 0}" data-values="[
             {value:0.0, label: 'Soft'},
             {value:0.25, label: ''},
@@ -76,7 +76,7 @@
           </div>
         </div>
 
-        <div class="option">
+        <div class="option draw-brush-opacity">
           <div class="range-slider" ng-model="drawOpts.opacity" range-stepper="{snap: 0}" data-values="[
             {value:0.01, label: 'Transparent'},
             {value:0.1, label: ''},

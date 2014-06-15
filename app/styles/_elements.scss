@@ -467,13 +467,20 @@
   bottom: 0px;
   z-index: 100;
 
-  &:after {
+  &::after {
     content: '';
     position: absolute;
     top: 0px;
     left: 0px;
     right: 0px;
     bottom: 0px;
+  }
+
+  &.draw-mode-level::after {
+    cursor: copy;
+  }
+  &.draw-mode-picker::after {
+    cursor: crosshair;
   }
 
   .draw-options {
