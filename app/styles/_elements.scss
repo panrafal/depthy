@@ -604,7 +604,8 @@
       animation: slide-from-left 0.5s ease-out 0.0s backwards;
       
       button {
-        flex: 0 0 50%;
+        // ie does not like flex: 0 0 50%;
+        flex: 1 0 30%;
         margin: 0 0 $border-width * 2 0;
         padding: $padding-large-vertical $padding-large-horizontal;
       }

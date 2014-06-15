@@ -131,7 +131,9 @@ angular.module('depthyApp')
     } else if (e.shiftKey) {
       id = 'draw-brush-size';
     }
-    return $element.find('.' + id + ' [range-stepper]').controller('rangeStepper');
+    var el = $element.find('.' + id + ' [range-stepper]');
+    el.click(); // simulate click to notify change
+    return el.controller('rangeStepper');
   }
 
   function onKeyDown(e) {
@@ -173,6 +175,10 @@ angular.module('depthyApp')
   }
 
   $($window).on('keydown', onKeyDown);
+
+  $element.find('.draw-brush-depth').on('touchstart mousedown click', function() {
+    $scope.brushMode = false;
+  });
 
   $element.on('$destroy', function() {
     $element.off('touchstart mousedown');
