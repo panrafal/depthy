@@ -605,9 +605,9 @@
       
       button {
         // ie does not like flex: 0 0 50%;
-        flex: 1 0 30%;
+        flex: 1 0 35%;
         margin: 0 0 $border-width * 2 0;
-        padding: $padding-large-vertical $padding-large-horizontal;
+        padding: $padding-large-vertical $padding-large-vertical;
       }
     }
     .draw-options-toggle {
