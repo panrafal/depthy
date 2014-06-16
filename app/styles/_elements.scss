@@ -345,7 +345,7 @@
   right: 0px;
   top: 0px;
   bottom: 0px;
-  transition: all 0.5s ease-in-out;
+  transition: transform 0.5s ease-in-out;
 
   .alerts {
     position: absolute;
@@ -400,7 +400,7 @@
     top: 50%;
     display: block;
     pointer-events: none;
-    box-shadow: 1px 1px 1px rgba(0,0,0,0.5);
+    // box-shadow: 1px 1px 1px rgba(0,0,0,0.5);
 
     transition: all 0.2s ease-in-out;
     opacity: 0;
@@ -446,9 +446,214 @@
   .zen-mode & {
     transform: translateX(0);
   }
+
+  .draw-mode & {
+    bottom: $draw-pane-height;
+
+    @media (min-width: $draw-lg-size) {
+      left: $draw-pane-width;
+      bottom: 0px;
+    }
+  }
 }
 
+// ------------------------------------------------------ DRAW
 
+#draw {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  z-index: 100;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+  }
+
+  &.draw-mode-level::after {
+    cursor: copy;
+  }
+  &.draw-mode-picker::after {
+    cursor: crosshair;
+  }
+
+  .draw-options {
+    z-index: 10;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    align-items: flex-end;
+    height: 50px;
+    background: $brand-neutral-vdark;
+
+    position: absolute;
+    bottom: 0px;
+    width:100%;
+
+    animation: slide-from-bottom 0.5s ease-out 0.0s backwards;
+
+    >button {
+      @extend .btn-control;
+      flex: 1 0 60px;
+      padding: $padding-large-vertical;
+    }
+    button {
+      @extend .btn-expanded;
+    }
+  }
+
+  .brush-options {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    transform: translateY(0px);
+    z-index: -1;
+    transition: transform 0.5s ease-in-out;
+    background: $body-bg;
+    max-width: 400px;
+
+    display: flex;
+    flex-flow: row wrap;
+    flex: 1 1 50%;
+
+
+
+    >button {
+      flex: 1;
+    }
+  }
+
+  .brush-sliders {
+    flex: 1 1 100%;
+    .option {
+      margin:$border-width 0;
+    }
+  }
+
+  &.brush-opened {
+    .brush-options {
+      transform: translateY(-100%);
+    }
+  }
+
+  @media (min-width: $draw-sm-size) and (max-width: $draw-lg-size - 1px) {
+    .draw-options {
+      align-items: flex-start;
+    }
+    .brush-options {
+      position: relative;
+      background: $brand-neutral-vdark;
+      transform: translateY(4px);
+      button {
+        padding: $padding-large-vertical;
+      }
+    }
+    .brush-sliders {
+      order:-1;
+      .option {
+        margin-top:0;
+      }      
+    }
+    &.brush-opened {
+      .brush-options {
+        background: $body-bg;
+        transform: translateY(-100%) translateY(50px);
+      }
+    }
+
+  }
+
+  @media (max-width: $draw-lg-size - 1px) {
+
+    .draw-options>button {
+      &::after {
+        content: ''!important;
+      }
+      i.icon {margin: 0!important;}
+    }
+
+    .draw-instructions {
+      display: none;
+    }
+  }
+
+  @media (max-height:500px) {
+    .draw-instructions {
+      display: none;
+    }
+  }
+
+  @media (min-width: $draw-lg-size) {
+    .draw-options {
+      height: 100%;
+      width: $draw-pane-width;
+      left: 0px;
+      top: 0px;
+
+      background: $body-bg;
+
+      flex-flow: row wrap;
+      align-content: center;
+
+      animation: slide-from-left 0.5s ease-out 0.0s backwards;
+      
+      button {
+        // ie does not like flex: 0 0 50%;
+        flex: 1 0 35%;
+        margin: 0 0 $border-width * 2 0;
+        padding: $padding-large-vertical $padding-large-vertical;
+      }
+    }
+    .draw-options-toggle {
+      display: none;
+    }
+    .draw-preview, .draw-undo {
+      // order: 1;
+    }
+    .brush-options {
+      position: relative;
+      flex: 0 0 100%;
+    }
+    .brush-sliders {
+      // order: -1;
+      .option {
+        margin-top: 0;
+      }
+    }
+    .draw-instructions {
+      padding: $padding-large-vertical;
+      color: $brand-neutral-bright;
+      text-align: left;
+    }    
+    &.brush-opened {
+      .brush-options {
+        transform: none;
+      }
+    }
+  }
+
+  .draw-undo {
+    .icon {
+      transition: transform 0.2s ease;
+    }
+    &.redo {
+      .icon {
+        transform: rotate(360deg) scaleX(-1);
+      }
+    }
+  }
+
+}
+#draw-brushcanvas {
+  left: auto;
+  right: 0px;
+}
 
 // ------------------------------------------------------ DEBUG
 

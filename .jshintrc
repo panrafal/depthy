@@ -28,10 +28,11 @@
     "isPng": false,
     "DepthReader": false,
     "DepthyViewer": false,
+    "DepthyDrawer": false,
     "Promise": false,
     "_": true,
     "requestAnimFrame": true,
     "screenfull": true,
-    'IScroll': true
+    "IScroll": true
   }
 }

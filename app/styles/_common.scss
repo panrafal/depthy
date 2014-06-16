@@ -171,9 +171,9 @@ p a {
   &.btn-default {
     border-color: $btn-default-color;
     background: $brand-neutral-vdark;
-    &:hover {
+    html.no-touch &:hover {
       background: $brand-primary-dark;
-      color: #fff;
+      // color: #fff;
     }
     &:active {
       background: lighten($brand-primary-dark, $contrast);
@@ -235,8 +235,25 @@ p a {
     // content: attr(title);
   }
 
+  &.btn-success {
+    background: $brand-neutral-vdark;
+    color: $brand-success;
+  }
+  &.btn-danger {
+    background: $brand-neutral-vdark;
+    color: $brand-danger;
+  }
+
 }
 
+.btn-expanded {
+  i.icon {
+    margin-right: 0.5em;
+  }
+  &:after {
+    content: attr(title);
+  }
+}
 
 // links
 .link-icon {
@@ -286,6 +303,71 @@ p a {
 .lead {
   font-size: $font-size-large !important;
 }
+
+
+// range stepper
+
+.range-stepper, .range-slider {
+  overflow: hidden;
+  position: relative;
+
+  background: $brand-neutral-vdark;
+
+  .rs-value, .rs-thumb, .rs-title {
+    padding: $padding-base-vertical $padding-base-vertical;
+    text-align: center;
+  }
+  .rs-value {
+    cursor: pointer;
+    float: left;
+    color: $brand-neutral-bright;
+    &:empty {
+      &:before {
+        content: ' ';
+      }
+    }
+  }
+  .rs-title {
+    position: absolute;
+    width: 100%;
+    pointer-events: none;
+    z-index: 1;
+    color: $brand-neutral;
+    span {
+      display: inline-block;
+      min-width: 80px;      
+    }
+  }  
+  .rs-thumb {
+    z-index: 2;
+    cursor: ew-resize;
+    background: $brand-neutral-dark;
+    position: absolute;
+    color: #fff;
+    box-shadow: 0px 0px 16px 8px fade-out($brand-neutral-vdark, 0.0);
+    transition: transform 0.1s linear;
+    height:100%;
+    // &:active {
+    // }
+    svg {
+      overflow:visible;
+    }
+  }
+  &.rs-dragging .rs-thumb {
+    transition-duration: 0s;
+    background: lighten($brand-primary-dark, $contrast);
+  }
+}
+
+.range-slider {
+  .rs-value:first-of-type, .rs-thumb+.rs-value {
+    text-align: left;
+  }
+  .rs-value:last-of-type {
+    text-align: right;
+  }
+}
+
 
 // ------------------------------------------------------ components
 
@@ -338,9 +420,12 @@ logo {
     display: block;
   }
 
-  .btn-default {
+  .btn-default, &.btn-default {
     // background: transparent; //fade-out($btn-default-bg, 0.9);
     color: $brand-neutral-bright;
+    &[disabled] {
+      color: $brand-neutral-dark;
+    }
     &:hover {
       // background: fade-out($btn-default-color, 0.5);
       // color: $te;

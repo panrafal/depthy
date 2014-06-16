@@ -3,11 +3,10 @@
     'leftpane-opened': depthy.isLeftpaneOpened() === true, 
     'leftpane-gallery': depthy.isLeftpaneOpened() === 'gallery', 
     'zen-mode': depthy.zenMode,
+    'draw-mode': depthy.drawMode,
     'offline': depthy.isOffline(),
     'depthy-ready': depthy.isReady(),
     'depthy-loading': depthy.isLoading()}"
-  ng-swipe-right="depthy.leftpaneOpen()"
-  ng-swipe-left="depthy.leftpaneClose()"
 >
   <div id="hamburger" class="icon icon-navicon-bold" ng-click="depthy.leftpaneToggle()"></div>
   <nav id="navbar" class="text-right">
@@ -18,7 +17,7 @@
     </div>
   </nav>
 
-  <div id="leftpane">
+  <div id="leftpane" ng-swipe-left="depthy.leftpaneClose()">
     <div class="scroll">
 
       <section id="about">
@@ -96,7 +95,9 @@
 
     </div>
 
-    <div class="depthy-viewer" depthy-viewer="depthy.viewer" ng-click="depthy.zenModeToggle()" >
+    <div class="depthy-viewer" depthy-viewer="depthy.viewer" ng-click="depthy.zenModeToggle()" 
+      ng-swipe-right="depthy.leftpaneOpen()"
+    >
       <canvas></canvas>
       <div class="icon icon-loading"></div>
     </div>
@@ -106,9 +107,11 @@
         <button class="btn btn-default btn-control" ng-click="shareOptions()" ng-disabled="!depthy.hasCompleteImage() || !depthy.isReady()" title="Share"><i class="icon icon-share"></i></button>
         <button class="btn btn-default btn-control" ng-click="imageOptions()" ng-disabled="!depthy.hasCompleteImage() || !depthy.isReady()" title="Options" ga><i class="icon icon-settings"></i></button>
         <button class="btn btn-default btn-control" ng-click="imageInfo()" ng-disabled="!Modernizr.webgl || !depthy.hasImage() || depthy.isLoading()" title="Info" ga><i class="icon icon-image"></i></button>
+        <button class="btn btn-default btn-control" ng-click="drawDepthmap()" ng-disabled="!Modernizr.webgl || !depthy.hasImage() || depthy.isLoading()" title="Paint" ga><i class="icon icon-draw"></i></button>
       </div>
     </div>
   </section>
+  <span ng-include="depthy.drawMode ? 'views/draw.html' : null"></span>
   <section id="popup">
     <!-- <div class="clicker"  ng-show="!!getActivePopup()" ng-click="getActivePopup().reject()"></div> -->
     <div class="popup options-popup" ng-show="depthy.activePopup.state === 'image.options'" ng-include="'views/options-popup.html'">
