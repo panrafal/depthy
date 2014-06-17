@@ -18,6 +18,7 @@ module.exports = function(config) {
       'app/scripts/vendor/md5.js',
       'app/scripts/classes/dataURITools.js',
       'app/scripts/classes/GDepthEncoder.js',
+      'app/scripts/vendor/LensBlurDepthExtractor.js',
       // 'app/scripts/*.js',
       // 'app/scripts/**/*.js',
       // 'test/mock/**/*.js',

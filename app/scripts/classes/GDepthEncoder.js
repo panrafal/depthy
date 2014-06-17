@@ -34,6 +34,24 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
 
   */
 
+  function makeUint16Buffer(arr, littleEndian) {
+    var ab = new ArrayBuffer(arr.length * 2),
+        dv = new DataView(ab);
+    for (var i = 0; i < arr.length; ++i) {
+      dv.setUint16(i * 2, arr[i], littleEndian);
+    }
+    return new Uint8Array(ab);
+  }
+
+  function makeUint32Buffer(arr, littleEndian) {
+    var ab = new ArrayBuffer(arr.length * 4),
+        dv = new DataView(ab);
+    for (var i = 0; i < arr.length; ++i) {
+      dv.setUint32(i * 4, arr[i], littleEndian);
+    }
+    return new Uint8Array(ab);
+  }
+
   window.GDepthEncoder = {
 
     xmlns: {
@@ -42,6 +60,8 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
       'GDepth': 'http://ns.google.com/photos/1.0/depthmap/',
       'xmpNote': 'http://ns.adobe.com/xmp/note/',
     },
+    xmpHeader: 'http://ns.adobe.com/xap/1.0/',
+    xmpExtensionHeader: 'http://ns.adobe.com/xmp/extension/',
 
     // This is NOT a general purpose XMP builder!
     buildXMP: function(props, xmlns) {
@@ -62,8 +82,13 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
 //       xmpNote:HasExtendedXMP="420161059863C43993D79FBDFA80C997"
     },
 
-    dataURIsplit: function(uri) {
-      return uri.match(/^data:(.+?);(.+?),(.+)$/);
+    dataURIinfo: function(uri) {
+      var match = uri.match(/^data:(.+?);(.+?),(.+)$/);
+      return match ? {
+        mime: match[1],
+        encoding: match[2],
+        data: match[3]
+      } : null;
     },
 
     /**
@@ -73,16 +98,18 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
     */
     encodeDepthmap: function(buffer, depthmap, original, metadata) {
       var props = {}, extProps = {}, standardXMP, extendedXMP;
-      depthmap = this.dataURIsplit(depthmap || '');
-      original = this.dataURIsplit(original || '');
+      depthmap = this.dataURIinfo(depthmap || '');
+      original = this.dataURIinfo(original || '');
       if (depthmap) {
         props['GDepth:Format'] = 'RangeInverse';
-        props['GDepth:Mime'] = depthmap[1];
-        extProps['GDepth:Data'] = depthmap[3];
+        props['GDepth:Mime'] = depthmap.mime;
+        extProps['GDepth:Data'] = depthmap.data;
+        console.log('Depthmap size', depthmap.data.length);
       }
       if (original) {
-        props['GImage:Mime'] = original[1];
-        extProps['GImage:Data'] = depthmap[3];
+        props['GImage:Mime'] = original.mime;
+        extProps['GImage:Data'] = original.data;
+        console.log('Original size', original.data.length);
       }
       for (var k in metadata || {}) {
         props[k] = metadata[k];
@@ -119,7 +146,7 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
           segType = data.getUint8(offset++);
           if (segType === 0xFF) {
             console.log('Padding 0xFF found');
-            parts.push([0xFF]);
+            parts.push(new Uint8Array([0xFF]));
           } else break;
         } while (true);
         if (segType === 0xC0 || segType === 0xC2 || segType === 0xDA) {
@@ -146,7 +173,7 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
           }
           console.log('Found APP1 ' + app1Header);
           // ignore any existing XMP
-          if (app1Header === 'http://ns.adobe.com/xap/1.0/') {
+          if (app1Header === this.xmpHeader || app1Header === this.xmpExtensionHeader) {
             console.log('Found old XMP, skipping');
             offset += segSize - (offset - segStart - 2);
             continue;
@@ -155,17 +182,45 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
         // copying segment
         console.log('Copying segment ' + segType + ', size: ' + segSize + ', left:' + (segSize - (offset - segStart - 2)));
         offset += segSize - (offset - segStart - 2);
-        parts.push(new Uint8Array(buffer, segStart, 1 + segSize));
+        parts.push(new Uint8Array(buffer, segStart, 2 + segSize));
         if (segType === 0xE1) {
           writeXMP(); // right after EXIF
         }
       }
+      // console.log('Parts', parts);
       return new Blob(parts, {type: 'image/jpeg'});
     },
 
     buildXMPsegments: function(standardXMP, extendedXMP) {
-      // console.log('StandardXMP: ', standardXMP);
-      // console.log('ExtendedXMP: ', extendedXMP);
+      var extendedUid, parts = [];
+      if (extendedXMP) {
+        extendedUid = CryptoJS.MD5(extendedXMP).toString().toUpperCase();
+        console.log(extendedUid);
+        standardXMP = standardXMP.replace(/(<rdf:Description) /, '$1 xmpNote:HasExtendedXMP="420161059863C43993D79FBDFA80C997" ');
+      }
+      console.log('StandardXMP: ', standardXMP.length);
+      console.log('ExtendedXMP: ', extendedXMP.length);
+
+      parts.push(new Uint8Array([0xFF, 0xE1]));
+      parts.push(makeUint16Buffer([2 + this.xmpHeader.length + 1 + standardXMP.length]));
+      parts.push(this.xmpHeader, new Uint8Array([0x00]));
+      parts.push(standardXMP);
+      console.log('Written standardXMP');
+      if (extendedXMP) {
+        var offset = 0;
+        while (offset < extendedXMP.length) {
+          var chunkSize = Math.min(65300, extendedXMP.length - offset);
+          parts.push(new Uint8Array([0xFF, 0xE1]));
+          parts.push(makeUint16Buffer([2 + this.xmpExtensionHeader.length + 1 + 32 + 4 + 4 + chunkSize]));
+          parts.push(this.xmpExtensionHeader, new Uint8Array([0x00]));
+          parts.push(extendedUid, makeUint32Buffer([extendedXMP.length, offset]));
+          parts.push(extendedXMP.substr(offset, chunkSize));
+
+          console.log('Written extendedXMP chunk %d %db of %d', offset, chunkSize, extendedXMP.length);
+          offset += chunkSize;
+        }
+      }
+      return parts;
     },
 
   };
