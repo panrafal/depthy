@@ -9,18 +9,18 @@
       Use <b>opacity</b> to make subtle changes, and <b>level</b> to draw at the same level as the point you start.
     </div>
 
-    <button class="draw-done btn btn-success" ng-click="done()" title="Finish"><i class="icon icon-yes"></i></button>
-    <button class="draw-cancel btn btn-danger" ng-click="cancel()" title="Cancel"><i class="icon icon-no"></i></button>
+    <button class="draw-done btn btn-success" ng-click="done()" title="Finish" ga><i class="icon icon-yes"></i></button>
+    <button class="draw-cancel btn btn-danger" ng-click="cancel()" title="Cancel" ga><i class="icon icon-no"></i></button>
 
-    <button class="draw-undo btn btn-default option" ng-click="drawer.toggleUndo()" ng-class="{redo: drawer.getUndoMode() > 0}" ng-disabled="drawer.getUndoMode() == 0" title="Undo"><i class="icon icon-undo"></i></button>
+    <button class="draw-undo btn btn-default option" ng-click="drawer.toggleUndo()" ng-class="{redo: drawer.getUndoMode() > 0}" ng-disabled="drawer.getUndoMode() == 0" title="Undo"><i class="icon icon-undo" ga></i></button>
 
-    <button class="draw-preview btn btn-default option" ng-click="togglePreview()" ng-class="{active:preview == 2}" title="Preview"><i class="icon icon-eye"></i></button>
+    <button class="draw-preview btn btn-default option" ng-click="togglePreview()" ng-class="{active:preview == 2}" title="Preview" ga><i class="icon icon-eye"></i></button>
 
-    <button class="draw-options-toggle btn btn-default option" ng-click="brushOpened = !brushOpened" ng-class="{active:brushOpened}" title="Brush options"><i class="icon icon-{{brushIcon()}}"></i></button>
+    <button class="draw-options-toggle btn btn-default option" ng-click="brushOpened = !brushOpened" ng-class="{active:brushOpened}" title="Brush options" ga><i class="icon icon-{{brushIcon()}}"></i></button>
 
     <div class="brush-options">
-      <button class="draw-picker btn btn-default option" ng-model="brushMode" btn-checkbox btn-checkbox-true="'picker'" title="Picker"><i class="icon icon-target"></i></button>
-      <button class="draw-level btn btn-default option"  ng-model="brushMode" btn-checkbox  btn-checkbox-true="'level'" title="Level"><i class="icon icon-magnet"></i></button>
+      <button class="draw-picker btn btn-default option" ng-model="brushMode" btn-checkbox btn-checkbox-true="'picker'" title="Picker" ga><i class="icon icon-target"></i></button>
+      <button class="draw-level btn btn-default option"  ng-model="brushMode" btn-checkbox  btn-checkbox-true="'level'" title="Level" ga><i class="icon icon-magnet"></i></button>
       <div class="brush-sliders">
 
         <div class="option draw-brush-depth">
