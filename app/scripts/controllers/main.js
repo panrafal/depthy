@@ -112,6 +112,16 @@ angular.module('depthyApp')
     });
   };
 
+  $scope.exportJpgRun = function() {
+    StateModal.showModal('export.jpg', {
+      // stateOptions: {location: 'replace'},
+      templateUrl: 'views/export-jpg-modal.html',
+      controller: 'ExportJpgModalCtrl',
+      windowClass: 'export-jpg-modal',
+    }).result.finally(function() {
+    });
+  };
+
   $scope.sharePngRun = function() {
     StateModal.showModal('share.png', {
       // stateOptions: {location: 'replace'},

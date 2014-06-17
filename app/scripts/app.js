@@ -114,6 +114,9 @@ angular.module('depthyApp', [
   .state('export.png', {
     url: '/png',
   })
+  .state('export.jpg', {
+    url: '/jpg',
+  })
   .state('export.gif', {
     url: '/gif',
   })

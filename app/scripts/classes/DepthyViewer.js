@@ -880,31 +880,34 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
     };
 
 
-    /** Exports depthmap as is, or converts it to JGP. Returns promise */
-    this.exportDepthmap = function() {
-
-      return this.getPromise().then(
+    function exportTexture(source, options) {
+      return source.promise.then(
         function() {
-          if (!hasDepthmap()) {
+          if (!source.texture) {
             return false;
-          } else if (!depth.useAlpha && depth.url) {
-            return depth.url;
+          } else if (options.allowDirect && source.url) {
+            return source.url;
           } else {
+            var size = sizeCopy(options.size || source.size);
+            if (options.maxSize) size = sizeFit(size, options.maxSize);
+            if (options.minSize) size = sizeFit(size, options.minSize, true);
+            size = sizeRound(size);
+
             var localstage = new PIXI.Stage(),
-                renderTexture = new PIXI.RenderTexture(depth.size.width, depth.size.height);
+                scale = sizeFitScale(source.size, size, true),
+                renderTexture = new PIXI.RenderTexture(size.width, size.height);
 
-            var depthSprite = new PIXI.Sprite(depth.texture);
-            if (depth.useAlpha) {
-              depthSprite.filters = [invertedAlphaToRGBFilter];
-            } else {
-              depthSprite.filters = [grayscaleFilter];
-            }
+            var sourceSprite = new PIXI.Sprite(source.texture);
+            if (options.filters) sourceSprite.filters = options.filters;
+            sourceSprite.scale = new PIXI.Point(scale, scale);
+            sourceSprite.anchor = {x: 0.5, y: 0.5};
+            sourceSprite.position = {x: size.width / 2, y: size.height / 2};
 
-            localstage.addChild(depthSprite);
+            localstage.addChild(sourceSprite);
 
             renderTexture.render(localstage, null, true);
             var canvas = PIXI.glReadPixelsToCanvas(renderer.gl, renderTexture, 0, 0, renderTexture.width, renderTexture.height),
-                dataUrl = canvas.toDataURL('image/jpeg');
+                dataUrl = canvas.toDataURL(options.type || 'image/jpeg', options.quality || undefined);
 
             try {
               renderTexture.destroy();
@@ -915,6 +918,27 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
           }
         }
       );
+    }
+
+    /** Exports depthmap as is, or converts it to JGP. Returns promise */
+    this.exportDepthmap = function(options) {
+      return exportTexture(depth, extend({
+        // allowDirect: !depth.useAlpha,
+        filters: depth.useAlpha ? [invertedAlphaToRGBFilter] : [grayscaleFilter],
+      }, options));
+    };
+
+    this.exportImage = function(options) {
+      return exportTexture(image, extend({
+        filters: [resetAlphaFilter]
+      }, options));
+    };
+
+    this.exportSourceImage = function(source, options) {
+      source = changeTexture({}, source);
+      return exportTexture(image, extend({
+        filters: [resetAlphaFilter]
+      }, options));
     };
 
     this.exportDepthmapAsTexture = function(maxSize) {
