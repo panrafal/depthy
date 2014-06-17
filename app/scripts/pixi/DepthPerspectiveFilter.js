@@ -42,7 +42,8 @@ PIXI.DepthPerspectiveFilter = function(texture, quality)
     offset:          {type: '2f', value:{x:0, y:0}},
     mapDimensions:   {type: '2f', value:{x:1, y:5112}},
     dimensions:      {type: '4fv', value:[0,0,0,0]},
-    focus:           {type: '1f', value:0.5}
+    focus:           {type: '1f', value:0.5},
+    enlarge:         {type: '1f', value:1.06}
   };
  
   if(texture.baseTexture.hasLoaded)
@@ -72,13 +73,14 @@ PIXI.DepthPerspectiveFilter = function(texture, quality)
 'uniform float scale;',
 'uniform vec2 offset;',
 'uniform float focus;',
+'uniform float enlarge;',
 '',
 '#if !defined(QUALITY)',
 '',
 '  #define METHOD 1',
 '  #define CORRECT',
 '//     #define COLORAVG',
-'  #define ENLARGE 1.5',
+'  #define UPSCALE 1.5',
 '  #define ANTIALIAS 1',
 '  #define AA_TRIGGER 0.8',
 '  #define AA_POWER 1.0',
@@ -92,7 +94,7 @@ PIXI.DepthPerspectiveFilter = function(texture, quality)
 '  #define CORRECT',
 '//     #define COLORAVG',
 '  #define MAXSTEPS 4.0',
-'  #define ENLARGE 0.8',
+'  #define UPSCALE 0.8',
 '//   #define ANTIALIAS 2',
 '  #define CONFIDENCE_MAX 2.5',
 '',
@@ -102,7 +104,7 @@ PIXI.DepthPerspectiveFilter = function(texture, quality)
 '  #define CORRECT',
 '//     #define COLORAVG',
 '  #define MAXSTEPS 6.0',
-'  #define ENLARGE 1.0',
+'  #define UPSCALE 1.0',
 '  #define ANTIALIAS 2',
 '  #define CONFIDENCE_MAX 2.5',
 '',
@@ -112,7 +114,7 @@ PIXI.DepthPerspectiveFilter = function(texture, quality)
 '  #define CORRECT',
 '//     #define COLORAVG',
 '  #define MAXSTEPS 16.0',
-'  #define ENLARGE 1.5',
+'  #define UPSCALE 1.5',
 '  #define ANTIALIAS 2',
 '  #define CONFIDENCE_MAX 2.5',
 '',
@@ -122,7 +124,7 @@ PIXI.DepthPerspectiveFilter = function(texture, quality)
 '  #define CORRECT',
 '  #define COLORAVG',
 '  #define MAXSTEPS 40.0',
-'  #define ENLARGE 1.5',
+'  #define UPSCALE 1.5',
 '//     #define ANTIALIAS 2',
 '  #define AA_TRIGGER 0.8',
 '  #define AA_POWER 1.0',
@@ -143,8 +145,8 @@ PIXI.DepthPerspectiveFilter = function(texture, quality)
 '#ifndef MAXSTEPS',
 '  #define MAXSTEPS 8.0',
 '#endif',
-'#ifndef ENLARGE',
-'  #define ENLARGE 1.2',
+'#ifndef UPSCALE',
+'  #define UPSCALE 1.2',
 '#endif',
 '#ifndef PERSPECTIVE',
 '  #define PERSPECTIVE 0.0',
@@ -160,7 +162,6 @@ PIXI.DepthPerspectiveFilter = function(texture, quality)
 '#endif',
 '',
 'const float perspective = PERSPECTIVE;',
-'const float upscale = UPSCALE;',
 '// float steps = clamp( ceil( max(abs(offset.x), abs(offset.y)) * maxSteps ), 1.0, maxSteps);',
 'float steps = MAXSTEPS;',
 '',
@@ -178,7 +179,7 @@ PIXI.DepthPerspectiveFilter = function(texture, quality)
 'const float vectorCutoff = 0.0 + dmin - 0.0001;',
 '',
 'float aspect = dimensions.x / dimensions.y;',
-'vec2 scale2 = vec2(scale * min(1.0, 1.0 / aspect), scale * min(1.0, aspect)) * vec2(1, -1) * vec2(ENLARGE);',
+'vec2 scale2 = vec2(scale * min(1.0, 1.0 / aspect), scale * min(1.0, aspect)) * vec2(1, -1) * vec2(UPSCALE);',
 '// mat2 baseVector = mat2(vec2(-focus * offset) * scale2, vec2(offset - focus * offset) * scale2);',
 'mat2 baseVector = mat2(vec2((0.5 - focus) * offset - offset/2.0) * scale2, ',
 '                       vec2((0.5 - focus) * offset + offset/2.0) * scale2);',
@@ -186,7 +187,7 @@ PIXI.DepthPerspectiveFilter = function(texture, quality)
 '',
 'void main(void) {',
 '',
-'  vec2 pos = (vTextureCoord - vec2(0.5)) / vec2(upscale) + vec2(0.5);',
+'  vec2 pos = (vTextureCoord - vec2(0.5)) / vec2(enlarge) + vec2(0.5);',
 '  mat2 vector = baseVector;',
 '  // perspective shift',
 '  vector[1] += (vec2(2.0) * pos - vec2(1.0)) * vec2(perspective);',
@@ -397,6 +398,21 @@ Object.defineProperty(PIXI.DepthPerspectiveFilter.prototype, 'focus', {
   },
   set: function(value) {
     this.uniforms.focus.value = Math.min(1,Math.max(0,value));
+  }
+}); 
+
+/**
+ * Image enlargment
+ *
+ * @property enlarge
+ * @type float
+ */
+Object.defineProperty(PIXI.DepthPerspectiveFilter.prototype, 'enlarge', {
+  get: function() {
+    return this.uniforms.enlarge.value;
+  },
+  set: function(value) {
+    this.uniforms.enlarge.value = value;
   }
 });
 

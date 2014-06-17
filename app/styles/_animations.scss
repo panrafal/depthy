@@ -85,3 +85,21 @@
     transform: rotate(359deg); 
   } 
 }
+
+@keyframes slide-from-bottom { 
+  0% { 
+    transform: translateY(100%); 
+  }
+  100% { 
+    transform: translateY(0%); 
+  } 
+}
+
+@keyframes slide-from-left { 
+  0% { 
+    transform: translateX(-100%); 
+  }
+  100% { 
+    transform: translateX(0%); 
+  } 
+}

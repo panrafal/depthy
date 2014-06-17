@@ -141,6 +141,18 @@ angular.module('depthyApp', [
   .state('share.png', {
     url: '/png',
   })
+  .state('draw', {
+    url: '/draw',
+    hollow: true,
+    onEnter: ['depthy', '$timeout', function(depthy, $timeout) {
+      $timeout(function() {
+        depthy.drawModeEnable();
+      })
+    }],
+    onExit: ['depthy', function(depthy) {
+      depthy.drawModeDisable();
+    }],
+  })
   .state('pane', {
     url: '/pane',
     hollow: true,

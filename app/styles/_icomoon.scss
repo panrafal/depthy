@@ -1,7 +1,7 @@
 @font-face {
 	font-family: 'icomoon';
 	src:url('fonts/icomoon.eot');
-	src:url('fonts/icomoon.eot?#iefix-apqk5n') format('embedded-opentype'),
+	src:url('fonts/icomoon.eot?#iefixb85li4') format('embedded-opentype'),
 		url('fonts/icomoon.woff') format('woff'),
 		url('fonts/icomoon.ttf') format('truetype'),
 		url('fonts/icomoon.svg#icomoon') format('svg');
@@ -31,6 +31,12 @@
 	-moz-osx-font-smoothing: grayscale;
 }
 
+.icon-arrow-sm-left:before {
+	content: "\e60d";
+}
+.icon-arrow-sm-right:before {
+	content: "\e620";
+}
 .icon-warning:before {
 	content: "\e609";
 }
@@ -55,6 +61,9 @@
 .icon-share:before {
 	content: "\e60b";
 }
+.icon-droplet:before {
+	content: "\e62e";
+}
 .icon-image:before {
 	content: "\e611";
 }
@@ -75,6 +84,9 @@
 }
 .icon-upload:before {
 	content: "\e615";
+}
+.icon-disk:before {
+	content: "\e62f";
 }
 .icon-undo:before {
 	content: "\e61e";
@@ -97,8 +109,14 @@
 .icon-meter:before {
 	content: "\e607";
 }
+.icon-magnet:before {
+	content: "\e630";
+}
 .icon-remove:before {
 	content: "\e619";
+}
+.icon-target:before {
+	content: "\e631";
 }
 .icon-powercord:before {
 	content: "\e626";

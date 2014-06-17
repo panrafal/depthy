@@ -6,6 +6,7 @@ angular.module('depthyApp')
   $rootScope.depthy = depthy;
   $rootScope.viewer = depthy.viewer; // shortcut
   $rootScope.Modernizr = window.Modernizr;
+  $rootScope.Math = window.Math;
   $rootScope.screenfull = screenfull;
 
   $scope.version = depthy.getVersion();
@@ -33,16 +34,6 @@ angular.module('depthyApp')
     // depthy.leftpaneOpen(true);
   };
 
-  $scope.animateOption = function(obj, option, duration) {
-    $(obj).animate(option, {
-      duration: duration || 250,
-      step: function() {$scope.$safeApply();},
-      complete: function() {
-        _.extend(obj, option);
-        $scope.$safeApply();
-      }
-    });
-  };
 
 
   $scope.$watch('compoundFiles', function(files) {
@@ -133,6 +124,10 @@ angular.module('depthyApp')
     });
   };
 
+  $scope.drawDepthmap = function() {
+    $state.go('draw');
+  };
+
   $scope.debugClicksLeft = 2;
   $scope.debugClicked = function() {
     if (--$scope.debugClicksLeft === 0) depthy.enableDebug();
@@ -171,10 +166,12 @@ angular.module('depthyApp')
   });
 
   $($window).on('resize', function() {
+    var $viewer = $('#viewer');
     depthy.viewer.size = {
-      width: $window.innerWidth,
-      height: $window.innerHeight,
+      width:  $viewer.width(),
+      height: $viewer.height(),
     };
+    console.log('Resize %dx%d', $viewer.width(), $viewer.height());
     $scope.$safeApply();
   });
   $($window).resize();
@@ -196,7 +193,6 @@ angular.module('depthyApp')
     // refresh on every digest...
     $scope.$watch(function() {
       setTimeout(function() {
-        console.log('scroll refresh');
         $scope.scroll.refresh();
       }, 100);
     });

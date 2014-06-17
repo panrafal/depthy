@@ -121,6 +121,11 @@ $about-bg: transparent; //$brand-primary-dark;
 $gallery-width: 70px;
 $gallery-bg: darken($leftpane-bg, 15%);
 
+$draw-sm-size: 640px;
+$draw-lg-size: 980px;
+$draw-pane-width: 320px;
+$draw-pane-height: 50px;
+
 $facebook-color: desaturate(darken(#3B5998, $contrast), $contrast);
 $google-color:   desaturate(darken(#D74635, $contrast), $contrast);
 $twitter-color:  desaturate(darken(#00C3F8, $contrast), $contrast);
