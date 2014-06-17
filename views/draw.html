@@ -1,0 +1,61 @@
+<section id="draw" ng-controller="DrawCtrl" class="draw-mode-{{brushMode}}" ng-class="{'brush-opened': brushOpened}"><div class="draw-options"><div class="draw-instructions">Here you can draw the depthmap with your {{Modernizr.mobile ? 'finger' : 'mouse'}}. Use the sliders to setup the brush.<br>Remember that <b>black</b> means <b>near</b> the screen, and white is far away.<br>Use <b>opacity</b> to make subtle changes, and <b>level</b> to draw at the same level as the point you start.</div><button class="draw-done btn btn-success" ng-click="done()" title="Finish" ga><i class="icon icon-yes"></i></button> <button class="draw-cancel btn btn-danger" ng-click="cancel()" title="Cancel" ga><i class="icon icon-no"></i></button> <button class="draw-undo btn btn-default option" ng-click="drawer.toggleUndo()" ng-class="{redo: drawer.getUndoMode() > 0}" ng-disabled="drawer.getUndoMode() == 0" title="Undo"><i class="icon icon-undo" ga></i></button> <button class="draw-preview btn btn-default option" ng-click="togglePreview()" ng-class="{active:preview == 2}" title="Preview" ga><i class="icon icon-eye"></i></button> <button class="draw-options-toggle btn btn-default option" ng-click="brushOpened = !brushOpened" ng-class="{active:brushOpened}" title="Brush options" ga><i class="icon icon-{{brushIcon()}}"></i></button><div class="brush-options"><button class="draw-picker btn btn-default option" ng-model="brushMode" btn-checkbox btn-checkbox-true="'picker'" title="Picker" ga><i class="icon icon-target"></i></button> <button class="draw-level btn btn-default option" ng-model="brushMode" btn-checkbox btn-checkbox-true="'level'" title="Level" ga><i class="icon icon-magnet"></i></button><div class="brush-sliders"><div class="option draw-brush-depth"><div class="range-slider" ng-model="drawOpts.depth" range-stepper="{snap: 0}" data-values="[
+            {value:0, label: 'Near'},
+            {value:0.25, label: ''},
+            {value:0.5, label: ''},
+            {value:0.75, label: ''},
+            {value:1, label: 'Far'}
+          ]"><div class="rs-title"><i class="icon icon-arrow-sm-left"></i><span>depth</span><i class="icon icon-arrow-sm-right"></i></div><div class="rs-thumb"><svg width="20" height="20"><circle cx="10" cy="10" r="9" fill="black" stroke="#ffffff" stroke-width="1.5"></circle><circle cx="10" cy="10" r="9" opacity="{{getValue(v)}}" fill="white" stroke="#ffffff" stroke-width="1.5"></circle></svg></div></div></div><div class="option draw-brush-size"><div class="range-slider" ng-model="drawOpts.size" range-stepper="{snap: 0}" data-values="[
+            {value:.005, label: 'Small'},
+            {value:.025, label: ''},
+            {value:.05, label: ''},
+            {value:.2, label: ''},
+            {value:.4, label: 'Large'}
+          ]"><div class="rs-title"><i class="icon icon-arrow-sm-left"></i><span>size</span><i class="icon icon-arrow-sm-right"></i></div><div class="rs-thumb"><svg width="20" height="20"><circle cx="10" cy="10" r="{{Math.max(1, Math.min(10, position / 4 * 10))}}" fill="white" stroke="none"></circle></svg></div></div></div><div class="option draw-brush-hardness"><div class="range-slider" ng-model="drawOpts.hardness" range-stepper="{snap: 0}" data-values="[
+            {value:0.0, label: 'Soft'},
+            {value:0.25, label: ''},
+            {value:0.5, label: ''},
+            {value:0.75, label: ''},
+            {value:1.0, label: 'Hard'}
+          ]"><div class="rs-title"><i class="icon icon-arrow-sm-left"></i><span>hardness</span><i class="icon icon-arrow-sm-right"></i></div><div class="rs-thumb"><svg width="20" height="20"><circle cx="10" cy="10" r="{{Math.max(1, Math.min(9, getValue(v) * 9))}}" fill="white" stroke="none"></circle><circle cx="10" cy="10" r="9" fill="none" stroke="#ffffff" stroke-width="1.5"></circle></svg></div></div></div><div class="option draw-brush-opacity"><div class="range-slider" ng-model="drawOpts.opacity" range-stepper="{snap: 0}" data-values="[
+            {value:0.01, label: 'Transparent'},
+            {value:0.1, label: ''},
+            {value:0.25, label: ''},
+            {value:0.5, label: ''},
+            {value:1, label: 'Opaque'}
+          ]"><div class="rs-title"><i class="icon icon-arrow-sm-left"></i><span>opacity</span><i class="icon icon-arrow-sm-right"></i></div><div class="rs-thumb"><svg width="20" height="20"><circle cx="10" cy="10" r="9" opacity="{{(getValue(v) + 0.1) / 0.9}}" fill="white"></circle></svg></div></div></div></div></div></div><!--
+    Preview
+    <div class="option">
+      <div class="btn-group btn-group-justified">
+        <div class="btn btn-default" ng-model="viewer.depthPreview" btn-radio="0.0" ga>0.0</div>
+        <div class="btn btn-default" ng-model="viewer.depthPreview" btn-radio="0.25" ga>0.25</div>
+        <div class="btn btn-default" ng-model="viewer.depthPreview" btn-radio="0.50" ga>0.5</div>
+        <div class="btn btn-default" ng-model="viewer.depthPreview" btn-radio="0.75" ga>0.75</div>
+        <div class="btn btn-default" ng-model="viewer.depthPreview" btn-radio="1.0" ga>1.0</div>
+      </div>
+    </div>
+
+    Spacing
+    <div class="option">
+      <div class="range-stepper" ng-model="drawOpts.spacing" range-stepper="{snap: 0}" data-values="[
+        0, 1
+      ]"></div>
+
+    Slope
+    <div class="option">
+      <div class="range-stepper" ng-model="drawOpts.slope" range-stepper="{snap: 0}" data-values="[
+        0.1, 0.9
+      ]"></div>
+
+
+    Blend
+    <div class="option">
+      <div class="btn-group btn-group-justified">
+        <div class="btn btn-default" ng-model="drawOpts.blend" btn-radio="0" ga>N</div>
+        <div class="btn btn-default" ng-model="drawOpts.blend" btn-radio="1" ga>+</div>
+        <div class="btn btn-default" ng-model="drawOpts.blend" btn-radio="2" ga>*</div>
+        <div class="btn btn-default" ng-model="drawOpts.blend" btn-radio="3" ga>S</div>
+      </div>
+    </div>
+
+  </div>
+--></section>
