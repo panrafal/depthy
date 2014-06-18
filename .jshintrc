@@ -29,6 +29,7 @@
     "DepthReader": false,
     "DepthyViewer": false,
     "DepthyDrawer": false,
+    "GDepthEncoder": false,
     "Promise": false,
     "_": true,
     "requestAnimFrame": true,

@@ -169,11 +169,11 @@ angular.module('depthyApp').provider('depthy', function depthy() {
         },
         onViewed: function() {
           if (!self.thumb) {
-            depthy.getViewer().exportThumbnail({width: 75, height: 75}, 0.8).then(function(url) {
+            depthy.getViewer().exportImage({size: {width: 75, height: 75}, quality: 0.8}).then(function(url) {
               self.thumb = url;
               console.log('Thumbnail generated %db', url.length);
               $rootScope.$safeApply();
-            });            
+            });
           }
           self.viewed = new Date().getTime();
           self.views += 1;
@@ -361,6 +361,7 @@ angular.module('depthyApp').provider('depthy', function depthy() {
         205: 'Export high quality videos on chrome.',
         206: 'GIFs look waaay better now.',
         300: 'Paint depthmaps in your browser.',
+        301: 'Save images as LensBlur JPG.',
       };
       depthy.newStuff = [];
       _.each(newStuff, function(txt, v) {
@@ -417,7 +418,7 @@ angular.module('depthyApp').provider('depthy', function depthy() {
     depthy = {
       viewer: viewer,
 
-      version: 300,
+      version: 301,
       tipsState: {},
       lastSettingsDate: null,
 
@@ -835,7 +836,7 @@ angular.module('depthyApp').provider('depthy', function depthy() {
                   encoder.add(viewerObj.getCanvas());
                   ++frame;
                   // wait every 4 frames
-                  if (frame % 4 == 0) {
+                  if (frame % 4 === 0) {
                     setTimeout(worker, 0);
                   } else {
                     worker();
@@ -858,30 +859,6 @@ angular.module('depthyApp').provider('depthy', function depthy() {
           aborted = true;
         };
         return promise;
-      },
-
-
-      // credit goes to http://stackoverflow.com/questions/4998908/convert-data-uri-to-file-then-append-to-formdata
-      dataURItoBlob: function(dataURI) {
-        // convert base64 to raw binary data held in a string
-        // doesn't handle URLEncoded DataURIs
-        var byteString;
-        if (dataURI.split(',')[0].indexOf('base64') >= 0)
-          byteString = atob(dataURI.split(',')[1]);
-        else
-          byteString = window.unescape(dataURI.split(',')[1]);
-        // separate out the mime component
-        var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
-
-        // write the bytes of the string to an ArrayBuffer
-        var ab = new ArrayBuffer(byteString.length);
-        var ia = new Uint8Array(ab);
-        for (var i = 0; i < byteString.length; i++) {
-            ia[i] = byteString.charCodeAt(i);
-        }
-
-        // write the ArrayBuffer to a blob, and you're done
-        return new Blob([ab],{type: mimeString});
       },
 
 
@@ -989,7 +966,7 @@ angular.module('depthyApp').provider('depthy', function depthy() {
           complete: function() {
             depthy.getViewer().enableDebug();
           }
-        })
+        });
       },
 
 

@@ -2,9 +2,14 @@
 <div class="popup-content scrollable">
 
   <button class="btn btn-primary btn-block btn-lg" ng-click="sharePngRun()">Share</button>
-  <button class="btn btn-default btn-block btn-lg" ng-click="exportAnimationOptions('gif')">Create GIF</button>
-  <button class="btn btn-default btn-block btn-lg" ng-if="Modernizr.webp" ng-click="exportAnimationOptions('webm')">Create Video</button>
-  <button class="btn btn-default btn-block btn-lg" ng-click="exportPngRun()">Save</button>
+  <div class="btn-group btn-group-justified">
+    <div class="btn btn-default btn-lg" ng-click="exportAnimationOptions('gif')">Create GIF</div>
+    <div class="btn btn-default btn-lg" ng-if="Modernizr.webp" ng-click="exportAnimationOptions('webm')">Create Video</div>
+  </div>
+  <div class="btn-group btn-group-justified">
+    <div class="btn btn-default btn-block btn-lg" ng-click="exportPngRun()">Save PNG</div>
+    <div class="btn btn-default btn-block btn-lg" ng-click="exportJpgRun()">Save JPG</div>
+  </div>
 </div>
 <div class="popup-footer">
   <button class="btn btn-default btn-block btn-lg" ng-click="depthy.activePopup.reject()">Not now</button>
