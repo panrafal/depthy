@@ -6,34 +6,6 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
 (function() {
   'use strict';
 
-  /*
-
-<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 5.1.0-jc003"> <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"> 
-<rdf:Description rdf:about="" 
-  xmlns:GFocus="http://ns.google.com/photos/1.0/focus/" 
-  xmlns:GImage="http://ns.google.com/photos/1.0/image/" 
-  xmlns:GDepth="http://ns.google.com/photos/1.0/depthmap/" 
-  xmlns:xmpNote="http://ns.adobe.com/xmp/note/" 
-  GFocus:BlurAtInfinity="0.02976035" 
-  GFocus:FocalDistance="9.569768" 
-  GFocus:FocalPointX="0.512963" GFocus:FocalPointY="0.49999997" 
-  GImage:Mime="image/jpeg" 
-  GDepth:Format="RangeInverse" 
-  GDepth:Near="6.2360944747924805" 
-  GDepth:Far="19.068166732788086" 
-  GDepth:Mime="image/png" 
-  xmpNote:HasExtendedXMP="420161059863C43993D79FBDFA80C997"/> </rdf:RDF> </x:xmpmeta>
-
-<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 5.1.0-jc003"> 
-  <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"> 
-    <rdf:Description rdf:about="" xmlns:GImage="http://ns.google.com/photos/1.0/image/" xmlns:GDepth="http://ns.google.com/photos/1.0/depthmap/" 
-      GImage:Data="/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAA...==" 
-      GDepth:Data="iVBORw0KGgoAAAANSUhEUg...C"/> 
-    </rdf:RDF> </x:xmpmeta>
-
-
-  */
-
   function makeUint16Buffer(arr, littleEndian) {
     var ab = new ArrayBuffer(arr.length * 2),
         dv = new DataView(ab);
@@ -77,9 +49,8 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
         // TODO html entities escaping
         xmp.push(' ', k, '="' + props[k] + '"');
       }
-      xmp.push('/></rdf:RDF></x:xmpmeta>');
+      xmp.push(' /></rdf:RDF></x:xmpmeta>');
       return xmp.join('');
-//       xmpNote:HasExtendedXMP="420161059863C43993D79FBDFA80C997"
     },
 
     dataURIinfo: function(uri) {
@@ -100,16 +71,16 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
       var props = {}, extProps = {}, standardXMP, extendedXMP;
       depthmap = this.dataURIinfo(depthmap || '');
       original = this.dataURIinfo(original || '');
+      if (original) {
+        props['GImage:Mime'] = original.mime;
+        extProps['GImage:Data'] = original.data;
+        console.log('Original size', original.data.length);
+      }
       if (depthmap) {
         props['GDepth:Format'] = 'RangeInverse';
         props['GDepth:Mime'] = depthmap.mime;
         extProps['GDepth:Data'] = depthmap.data;
         console.log('Depthmap size', depthmap.data.length);
-      }
-      if (original) {
-        props['GImage:Mime'] = original.mime;
-        extProps['GImage:Data'] = original.data;
-        console.log('Original size', original.data.length);
       }
       for (var k in metadata || {}) {
         props[k] = metadata[k];
@@ -195,11 +166,12 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
       var extendedUid, parts = [];
       if (extendedXMP) {
         extendedUid = CryptoJS.MD5(extendedXMP).toString().toUpperCase();
-        console.log(extendedUid);
-        standardXMP = standardXMP.replace(/(<rdf:Description) /, '$1 xmpNote:HasExtendedXMP="420161059863C43993D79FBDFA80C997" ');
+        console.log('ExtendedUID', extendedUid);
+        standardXMP = standardXMP.replace(/(<rdf:Description) /, '$1 xmpNote:HasExtendedXMP="' + extendedUid + '" ');
       }
       console.log('StandardXMP: ', standardXMP.length);
       console.log('ExtendedXMP: ', extendedXMP.length);
+      // console.log('ExtendedXMP: "%s"', extendedXMP);
 
       parts.push(new Uint8Array([0xFF, 0xE1]));
       parts.push(makeUint16Buffer([2 + this.xmpHeader.length + 1 + standardXMP.length]));
@@ -209,7 +181,7 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
       if (extendedXMP) {
         var offset = 0;
         while (offset < extendedXMP.length) {
-          var chunkSize = Math.min(65300, extendedXMP.length - offset);
+          var chunkSize = Math.min(65383, extendedXMP.length - offset);
           parts.push(new Uint8Array([0xFF, 0xE1]));
           parts.push(makeUint16Buffer([2 + this.xmpExtensionHeader.length + 1 + 32 + 4 + 4 + chunkSize]));
           parts.push(this.xmpExtensionHeader, new Uint8Array([0x00]));

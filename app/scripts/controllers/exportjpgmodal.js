@@ -6,7 +6,7 @@ angular.module('depthyApp')
   // wait for animation
   $timeout(function() {
     var imageUrl, depthUrl, originalUrl;
-    depthy.getViewer().exportSourceImage(depthy.opened.imageSource, {}).then(
+    depthy.getViewer().exportSourceImage(depthy.opened.imageSource, {quality: 0.9}).then(
       function(url) {
         imageUrl = url;
         return depthy.getViewer().exportDepthmap();
@@ -15,7 +15,7 @@ angular.module('depthyApp')
       function(url) {
         depthUrl = url;
         if (depthy.opened.originalSource) {
-          return depthy.getViewer().exportSourceImage(depthy.opened.imageSource, {});
+          return depthy.getViewer().exportSourceImage(depthy.opened.originalSource, {quality: 0.9});
         } else {
           return false;
         }
@@ -23,9 +23,16 @@ angular.module('depthyApp')
     ).then(
       function(url) {
         originalUrl = url;
-
         // ready! let's do this!
-        return GDepthEncoder.encodeDepthmap(window.dataURItoArrayBuffer(imageUrl).buffer, depthUrl, originalUrl);
+        return GDepthEncoder.encodeDepthmap(window.dataURItoArrayBuffer(imageUrl).buffer, depthUrl, originalUrl, {
+          'GFocus:BlurAtInfinity': '0.5',
+          'GFocus:FocalDistance': '10.0',
+          'GFocus:FocalPointX': '0.5',
+          'GFocus:FocalPointY': '0.5',
+          'GDepth:Format': 'RangeInverse',
+          'GDepth:Near': '5.0',
+          'GDepth:Far': '20.0',
+        });
       }
     ).then(
       function(blob) {

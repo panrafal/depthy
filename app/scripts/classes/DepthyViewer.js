@@ -936,7 +936,7 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
 
     this.exportSourceImage = function(source, options) {
       source = changeTexture({}, source);
-      return exportTexture(image, extend({
+      return exportTexture(source, extend({
         filters: [resetAlphaFilter]
       }, options));
     };
