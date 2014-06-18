@@ -361,6 +361,7 @@ angular.module('depthyApp').provider('depthy', function depthy() {
         205: 'Export high quality videos on chrome.',
         206: 'GIFs look waaay better now.',
         300: 'Paint depthmaps in your browser.',
+        301: 'Save images as LensBlur JPG.',
       };
       depthy.newStuff = [];
       _.each(newStuff, function(txt, v) {
@@ -417,7 +418,7 @@ angular.module('depthyApp').provider('depthy', function depthy() {
     depthy = {
       viewer: viewer,
 
-      version: 300,
+      version: 301,
       tipsState: {},
       lastSettingsDate: null,
 
