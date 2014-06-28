@@ -360,9 +360,11 @@ angular.module('depthyApp').provider('depthy', function depthy() {
       var newStuff = {
         205: 'Export high quality videos on chrome.',
         206: 'GIFs look waaay better now.',
+<<<<<<< HEAD
         300: 'Paint depthmaps in your browser.',
-        301: 'Save images as LensBlur JPG.',
-        302: 'Create anaglyph 3D images.',
+=======
+        300: 'Draw depthmap yourself.',
+>>>>>>> feature/savejpg
       };
       depthy.newStuff = [];
       _.each(newStuff, function(txt, v) {
@@ -419,7 +421,7 @@ angular.module('depthyApp').provider('depthy', function depthy() {
     depthy = {
       viewer: viewer,
 
-      version: 301,
+      version: 300,
       tipsState: {},
       lastSettingsDate: null,
 

@@ -55,7 +55,7 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
     };
 
   var DepthyViewer = root.DepthyViewer = function(element, options) {
-    var //self = this,
+    var self = this,
         canvas, stage, renderer, stats,
         image = {}, depth = {},
         sizeDirty = true, stageDirty = true, renderDirty = true, depthFilterDirty = true, 
@@ -657,8 +657,7 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
       renderDirty = false;
     }
 
-    function render() {
-      if (!isReady()) return;
+    function update() {
       if (sizeDirty) updateSize();
 
       if (image.dirty) updateImageTexture();
@@ -679,6 +678,12 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
         readyResolver();
         readyResolver = null;
       }
+    }
+
+    function render() {
+      if (!isReady()) return;
+
+      update();
 
       if (renderDirty || options.alwaysRender) {
         renderStage();
@@ -1007,6 +1012,84 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
       );
     };
 
+    this.exportAnaglyph = function(exportOpts) {
+      return this.getPromise().then(
+        function() {
+
+          var size = sizeCopy(exportOpts.size || image.size);
+          if (exportOpts.maxSize) size = sizeFit(size, exportOpts.maxSize);
+          if (exportOpts.minSize) size = sizeFit(size, exportOpts.minSize, true);
+          size = sizeRound(size);
+
+          var oldOptions = self.getOptions();
+
+          self.setOptions({
+            animate: false,
+            size: size,
+            fit: false,
+            orient: false,
+            hover: false,
+            depthPreview: 0,
+            quality: 5,
+          });
+
+          // enforce settings
+          update();
+
+          var localstage = new PIXI.Stage(),
+              leftEye, rightEye, filter;
+
+          leftEye = compoundSprite;
+          depthFilter.offset = {x: -1, y: 0.5};
+          filter = new PIXI.ColorMatrixFilter2();
+          filter.matrix = [1.0, 0.0, 0.0, 0.0,
+                           0.0, 0.0, 0.0, 0.0,
+                           0.0, 0.0, 0.0, 0.0,
+                           0.0, 0.0, 0.0, 1.0];
+          leftEye.filters.push(filter);
+          leftEye.filters = leftEye.filters;
+          localstage.addChild(leftEye);
+
+          // right eye
+          compoundSprite = null;
+          depthFilter = new PIXI.DepthPerspectiveFilter(depthRender, options.quality); // independent copy
+          depthFilter.quality = options.quality; // enforce it
+          updateStage(); // recreate sprite
+          updateDepthFilter();
+
+          rightEye = compoundSprite;
+          depthFilter.offset = {x: 1, y: 0.5};
+          filter = new PIXI.ColorMatrixFilter2();
+          filter.matrix = [0.0, 0.0, 0.0, 0.0,
+                           0.0, 1.0, 0.0, 0.0,
+                           0.0, 0.0, 1.0, 0.0,
+                           0.0, 0.0, 0.0, 1.0];
+          rightEye.filters.push(filter);
+          rightEye.filters = rightEye.filters;
+
+          PIXI.blendModesWebGL['one.one'] = [renderer.gl.ONE, renderer.gl.ONE];
+          rightEye.blendMode = 'one.one';
+
+          // rightEye.blendMode = PIXI.blendModes.NORMAL;
+          localstage.addChild(rightEye);
+
+          // render...
+          renderer.render(localstage);
+          // store
+          var dataUrl = canvas.toDataURL('image/jpeg', exportOpts.quality || 0.9);
+
+          // done!
+          compoundSprite = null;
+          depthFilter = null;
+
+          self.setOptions(oldOptions);
+          // make full render cycle
+          render();
+
+          return dataUrl;
+        }
+      );
+    };
 
     this.enableDebug = function() {
       if (window.Stats) {

@@ -135,6 +135,9 @@ angular.module('depthyApp', [
   .state('export.webm.run', {
     url: '/run',
   })
+  .state('export.anaglyph', {
+    url: '/anaglyph',
+  })
   .state('share', {
     url: '/share',
   })

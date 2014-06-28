@@ -122,6 +122,16 @@ angular.module('depthyApp')
     });
   };
 
+  $scope.exportAnaglyphRun = function() {
+    StateModal.showModal('export.anaglyph', {
+      // stateOptions: {location: 'replace'},
+      templateUrl: 'views/export-anaglyph-modal.html',
+      controller: 'ExportAnaglyphModalCtrl',
+      windowClass: 'export-anaglyph-modal modal-lg',
+    }).result.finally(function() {
+    });
+  };
+
   $scope.sharePngRun = function() {
     StateModal.showModal('share.png', {
       // stateOptions: {location: 'replace'},
