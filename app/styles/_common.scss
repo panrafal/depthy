@@ -479,6 +479,12 @@ logo {
     @extend .icon-loading;
   }
 
+  &.thumbnail-lg {
+    img, video {
+      max-height: 100vh;
+    }
+  }
+
 }
 
 .thumbnails-set {
@@ -695,6 +701,9 @@ logo {
   .modal-title {
     color: inherit;
     font-size: 20px;
+    &[ng-click] {
+      cursor: pointer;
+    }
   }
   .icon-back {
     padding-right: 5px;
@@ -740,6 +749,14 @@ logo {
   background-color: #222;
 }
 
+.modal-lg {
+  width: auto;
+  right: 0px;
+  .modal-dialog {
+    width: 100%;
+    margin: 0 -1px;
+  }
+}
 
 @media #{$media-mobile} {
 
