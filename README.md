@@ -15,6 +15,16 @@ This is the source of the http://depthy.me/ webapp. Contributions more than welc
 - For local development server run: `grunt serve`
 - For deployment: `grunt build`
 
+## Docker image
+If you want to simply run depthy locally, you can use [Docker.io](https://www.docker.com/).
+
+Once docker installed, simple run:
+```
+$ docker run --rm -t -i -p 9000:9000 essembeh/depthy
+```
+
+Then go to [localhost:9000](http://localhost:9000)
+
 ## Authors
 
 **[Rafał Lindemann](http://www.stamina.pl/)** (idea, code, ux) with much appreciated help of
