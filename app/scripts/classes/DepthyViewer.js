@@ -469,7 +469,7 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
         depthTextureSprite = new PIXI.Sprite(depth.texture);
         depthTextureSprite.filters = [depthBlurFilter];
         depthTextureSprite.scale = new PIXI.Point(scale, scale);
-        depthTextureSprite.renderable = !!depth.texture;
+        depthTextureSprite.renderable = true;
 
         depthTextureSprite.anchor = {x: 0.5, y: 0.5};
         depthTextureSprite.position = {x: stageSize.width / 2, y: stageSize.height / 2};
@@ -477,7 +477,6 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
         if (depth.useAlpha) {
           // move inverted alpha to rgb, set alpha to 1
           depthTextureSprite.filters.push(invertedAlphaToRGBFilter);
-          depthTextureSprite.filters = depthTextureSprite.filters;
         }
         depthTextureContainer.addChild(depthTextureSprite);
       } else {
