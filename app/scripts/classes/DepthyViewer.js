@@ -477,7 +477,6 @@ Copyright (c) 2014 Rafał Lindemann. http://panrafal.github.com/depthy
         if (depth.useAlpha) {
           // move inverted alpha to rgb, set alpha to 1
           depthTextureSprite.filters.push(invertedAlphaToRGBFilter);
-          depthTextureSprite.filters = depthTextureSprite.filters;
         }
         depthTextureContainer.addChild(depthTextureSprite);
       } else {
