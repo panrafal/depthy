@@ -834,7 +834,7 @@ angular.module('depthyApp').provider('depthy', function depthy() {
                     pauseRender: true,
                   });
                   viewerObj.render(true);
-                  encoder.add(viewerObj.getCanvas());
+                  encoder.add(viewerObj.getCanvas().toDataURL("image/webp"));
                   ++frame;
                   // wait every 4 frames
                   if (frame % 4 === 0) {
@@ -843,10 +843,11 @@ angular.module('depthyApp').provider('depthy', function depthy() {
                     worker();
                   }
                 } else {
-                  var blob = encoder.compile();
-                  deferred.resolve(blob);
-                  depthy.viewer.overrideStageSize = null;
-                  $rootScope.$safeApply();
+                  encoder.compile(false, function(blob) {
+                      deferred.resolve(blob);
+                      depthy.viewer.overrideStageSize = null;
+                      $rootScope.$safeApply();
+                  });
                 }
               } catch (e) {
                 deferred.reject(e);
