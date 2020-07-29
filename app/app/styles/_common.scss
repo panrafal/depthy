@@ -1,3 +1,5 @@
+@charset "UTF-8";
+
 html {
   width: 100%;
   height: 100%;
@@ -455,7 +457,7 @@ logo {
     font-size: 1rem;
     background: $brand-neutral-dark;
     color: $text-color;
-    padding: $panel-heading-padding;    
+    padding: 10vh; /*$panel-heading-padding;    */
   }
 
   &.empty, &.loading {

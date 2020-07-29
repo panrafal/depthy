@@ -20,7 +20,7 @@ If you want to simply run depthy locally, you can use [Docker.io](https://www.do
 
 Once docker installed, simple run:
 ```
-$ docker run --rm -t -i -p 9000:9000 essembeh/depthy
+$ docker run --rm -t -i -p 9000:9000 ndahlquist/depthy
 ```
 
 Then go to [localhost:9000](http://localhost:9000)
