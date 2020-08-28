@@ -545,5 +545,5 @@ FileETag None
 
 <IfModule mod_rewrite.c>
     RewriteCond %{HTTP_HOST} ^depthy\.stamina\.pl$ [NC]
-    RewriteRule ^ http://depthy.me%{REQUEST_URI} [R=301,L]
+    RewriteRule ^ http://depthy.stamina.pl%{REQUEST_URI} [R=301,L]
 </IfModule>
