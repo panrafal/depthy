@@ -5,7 +5,7 @@ Images with depthmap playground.
 
 Depthy shows Google Camera Lens Blur photos with 3D parallax effect and creates animated GIFs from them. Plus extracts the depth map and enables you to create your own!
 
-This is the source of the http://depthy.me/ webapp. Contributions more than welcome!
+This is the source of the http://depthy.stamina.pl/ webapp. Contributions more than welcome!
 
 ## How to build
 
