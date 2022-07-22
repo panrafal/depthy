@@ -33,7 +33,7 @@ Then go to [localhost:9000](http://localhost:9000)
 ## How to help
 
 There is a lot of stuff you can do with depthmaps. If you have ideas and you know how to code,
-You already know how to help ;) I'm pretty lax on formalities, just make it work and at least 
+you already know how to help ;) I'm pretty lax on formalities, just make it work and at least 
 try to follow conventions of the code...
 
 ## License
